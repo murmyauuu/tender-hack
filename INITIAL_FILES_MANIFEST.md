@@ -5,7 +5,7 @@
 | Файл | Назначение |
 |---|---|
 | AGENTS.md | Правила для всех coding-агентов и границы файлов |
-| TenderHack_UNIFIED_SPEC_v2.md | Единая архитектура, порядок и 34 промпта |
+| TenderHack_UNIFIED_SPEC_v2.1_prefilled.md | Единая архитектура, порядок и 34 промпта |
 | START_HERE.md | Как создать Git-репозиторий, получить BASE_SHA и открыть первые чаты |
 | INITIAL_FILES_MANIFEST.md | Этот реестр |
 | docs/integration/input_inventory.md | Проверка реальных входных данных |

@@ -25,13 +25,13 @@ git rev-parse HEAD
 
 1. Сделайте резервную копию.
 2. Скопируйте содержимое starter pack в корень репозитория, не заменяя более новые одноимённые файлы без проверки.
-3. Положите TenderHack_UNIFIED_SPEC_v2.md в корень.
+3. Положите `TenderHack_UNIFIED_SPEC_v2.1_prefilled.md` в корень.
 4. Заполните docs/integration/machine_map.md и input_inventory.md.
 5. Выполните:
 
 ~~~bash
 git status --short
-git add AGENTS.md TenderHack_UNIFIED_SPEC_v2.md START_HERE.md docs data/raw/README.md .gitignore
+git add AGENTS.md TenderHack_UNIFIED_SPEC_v2.1_prefilled.md START_HERE.md docs data/raw/README.md .gitignore
 git commit -m "chore: add TenderHack starter pack"
 git rev-parse HEAD
 ~~~
