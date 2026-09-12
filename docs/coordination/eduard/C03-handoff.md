@@ -3,7 +3,7 @@
 - **Task ID / status:** C03 — Dense retrieval и минимальный evidence gate / **partial (done на M, blocked-on-G для реального embedding forward-pass)**
 - **Owner / tool:** Эдуард / агент C / Claude Code
 - **Base SHA:** `7988174aa1af7e2fbebc8a4980f43f84fa10e1e8` (тот же SHA, что зафиксирован в задании; совпадает с `origin/main` на момент старта — 1c3c6ae/dc277e5/8da0dcc = C01/C02/CR-EDUARD-001 уже внутри)
-- **Result SHA:** будет проставлен после коммита на `task/c03` (см. «Commands and actual outputs» — команда `git rev-parse HEAD` после коммита)
+- **Result SHA:** `16875ec966b11535191cf900156ff2088286330b` (`task/c03`; предыдущий коммит `ea03c888` на этой ветке содержал регресс — два уже отредактированных трекаемых файла, `store.py` и `test_port_and_fts.py`, остались нестейджены при `git add` и попали в коммит в старом виде; исправлено следующим коммитом `16875ec`, независимо перепроверено `git worktree add --detach` в чистый каталог + `uv run pytest` → 392 passed)
 - **Ветка / worktree:** `task/c03` / `/Users/gunter/Desktop/tenderhack-c03` (отдельный, worktree C00/C01/C02 не тронуты)
 - **Contracts version:** `2.0.0-c0`, контракты **не изменялись** (KnowledgePort/EvidenceItem/KnowledgeResult/QueryContext/GateDecision/ReasonCode использованы как есть)
 - **Machine:** M — MacBook Air M2 (arm64), 8 GiB RAM, macOS, без GPU. `torch`/`transformers`/`numpy` на этой машине не установлены и не добавлялись как зависимости (`pyproject.toml` — файл A, не в зоне C; не редактировался).
