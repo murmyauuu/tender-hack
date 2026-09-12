@@ -3,7 +3,7 @@
 - Status: done
 - Owner / tool: Егор (D) / Manus-агент + ручная проверка; Python 3.14.5, pandas 3.0.3, openpyxl 3.1.5 — только чтение данных
 - Base SHA: `ab2c182` (origin/main HEAD; `TenderHack_UNIFIED_SPEC_v2.1_prefilled.md`)
-- Result SHA: `81fb081560ff814308c0be1590b29a69e54db22b` (ветка `task/d00-rubric-eval-plan`; этот handoff входит в тот же commit)
+- Result SHA: `26f44dd0a75b3f1c9283b9ce17a40a352802ee57` (контентный commit D00; финальный tip с фиксацией SHA в handoff — см. ветку `task/d00-rubric-eval-plan`)
 - Contracts version: v2.1 (контракты отсутствуют — до C0); предложен CR-D-001
 - Machine profile: N — Azerty RB-1551, Celeron N5095, 16 ГБ RAM, Intel UHD; GPU не использовался
 - Runtime SHA / KB snapshot: KB локально: `TenderHack_KnowledgeBase/knowledge_base_FINAL.sqlite` (1468 документов, документ с FTS5); `knowledge_base_FINAL.jsonl` закоммичен
