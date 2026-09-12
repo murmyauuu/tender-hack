@@ -1,0 +1,9 @@
+{
+  "error": {
+    "code": "STALE_CASE_VERSION",
+    "message": "Состояние обращения изменилось",
+    "retryable": false,
+    "trace_id": "trace-stale-demo",
+    "current_case_version": 4
+  }
+}
