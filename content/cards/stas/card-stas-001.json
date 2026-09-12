@@ -1,0 +1,60 @@
+{
+  "card_id": "CARD-STAS-001",
+  "intent_id": "upload_mchd_to_user_profile",
+  "status": "draft",
+  "title": "Загрузка МЧД в профиль пользователя",
+  "utterances": [
+    "Как загрузить МЧД в профиль пользователя на Портале?",
+    "Где добавить XML-файл машиночитаемой доверенности?",
+    "Как администратору компании добавить МЧД сотруднику?"
+  ],
+  "applicable_roles": [
+    "supplier"
+  ],
+  "required_facts": [
+    {
+      "key": "role",
+      "expected_value": "supplier"
+    },
+    {
+      "key": "mchd_action",
+      "expected_value": "upload_to_user_profile"
+    },
+    {
+      "key": "mchd_file_format",
+      "expected_value": "xml"
+    }
+  ],
+  "source_ids": [
+    "portal:559615:1"
+  ],
+  "content": {
+    "summary": "МЧД можно добавить в профиль либо самому пользователю, либо администратору юридического лица для сотрудника; в обоих случаях загружается XML-файл доверенности.",
+    "conditions": [
+      "Пользователь работает на Портале поставщиков в роли поставщика.",
+      "Требуется добавить МЧД в профиль пользователя.",
+      "Для загрузки доступен XML-файл МЧД."
+    ],
+    "steps": [
+      "Если МЧД добавляет сам пользователь, в его профиле выбрать раздел «Операции с МЧД».",
+      "Если МЧД добавляет администратор юридического лица, в личном кабинете открыть «Управление профилем» → «Профиль компании», в блоке «Сведения о пользователях» выбрать «Операции с МЧД» для нужного сотрудника.",
+      "Добавить XML-файл доверенности к профилю выбранного пользователя."
+    ]
+  },
+  "handoff_required": false,
+  "route": {
+    "topic_id": null,
+    "subtopic_id": null,
+    "support_line": null,
+    "recommended_recipient": null,
+    "basis_source_ids": [],
+    "rule_id": null,
+    "is_probable_defect": false,
+    "is_ambiguous": false,
+    "reason_codes": []
+  },
+  "author_id": "stas",
+  "reviewer_id": null,
+  "reviewed_at": null,
+  "snapshot_id": "kb-4918a97f0874d1e8"
+}
