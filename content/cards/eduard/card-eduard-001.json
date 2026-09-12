@@ -1,0 +1,51 @@
+{
+  "card_id": "CARD-EDUARD-001",
+  "intent_id": "mchd_not_required_for_ip",
+  "status": "draft",
+  "title": "МЧД не требуется индивидуальному предпринимателю",
+  "utterances": [
+    "Нужна ли МЧД индивидуальному предпринимателю для подписания электронных документов?",
+    "Мне как ИП обязательно оформлять машиночитаемую доверенность для работы на портале?"
+  ],
+  "applicable_roles": [
+    "supplier"
+  ],
+  "required_facts": [
+    {
+      "key": "role",
+      "expected_value": "supplier"
+    }
+  ],
+  "source_ids": [
+    "portal:559622:1",
+    "portal:559732:1"
+  ],
+  "content": {
+    "summary": "Индивидуальный предприниматель действует без доверенности, поэтому МЧД для подписания электронных документов на Портале поставщиков ему не требуется.",
+    "conditions": [
+      "Пользователь — индивидуальный предприниматель",
+      "Роль — поставщик",
+      "Вопрос о необходимости МЧД для подписания электронных документов"
+    ],
+    "steps": [
+      "Сообщить пользователю, что МЧД не требуется: ИП действует без доверенности.",
+      "Не путать с руководителем/директором филиала юридического лица — для них правило иное (МЧД может требоваться)."
+    ]
+  },
+  "handoff_required": false,
+  "route": {
+    "topic_id": null,
+    "subtopic_id": null,
+    "support_line": null,
+    "recommended_recipient": null,
+    "basis_source_ids": [],
+    "rule_id": null,
+    "is_probable_defect": false,
+    "is_ambiguous": false,
+    "reason_codes": []
+  },
+  "author_id": "eduard",
+  "reviewer_id": null,
+  "reviewed_at": null,
+  "snapshot_id": "kb-4918a97f0874d1e8"
+}
