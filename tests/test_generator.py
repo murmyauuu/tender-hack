@@ -91,6 +91,26 @@ def test_adapter_records_ollama_timings_without_another_generation() -> None:
     }
 
 
+def test_answer_schema_accepts_omitted_default_action() -> None:
+    generator = OllamaGenerator(
+        transport=lambda url, payload, timeout: {
+            "response": json.dumps(
+                {
+                    "summary": "Откройте карточку.",
+                    "conditions": [],
+                    "steps": ["Откройте карточку."],
+                    "source_ids": ["source-demo"],
+                }
+            )
+        }
+    )
+
+    proposal = asyncio.run(generator.generate(task()))
+
+    assert isinstance(proposal, GenerationAnswer)
+    assert proposal.action == "answer"
+
+
 def test_health_requires_the_exact_a01_model_digest() -> None:
     checks = []
 

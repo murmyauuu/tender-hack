@@ -16,7 +16,6 @@ A01_GGUF_SHA256 = "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745
 
 Transport = Callable[[str, dict, float], dict]
 InfoTransport = Callable[[str, float], dict]
-_PROPOSAL_ADAPTER = TypeAdapter(GenerationProposal)
 _ANSWER_ADAPTER = TypeAdapter(GenerationAnswer)
 
 
@@ -113,7 +112,7 @@ class OllamaGenerator:
                 if envelope.get(source) is not None
             }
             raw = envelope["response"]
-            return _PROPOSAL_ADAPTER.validate_json(raw)
+            return _ANSWER_ADAPTER.validate_json(raw)
         except InvalidGeneration:
             raise
         except (KeyError, TypeError, json.JSONDecodeError, ValidationError) as exc:
