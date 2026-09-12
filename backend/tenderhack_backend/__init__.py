@@ -1,0 +1,2 @@
+"""TenderHack backend bootstrap package."""
+

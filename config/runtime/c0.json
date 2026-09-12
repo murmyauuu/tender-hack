@@ -1,0 +1,15 @@
+{
+  "contracts_version": "2.0.0-c0",
+  "index": {
+    "type": "numpy_exact_cosine",
+    "server_required": false,
+    "artifact_path": "var/knowledge/index.npy",
+    "mapping_path": "var/knowledge/index_ids.json",
+    "status": "not_built"
+  },
+  "runtime": {
+    "workers": 1,
+    "knowledge_adapter": "unavailable",
+    "generator_adapter": "unavailable"
+  }
+}

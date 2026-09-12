@@ -1,0 +1,650 @@
+{
+  "$defs": {
+    "CaseStatus": {
+      "enum": [
+        "open",
+        "awaiting_clarification",
+        "awaiting_feedback",
+        "handoff_offered",
+        "handed_off",
+        "resolved",
+        "closed_policy"
+      ],
+      "title": "CaseStatus",
+      "type": "string"
+    },
+    "CurrentResolution": {
+      "additionalProperties": false,
+      "properties": {
+        "message_id": {
+          "format": "uuid",
+          "title": "Message Id",
+          "type": "string"
+        },
+        "confirmed_by": {
+          "enum": [
+            "user",
+            "operator"
+          ],
+          "title": "Confirmed By",
+          "type": "string"
+        },
+        "answer_origin": {
+          "enum": [
+            "rag",
+            "card",
+            "operator"
+          ],
+          "title": "Answer Origin",
+          "type": "string"
+        },
+        "confirmed_at": {
+          "format": "date-time",
+          "title": "Confirmed At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "message_id",
+        "confirmed_by",
+        "answer_origin",
+        "confirmed_at"
+      ],
+      "title": "CurrentResolution",
+      "type": "object"
+    },
+    "EvaluationRow": {
+      "additionalProperties": false,
+      "properties": {
+        "case_id": {
+          "format": "uuid",
+          "title": "Case Id",
+          "type": "string"
+        },
+        "cohort": {
+          "enum": [
+            "demo",
+            "live"
+          ],
+          "title": "Cohort",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "case_status": {
+          "$ref": "#/$defs/CaseStatus"
+        },
+        "topic_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Topic Id"
+        },
+        "subtopic_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Subtopic Id"
+        },
+        "policy_closed": {
+          "title": "Policy Closed",
+          "type": "boolean"
+        },
+        "route": {
+          "$ref": "#/$defs/RoutingResult"
+        },
+        "ticket": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExportTicket"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "messages": {
+          "items": {
+            "$ref": "#/$defs/ExportMessage"
+          },
+          "title": "Messages",
+          "type": "array"
+        },
+        "requests": {
+          "items": {
+            "$ref": "#/$defs/ExportRequest"
+          },
+          "title": "Requests",
+          "type": "array"
+        },
+        "feedback": {
+          "items": {
+            "$ref": "#/$defs/ExportFeedback"
+          },
+          "title": "Feedback",
+          "type": "array"
+        },
+        "current_resolution": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CurrentResolution"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "case_id",
+        "cohort",
+        "created_at",
+        "case_status",
+        "policy_closed",
+        "route",
+        "messages",
+        "requests",
+        "feedback"
+      ],
+      "title": "EvaluationRow",
+      "type": "object"
+    },
+    "ExportFeedback": {
+      "additionalProperties": false,
+      "properties": {
+        "message_id": {
+          "format": "uuid",
+          "title": "Message Id",
+          "type": "string"
+        },
+        "useful": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Useful"
+        },
+        "solved": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Solved"
+        },
+        "specialist_rating": {
+          "anyOf": [
+            {
+              "maximum": 5,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Specialist Rating"
+        },
+        "reason_codes": {
+          "items": {
+            "$ref": "#/$defs/FeedbackReason"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        },
+        "comment": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Comment"
+        },
+        "updated_at": {
+          "format": "date-time",
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "message_id",
+        "updated_at"
+      ],
+      "title": "ExportFeedback",
+      "type": "object"
+    },
+    "ExportMessage": {
+      "additionalProperties": false,
+      "properties": {
+        "message_id": {
+          "format": "uuid",
+          "title": "Message Id",
+          "type": "string"
+        },
+        "seq": {
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "question",
+            "answer",
+            "clarification",
+            "notice"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "responder_type": {
+          "anyOf": [
+            {
+              "enum": [
+                "ai",
+                "operator",
+                "system"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Responder Type"
+        },
+        "author_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Author Id"
+        },
+        "answer_origin": {
+          "anyOf": [
+            {
+              "enum": [
+                "rag",
+                "card",
+                "operator",
+                "system"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Answer Origin"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Source Ids",
+          "type": "array"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "message_id",
+        "seq",
+        "kind",
+        "text",
+        "created_at"
+      ],
+      "title": "ExportMessage",
+      "type": "object"
+    },
+    "ExportRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "user_message_id": {
+          "format": "uuid",
+          "title": "User Message Id",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/RequestStatus"
+        },
+        "result_message_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Result Message Ids",
+          "type": "array"
+        },
+        "error_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error Code"
+        },
+        "timings_ms": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Timings Ms",
+          "type": "object"
+        }
+      },
+      "required": [
+        "request_id",
+        "user_message_id",
+        "status"
+      ],
+      "title": "ExportRequest",
+      "type": "object"
+    },
+    "ExportTicket": {
+      "additionalProperties": false,
+      "properties": {
+        "ticket_id": {
+          "format": "uuid",
+          "title": "Ticket Id",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/TicketStatus"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "resolved_by": {
+          "anyOf": [
+            {
+              "enum": [
+                "user",
+                "operator"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resolved By"
+        }
+      },
+      "required": [
+        "ticket_id",
+        "status",
+        "created_at"
+      ],
+      "title": "ExportTicket",
+      "type": "object"
+    },
+    "FeedbackReason": {
+      "enum": [
+        "NOT_RELEVANT",
+        "UNCLEAR",
+        "MISSING_INFORMATION",
+        "POSSIBLY_OUTDATED"
+      ],
+      "title": "FeedbackReason",
+      "type": "string"
+    },
+    "ReasonCode": {
+      "enum": [
+        "NO_EVIDENCE",
+        "ROLE_REQUIRED",
+        "ROLE_MISMATCH",
+        "MISSING_ATTACHMENT",
+        "KNOWN_CONFLICT",
+        "UNKNOWN_IDENTIFIER",
+        "UNSUPPORTED_OPERATION",
+        "EXPLICIT_HUMAN_REQUEST",
+        "UNRESOLVED_AFTER_STEPS",
+        "INVALID_GENERATION",
+        "MODEL_UNAVAILABLE",
+        "SEARCH_UNAVAILABLE",
+        "POLICY_LANGUAGE",
+        "OUT_OF_SCOPE"
+      ],
+      "title": "ReasonCode",
+      "type": "string"
+    },
+    "RequestStatus": {
+      "enum": [
+        "queued",
+        "processing",
+        "final",
+        "error",
+        "cancelled"
+      ],
+      "title": "RequestStatus",
+      "type": "string"
+    },
+    "RoutingResult": {
+      "additionalProperties": false,
+      "properties": {
+        "topic_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Topic Id"
+        },
+        "subtopic_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Subtopic Id"
+        },
+        "support_line": {
+          "anyOf": [
+            {
+              "enum": [
+                "L1",
+                "L2",
+                "L3"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Support Line"
+        },
+        "recommended_recipient": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recommended Recipient"
+        },
+        "basis_source_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Basis Source Ids",
+          "type": "array"
+        },
+        "rule_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rule Id"
+        },
+        "is_probable_defect": {
+          "default": false,
+          "title": "Is Probable Defect",
+          "type": "boolean"
+        },
+        "is_ambiguous": {
+          "default": false,
+          "title": "Is Ambiguous",
+          "type": "boolean"
+        },
+        "reason_codes": {
+          "items": {
+            "$ref": "#/$defs/ReasonCode"
+          },
+          "title": "Reason Codes",
+          "type": "array"
+        }
+      },
+      "title": "RoutingResult",
+      "type": "object"
+    },
+    "TicketStatus": {
+      "enum": [
+        "new",
+        "waiting_user",
+        "resolved",
+        "closed_policy"
+      ],
+      "title": "TicketStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "export_id": {
+      "format": "uuid",
+      "title": "Export Id",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "as_of": {
+      "format": "date-time",
+      "title": "As Of",
+      "type": "string"
+    },
+    "app_commit": {
+      "title": "App Commit",
+      "type": "string"
+    },
+    "kb_snapshot_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Kb Snapshot Id"
+    },
+    "rows": {
+      "items": {
+        "$ref": "#/$defs/EvaluationRow"
+      },
+      "title": "Rows",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "export_id",
+    "created_at",
+    "as_of",
+    "app_commit",
+    "rows"
+  ],
+  "title": "EvaluationExport",
+  "type": "object"
+}

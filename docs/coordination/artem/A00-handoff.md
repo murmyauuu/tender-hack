@@ -1,0 +1,39 @@
+# A00 — handoff
+
+- Task ID / status: A00 / done
+- Owner / tool: Артём / agent A / Codex
+- Repo path: `C:\Users\Artem\Desktop\Tender_Hack\tender-hack`
+- Worktree path: `C:\Users\Artem\Desktop\Tender_Hack\tender-hack-a00`
+- Branch: `task/a00`
+- Base SHA: `ab2c182b45cfd9040f0d62a30574970083c15967`
+- Result SHA (C0): `27d45b1675cc884350e6b06aba431d5d867fb76c`
+- C0 tag: `bootstrap-contracts-v2` → `27d45b1675cc884350e6b06aba431d5d867fb76c`
+- Contracts version: `2.0.0-c0`
+- Machine profile: G; Windows 10 Pro 10.0.19045 x64; i7-12650H; 15,63 ГБ RAM; RTX 3070 Laptop 8192 MiB; NVIDIA driver 566.07; 47,57 ГБ свободно на C:; WSL2 Ubuntu 22.04 установлен, остановлен
+- Runtime SHA / KB snapshot: runtime code `27d45b1675cc884350e6b06aba431d5d867fb76c`; immutable KB snapshot ещё не создан; вход `knowledge_base_FINAL.jsonl` имеет SHA-256 `439e7041b233498a894a9eab41917e07e79109408e1f09b7cbb96668c1b8df2c`
+- Changed files: `.gitignore`; `AGENTS.md`; `README.md`; `START_HERE.md`; `INITIAL_FILES_MANIFEST.md`; `pyproject.toml`; `uv.lock`; `backend/tenderhack_backend/**`; `contracts/**`; `config/runtime/c0.json`; `tools/**`; `tests/**`; `docs/integration/{machine_map.md,input_inventory.md,input_manifest.sha256,decisions.md}`; этот handoff
+- Implemented behavior: frozen Pydantic DTO/Protocol canon; nine FastAPI operations in generated OpenAPI; EvaluationExport JSON Schema; eight mock fixtures (answer, clarify, handoff offered, ticket, operator, policy, error, stale); deterministic Policy/Knowledge/Generator test fakes; runnable degraded health endpoint; reproducible generation/validation commands; NumPy exact cosine selected as the single index type
+- Acceptance: passed for A00 scope. Fixtures validate; OpenAPI has exactly 9 operations; generated artifacts match runtime models; health served HTTP 200 from a real uvicorn process; public input schemas contain no `author_id`; `KnowledgePort` has no backend dependency. Full backend, retrieval, generation, operator reply behavior and GPU/model smoke were intentionally not run or implemented.
+- Commands and actual outputs:
+  - `git fetch origin main --prune` → `origin/main` remained `ab2c182b45cfd9040f0d62a30574970083c15967`; local main clean and divergence `0 0`.
+  - `uv sync` → 23 packages resolved/installed in isolated `.venv`.
+  - `uv run python -m tools.generate_contracts` → OpenAPI and EvaluationExport schema generated; subsequent generation produced no tracked diff.
+  - `uv run python -m tools.validate_fixtures` → 8/8 fixtures reported `valid`.
+  - `uv run pytest` → `28 passed in 0.47s`.
+  - `uv run uvicorn tenderhack_backend.app:app --host 127.0.0.1 --port 8765` + GET `/api/v1/health` → HTTP 200, `{"status":"degraded","ready":true,"storage":"ready","knowledge":"unavailable","generator":"unavailable","contracts_version":"2.0.0-c0"}`.
+  - OpenAPI inspection → `OPENAPI_OPERATIONS=9`, `PUBLIC_INPUTS_WITH_AUTHOR=[]`.
+  - Input manifest verification → `INPUT_HASHES_OK=14`.
+  - KB JSONL parse → `KB_JSONL_VALID=1468 UNIQUE_IDS=1468 NULL_IDS=0`.
+  - Light machine inventory only: `nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader` → `NVIDIA GeForce RTX 3070 Laptop GPU, 8192 MiB, 566.07`; no inference/embedding/model load was performed.
+- Data mode: mixed. Hardware and input inventory are real local observations; contracts fixtures and port implementations are explicitly mock; health is a real process check with unavailable real adapters.
+- Artifacts and paths: `contracts/openapi/openapi.json`; `contracts/schemas/evaluation-export.schema.json`; `contracts/fixtures/*.json`; `config/runtime/c0.json`; `docs/integration/input_manifest.sha256`.
+- Known blockers and reproducible defects:
+  - `Qwen3-Embedding-0.6B` was not found in Ollama or the inspected standard Hugging Face cache; blocks A01/C03 real embedding work.
+  - No dedicated support-line/recipient crosswalk was found; blocks verified C04 routing/recipient mapping.
+  - No organizer confirmation that WSL2 satisfies the Linux requirement was found; Linux compliance remains unknown even though WSL2 is installed.
+  - No separate official hackathon rules file was identified; challenge presentations are not treated as proof of compliance.
+  - KB metadata conflict: `api_report.json` says 944 organizer records and 530 portal chunks, while summary says 941 and 527; JSONL has 1468 rows. The summary also names `knowledge_base_FINAL.sqlite`, which is absent from tracked files. C02 must reconcile this before freezing a snapshot.
+  - Free C: space is 47,57 ГБ, not the prefilled 240 ГБ; A01/C03 must account for this.
+  - Remaining hackathon time is unknown.
+- Contract change requests: none.
+- Inputs required by next task: start from the published C0 tag/commit above; use contracts `2.0.0-c0`, frozen fixtures and `config/runtime/c0.json`; A01 needs the real embedding artifact and an exclusive G slot, while C02 needs to reconcile/hash the real KB snapshot and C04 needs a verified line/recipient crosswalk.

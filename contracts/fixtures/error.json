@@ -1,0 +1,9 @@
+{
+  "error": {
+    "code": "STORAGE_UNAVAILABLE",
+    "message": "Хранилище временно недоступно",
+    "retryable": true,
+    "trace_id": "trace-error-demo",
+    "current_case_version": null
+  }
+}
