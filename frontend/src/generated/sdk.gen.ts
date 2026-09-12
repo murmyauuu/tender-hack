@@ -2,7 +2,7 @@
 
 import type { Client, ClientMeta, Options as Options2, RequestResult, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AcceptChatApiV1ChatPostData, AcceptChatApiV1ChatPostErrors, AcceptChatApiV1ChatPostResponses, CreateHandoffApiV1CasesCaseIdHandoffPostData, CreateHandoffApiV1CasesCaseIdHandoffPostErrors, CreateHandoffApiV1CasesCaseIdHandoffPostResponses, CreateSessionApiV1SessionsPostData, CreateSessionApiV1SessionsPostResponses, GetCaseApiV1CasesCaseIdGetData, GetCaseApiV1CasesCaseIdGetErrors, GetCaseApiV1CasesCaseIdGetResponses, GetRequestApiV1RequestsRequestIdGetData, GetRequestApiV1RequestsRequestIdGetErrors, GetRequestApiV1RequestsRequestIdGetResponses, GetSourceApiV1SourcesSourceIdGetData, GetSourceApiV1SourcesSourceIdGetErrors, GetSourceApiV1SourcesSourceIdGetResponses, HealthApiV1HealthGetData, HealthApiV1HealthGetResponses, OperatorReplyInternalTicketsTicketIdReplyPostData, OperatorReplyInternalTicketsTicketIdReplyPostErrors, OperatorReplyInternalTicketsTicketIdReplyPostResponses, SaveFeedbackApiV1FeedbackPostData, SaveFeedbackApiV1FeedbackPostErrors, SaveFeedbackApiV1FeedbackPostResponses } from './types.gen';
+import type { AcceptChatApiV1ChatPostData, AcceptChatApiV1ChatPostErrors, AcceptChatApiV1ChatPostResponses, CreateHandoffApiV1CasesCaseIdHandoffPostData, CreateHandoffApiV1CasesCaseIdHandoffPostErrors, CreateHandoffApiV1CasesCaseIdHandoffPostResponses, CreateSessionApiV1SessionsPostData, CreateSessionApiV1SessionsPostErrors, CreateSessionApiV1SessionsPostResponses, GetCaseApiV1CasesCaseIdGetData, GetCaseApiV1CasesCaseIdGetErrors, GetCaseApiV1CasesCaseIdGetResponses, GetRequestApiV1RequestsRequestIdGetData, GetRequestApiV1RequestsRequestIdGetErrors, GetRequestApiV1RequestsRequestIdGetResponses, GetSourceApiV1SourcesSourceIdGetData, GetSourceApiV1SourcesSourceIdGetErrors, GetSourceApiV1SourcesSourceIdGetResponses, HealthApiV1HealthGetData, HealthApiV1HealthGetResponses, OperatorReplyInternalTicketsTicketIdReplyPostData, OperatorReplyInternalTicketsTicketIdReplyPostErrors, OperatorReplyInternalTicketsTicketIdReplyPostResponses, SaveFeedbackApiV1FeedbackPostData, SaveFeedbackApiV1FeedbackPostErrors, SaveFeedbackApiV1FeedbackPostResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean, TResponse = unknown> = Options2<TData, ThrowOnError, TResponse> & {
     /**
@@ -21,7 +21,7 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 /**
  * Create Session
  */
-export const createSessionApiV1SessionsPost = <ThrowOnError extends boolean = false>(options?: Options<CreateSessionApiV1SessionsPostData, ThrowOnError>): RequestResult<CreateSessionApiV1SessionsPostResponses, unknown, ThrowOnError> => (options?.client ?? client).post<CreateSessionApiV1SessionsPostResponses, unknown, ThrowOnError>({ url: '/api/v1/sessions', ...options });
+export const createSessionApiV1SessionsPost = <ThrowOnError extends boolean = false>(options?: Options<CreateSessionApiV1SessionsPostData, ThrowOnError>): RequestResult<CreateSessionApiV1SessionsPostResponses, CreateSessionApiV1SessionsPostErrors, ThrowOnError> => (options?.client ?? client).post<CreateSessionApiV1SessionsPostResponses, CreateSessionApiV1SessionsPostErrors, ThrowOnError>({ url: '/api/v1/sessions', ...options });
 
 /**
  * Accept Chat

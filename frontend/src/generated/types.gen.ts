@@ -163,6 +163,39 @@ export type ChatInput = {
 };
 
 /**
+ * ErrorDetail
+ */
+export type ErrorDetail = {
+    /**
+     * Code
+     */
+    code: string;
+    /**
+     * Message
+     */
+    message: string;
+    /**
+     * Retryable
+     */
+    retryable: boolean;
+    /**
+     * Trace Id
+     */
+    trace_id: string;
+    /**
+     * Current Case Version
+     */
+    current_case_version?: number | null;
+};
+
+/**
+ * ErrorEnvelope
+ */
+export type ErrorEnvelope = {
+    error: ErrorDetail;
+};
+
+/**
  * FeedbackInput
  */
 export type FeedbackInput = {
@@ -318,6 +351,7 @@ export type Message = {
      * Content
      */
     content: string;
+    structured_content?: StructuredAnswer | null;
     /**
      * Source Ids
      */
@@ -537,6 +571,24 @@ export type SourceRecord = {
 };
 
 /**
+ * StructuredAnswer
+ */
+export type StructuredAnswer = {
+    /**
+     * Summary
+     */
+    summary: string;
+    /**
+     * Conditions
+     */
+    conditions?: Array<string>;
+    /**
+     * Steps
+     */
+    steps?: Array<string>;
+};
+
+/**
  * Ticket
  */
 export type Ticket = {
@@ -608,7 +660,24 @@ export type CreateSessionApiV1SessionsPostData = {
     url: '/api/v1/sessions';
 };
 
+export type CreateSessionApiV1SessionsPostErrors = {
+    /**
+     * Forbidden
+     */
+    403: ErrorEnvelope;
+    /**
+     * Service Unavailable
+     */
+    503: ErrorEnvelope;
+};
+
+export type CreateSessionApiV1SessionsPostError = CreateSessionApiV1SessionsPostErrors[keyof CreateSessionApiV1SessionsPostErrors];
+
 export type CreateSessionApiV1SessionsPostResponses = {
+    /**
+     * OK
+     */
+    200: Session;
     /**
      * Successful Response
      */
@@ -626,9 +695,33 @@ export type AcceptChatApiV1ChatPostData = {
 
 export type AcceptChatApiV1ChatPostErrors = {
     /**
-     * Validation Error
+     * Unauthorized
      */
-    422: HttpValidationError;
+    401: ErrorEnvelope;
+    /**
+     * Forbidden
+     */
+    403: ErrorEnvelope;
+    /**
+     * Not Found
+     */
+    404: ErrorEnvelope;
+    /**
+     * Conflict
+     */
+    409: ErrorEnvelope;
+    /**
+     * Unprocessable Content
+     */
+    422: ErrorEnvelope;
+    /**
+     * Too Many Requests
+     */
+    429: ErrorEnvelope;
+    /**
+     * Service Unavailable
+     */
+    503: ErrorEnvelope;
 };
 
 export type AcceptChatApiV1ChatPostError = AcceptChatApiV1ChatPostErrors[keyof AcceptChatApiV1ChatPostErrors];
@@ -655,6 +748,14 @@ export type GetRequestApiV1RequestsRequestIdGetData = {
 };
 
 export type GetRequestApiV1RequestsRequestIdGetErrors = {
+    /**
+     * Unauthorized
+     */
+    401: ErrorEnvelope;
+    /**
+     * Not Found
+     */
+    404: ErrorEnvelope;
     /**
      * Validation Error
      */
@@ -685,6 +786,14 @@ export type GetCaseApiV1CasesCaseIdGetData = {
 };
 
 export type GetCaseApiV1CasesCaseIdGetErrors = {
+    /**
+     * Unauthorized
+     */
+    401: ErrorEnvelope;
+    /**
+     * Not Found
+     */
+    404: ErrorEnvelope;
     /**
      * Validation Error
      */
@@ -746,6 +855,10 @@ export type GetSourceApiV1SourcesSourceIdGetData = {
 
 export type GetSourceApiV1SourcesSourceIdGetErrors = {
     /**
+     * Not Found
+     */
+    404: ErrorEnvelope;
+    /**
      * Validation Error
      */
     422: HttpValidationError;
@@ -771,14 +884,30 @@ export type SaveFeedbackApiV1FeedbackPostData = {
 
 export type SaveFeedbackApiV1FeedbackPostErrors = {
     /**
-     * Validation Error
+     * Unauthorized
      */
-    422: HttpValidationError;
+    401: ErrorEnvelope;
+    /**
+     * Forbidden
+     */
+    403: ErrorEnvelope;
+    /**
+     * Not Found
+     */
+    404: ErrorEnvelope;
+    /**
+     * Unprocessable Content
+     */
+    422: ErrorEnvelope;
 };
 
 export type SaveFeedbackApiV1FeedbackPostError = SaveFeedbackApiV1FeedbackPostErrors[keyof SaveFeedbackApiV1FeedbackPostErrors];
 
 export type SaveFeedbackApiV1FeedbackPostResponses = {
+    /**
+     * OK
+     */
+    200: FeedbackResponse;
     /**
      * Successful Response
      */
