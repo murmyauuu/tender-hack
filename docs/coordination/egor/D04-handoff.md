@@ -62,7 +62,7 @@
 
 ### Reconciled metrics
 
-- **Reconciled NA count**: 7/30 (based on Egor's assessment; Stas originally had 7 NA)
+- **Reconciled NA count**: 7/30; all seven originated from B04/Stas NA decisions and were confirmed during reconciliation
 - **Reconciled critical error count**: 0/30 (neither rater flagged critical errors)
 - **Not assessable reasons**: Preserved from original annotations where applicable
   - HIST-0002: Stas marked correctness NA (no journal статуса исполнения)
@@ -109,9 +109,9 @@
 ### SHA references (for verification)
 
 - **BASE SHA**: `0ac1bb3` (origin/main, after D03/B04 acceptance)
-- **Input D03 SHA**: `D03_annotations.jsonl` content hash — to be calculated after commit
-- **Input B04 SHA**: `B04_annotations.jsonl` content hash — to be calculated after commit
-- **Result SHA**: reconciled output hash — to be calculated after commit
+- **Input D03 SHA**: `aac25c95adca1de7cbc8dddab0606b0f8cab660bdbed49f8f6ad4d351963d276`
+- **Input B04 SHA**: `f4dc13f45494f09c16e0ed30f591e814cbe9e65ef21a916e8833bff66657c4f8`
+- **Result SHA**: `ea4dd63a65ab4e5a5f4a899ed27ea2b6ae2d0b4cb30057b407d916df00567631`
 
 ## Manifest для проверки
 
@@ -120,9 +120,9 @@
   "task_id": "D04",
   "owner": "egor",
   "base_sha": "0ac1bb3",
-  "input_d03_sha": "<SHA_D03_annotations>",
-  "input_b04_sha": "<SHA_B04_annotations>",
-  "result_sha": "<SHA_d04_reconciled_jsonl>",
+  "input_d03_sha": "aac25c95adca1de7cbc8dddab0606b0f8cab660bdbed49f8f6ad4d351963d276",
+  "input_b04_sha": "f4dc13f45494f09c16e0ed30f591e814cbe9e65ef21a916e8833bff66657c4f8",
+  "result_sha": "ea4dd63a65ab4e5a5f4a899ed27ea2b6ae2d0b4cb30057b407d916df00567631",
   "pairs_evaluated": 30,
   "pairs_with_disagreement": 23,
   "agreement_by_dimension": {
