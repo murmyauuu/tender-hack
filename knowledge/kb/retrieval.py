@@ -8,9 +8,10 @@ Dense top10 → dedup → применимость/роль/версия → par
 mock они или реальные; это осознанно, чтобы один и тот же код прогонялся
 и на M (mock encoder) и на G (реальный).
 
-Routing (topic/subtopic/L1-L3) — зона C04, здесь не реализуется. `route` в
-`KnowledgeResult` заполняется нейтральным пустым `RoutingResult` — retrieve()
-не выдумывает тему.
+Routing (topic/subtopic/L1-L3) — реализовано в `knowledge/kb/routing.py`
+(C04). `route` в `KnowledgeResult` заполняется через `build_routing_result()`
+на основе того же `candidates`/`selected_evidence_ids`, без второго
+embedding и без обучаемого классификатора.
 """
 
 from __future__ import annotations
@@ -26,11 +27,11 @@ from tenderhack_contracts.models import (
     MissingFact,
     QueryContext,
     ReasonCode,
-    RoutingResult,
 )
 
 from knowledge.kb.lexical import detect_exact_identifiers, exact_identifier_fts_query
 from knowledge.kb.normalize import fts_normalize, fts_tokens
+from knowledge.kb.routing import build_routing_result, match_topic
 
 __all__ = [
     "RawHit",
@@ -53,13 +54,20 @@ _METHOD_PRIORITY = {"exact": 0, "fts": 1, "dense": 2}
 _EXACT_MATCH_SCORE = 1_000.0
 _STATUS_RANK = {"complete": 0, "pointer": 1, "incomplete": 2}
 
-# Русские стоп-слова: только для узкого сигнала OUT_OF_SCOPE (пустой/
-# приветственный запрос без единого содержательного токена). Полноценная
-# классификация темы — зона C04 (routing), здесь её нет и не имитируется.
+# Русские стоп-слова: только для сигнала OUT_OF_SCOPE (узкий C03 +
+# расширение C04, `_has_meaningful_lexical_hit`). Полноценная классификация
+# темы — `knowledge/kb/routing.py` (C04), здесь её нет и не имитируется.
+# Предлоги/союзы дополнены C04: без них короткое служебное слово, редко
+# встречающееся в корпусе (напр. «про»), получает искусственно высокий
+# bm25 из-за обратной частотности документа и ложно выглядит «содержательным
+# совпадением» для расширенного OOS-сигнала (найдено и исправлено во время
+# разработки — «расскажи анекдот про кота» матчил на предлог «про»).
 _STOPWORDS = {
     "привет", "здравствуйте", "добрый", "день", "вечер", "утро", "спасибо",
     "пожалуйста", "да", "нет", "ок", "хорошо", "и", "в", "на", "с", "по",
     "у", "к", "а", "но", "или", "что", "как", "это", "я", "мне", "вы",
+    "про", "о", "об", "от", "до", "из", "за", "под", "над", "при", "для",
+    "не", "ли", "же", "то", "так", "тут", "там", "уже", "ещё", "быть",
 }
 
 
@@ -372,12 +380,54 @@ def detect_known_conflict(groups: list[EvidenceGroup]) -> bool:
 # --------------------------------------------------------------------- gate
 
 
-def _is_out_of_scope(query_text: str) -> bool:
-    """Узкий сигнал: запрос без единого содержательного токена (приветствие,
-    пустая строка). Полная классификация темы — C04, здесь не имитируется."""
+def _meaningful_tokens(query_text: str) -> list[str]:
     tokens = [t.lower() for t in fts_tokens(query_text)]
-    meaningful = [t for t in tokens if t not in _STOPWORDS and len(t) > 1]
-    return len(meaningful) == 0
+    return [t for t in tokens if t not in _STOPWORDS and len(t) > 1]
+
+
+def _has_meaningful_lexical_hit(conn: sqlite3.Connection | None, query_text: str) -> bool:
+    """FTS-проверка ТОЛЬКО по содержательным (не стоп-словным) токенам —
+    отдельно от основного `_fts_search` в `collect_raw_hits`, который
+    намеренно ищет по ВСЕМ токенам запроса (это корректно для самого
+    retrieval: предлог тоже часть смысла фразы). Для узкого расширения
+    OUT_OF_SCOPE смешивать их нельзя: редкий предлог/частица, почти не
+    встречающийся в корпусе, получает искусственно высокий bm25 именно
+    из-за своей редкости (обратная частотность документа), а не из-за
+    смысловой релевантности — проверено фактически на «расскажи анекдот
+    про программиста и кота»: единственный реальный хит там был по
+    предлогу «про» (score~7.4), не по «анекдот»/«программист»/«кот»
+    (0 хитов). Отфильтровав стоп-слова до поиска, а не полагаясь на порог
+    score после, эта ловушка не возникает."""
+    if conn is None:
+        return False
+    meaningful = _meaningful_tokens(query_text)
+    if not meaningful:
+        return False
+    normalized = fts_normalize(" ".join(meaningful))
+    return bool(_fts_search(conn, normalized, limit=1))
+
+
+def _is_out_of_scope(
+    query_text: str,
+    has_any_dense_or_exact_hit: bool = True,
+    conn: sqlite3.Connection | None = None,
+) -> bool:
+    """Узкий сигнал C03 (приветствие/пустой ввод) + осторожное расширение
+    C04 (§10 «явно посторонняя тема»): содержательные токены есть, но ни
+    dense/exact хиты, ни содержательный (без стоп-слов) FTS-хит, ни
+    taxonomy (`match_topic`) не нашли вообще ничего общего с запросом. Это
+    заведомо реже, чем «в KB просто нет ответа на этот вопрос» — там хотя
+    бы один из трёх сигналов почти всегда есть (все 20 dev-кейсов C03/C04
+    находили содержательные candidates, ни один не попал бы под это
+    расширение, см. C04-handoff)."""
+    meaningful = _meaningful_tokens(query_text)
+    if not meaningful:
+        return True
+    if not has_any_dense_or_exact_hit and not _has_meaningful_lexical_hit(conn, query_text):
+        topic = match_topic(query_text)
+        if topic.subtopic_id is None:
+            return True
+    return False
 
 
 @dataclass
@@ -395,8 +445,12 @@ def decide_gate(
     role_blocked_mismatch: bool,
     unknown_identifiers: list[str],
     clarification_count: int,
+    has_any_dense_or_exact_hit: bool = True,
+    conn: sqlite3.Connection | None = None,
 ) -> GateOutcome:
-    if _is_out_of_scope(query_text):
+    if _is_out_of_scope(
+        query_text, has_any_dense_or_exact_hit=has_any_dense_or_exact_hit, conn=conn
+    ):
         return GateOutcome(decision=GateDecision.OUT_OF_SCOPE, reason_codes=[ReasonCode.OUT_OF_SCOPE])
 
     exhausted = clarification_count >= CLARIFICATION_MAX_COUNT
@@ -481,6 +535,8 @@ def run_pipeline(
         role_blocked_mismatch=role_blocked_mismatch and not eligible,
         unknown_identifiers=unknown_identifiers,
         clarification_count=query.clarification_count,
+        has_any_dense_or_exact_hit=any(h.method in ("dense", "exact") for h in raw_hits),
+        conn=conn,
     )
 
     all_groups_for_candidates = groups if groups else expand_to_evidence_groups(conn, candidates)
@@ -516,6 +572,8 @@ def run_pipeline(
         if id(g) in selected_group_ids:
             selected_ids.append(evidence_id)
 
+    route = build_routing_result(query.text, evidence_items, selected_ids)
+
     return KnowledgeResult(
         snapshot_id=snapshot_id,
         candidates=evidence_items,
@@ -524,6 +582,6 @@ def run_pipeline(
         missing_fact=outcome.missing_fact,
         reason_codes=outcome.reason_codes,
         card_id=None,
-        route=RoutingResult(),
+        route=route,
         timings_ms={},
     )
