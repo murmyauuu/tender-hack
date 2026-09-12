@@ -1,0 +1,29 @@
+# B00 — handoff
+
+- Status: done
+- Owner / tool: Стас / агент B / Codex
+- Base SHA: `ab2c182b45cfd9040f0d62a30574970083c15967` (`origin/main` после `git fetch origin main --prune` 2026-09-12)
+- Result/content SHA: `583cc73d5e68f95525681925b3b49c649905303b`
+- Branch: `task/b00-user-flow-plan`
+- Worktree: `C:\Users\Стасян\Desktop\tendhack\tender-hack-b00`
+- Contracts version: pre-C0; OpenAPI/contracts/fixtures на BASE_SHA отсутствуют и в B00 не создавались
+- Machine profile: W — Windows, i5-4210U, 12 ГБ RAM, Intel HD; ML/GPU-запусков не было
+- Runtime SHA / KB snapshot: not applicable для UX-плана
+- Changed files:
+  - `docs/coordination/stas/B00-ux-plan.md`
+  - `docs/coordination/stas/B00-handoff.md` (добавлен delivery-commit после content SHA)
+- Implemented behavior: создан компактный UX-план B00 с основным путём, матрицей состояний, границами компонентов, каталогом C0 mock-состояний, привязкой к девяти каноническим операциям v2.1 и Definition of Ready для B01. Frontend/backend не реализовывались.
+- Acceptance: passed для B00 по фактической проверке документа; runtime/build/browser не запускались, потому что B00 не содержит кода и C0 ещё нет
+- Commands and actual outputs:
+  - `git fetch origin main --prune` → success; `origin/main=ab2c182b45cfd9040f0d62a30574970083c15967`
+  - `git rev-list --left-right --count main...origin/main` → `0 0`
+  - `git worktree add ... -b task/b00-user-flow-plan <BASE_SHA>` → worktree создан, HEAD на BASE_SHA
+  - `git diff --check` → exit 0, output пуст
+  - поиск обязательных flow-терминов → answer/source/clarification/handoff/ticket/operator/feedback/error/new topic найдены
+  - выборка уникальных HTTP-операций из плана → ровно 9 операций v2.1
+  - scope-check изменённых путей → только `docs/coordination/stas/**`
+- Data mode: mock-plan only; синтетические данные, real API и real E2E не заявляются
+- Artifacts and paths: `docs/coordination/stas/B00-ux-plan.md`
+- Known blockers and reproducible defects: для B00 блокеров нет. B01 заблокирован до принятого A00/C0; это ожидаемая зависимость, а не дефект B00.
+- Contract change requests: none; альтернативный HTTP-контракт не создавался
+- Inputs required by next task: принятый integration SHA с A00+B00; A00 handoff; tag `bootstrap-contracts-v2`; contracts version; frozen OpenAPI/fixtures; generated TypeScript и команда его воспроизводимой генерации; команда запуска test fake/mock transport; решение по source URL/PDF и `null`/unknown полям.
