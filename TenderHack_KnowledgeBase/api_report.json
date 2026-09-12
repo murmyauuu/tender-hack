@@ -1,0 +1,51 @@
+{
+  "collector": "official_public_api_v1",
+  "api_base": "https://zakupki.mos.ru/newapi/api/KnowledgeBase",
+  "sections_requested": [
+    "general",
+    "supplier",
+    "customer",
+    "instruction"
+  ],
+  "section_stats": {
+    "general": {
+      "categories": 8,
+      "article_occurrences": 62
+    },
+    "supplier": {
+      "categories": 5,
+      "article_occurrences": 252
+    },
+    "customer": {
+      "categories": 4,
+      "article_occurrences": 45
+    },
+    "instruction": {
+      "categories": 7,
+      "article_occurrences": 157
+    }
+  },
+  "raw_occurrences": 516,
+  "unique_articles": 483,
+  "portal_articles_with_text": 483,
+  "portal_rag_chunks": 530,
+  "section_membership_unique_articles": {
+    "general": 62,
+    "supplier": 252,
+    "instruction": 159,
+    "customer": 45,
+    "ptkr": 1,
+    "video": 1
+  },
+  "content_field_used": {
+    "selfServicePortal": 483
+  },
+  "organizer_seed_records": 944,
+  "final_unique_chunks": 1468,
+  "outputs": {
+    "normalized_portal_articles": "portal_articles_normalized.jsonl",
+    "final_jsonl": "knowledge_base_FINAL.jsonl",
+    "final_sqlite": "knowledge_base_FINAL.sqlite"
+  },
+  "finished_at": "2026-09-12 00:00:00"
+}
