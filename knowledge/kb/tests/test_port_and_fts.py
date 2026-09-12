@@ -83,13 +83,25 @@ def test_get_card_returns_none_because_no_cards_exist(snapshot_dir):
         store.close()
 
 
-def test_retrieve_does_not_pretend_to_search(snapshot_dir):
-    """retrieve — зона C03; заглушка честно отказывает, а не имитирует поиск."""
+def test_retrieve_returns_a_real_knowledge_result(snapshot_dir):
+    """C03: retrieve() больше не заглушка — реальный KnowledgeResult с gate."""
+    from tenderhack_contracts.models import QueryContext
+
     store = SqliteKnowledgeStore(snapshot_dir)
     try:
-        with pytest.raises(NotImplementedError) as excinfo:
-            asyncio.run(store.retrieve(None))
-        assert "C03" in str(excinfo.value)
+        result = asyncio.run(
+            store.retrieve(
+                QueryContext(
+                    text="Как обжаловать блокировку на Портале поставщиков?",
+                    confirmed_facts={},
+                    recent_user_messages=[],
+                    clarification_count=0,
+                    trace_id="test-trace-1",
+                )
+            )
+        )
+        assert result.decision in {"ANSWER_ALLOWED", "CLARIFY", "ESCALATE", "OUT_OF_SCOPE"}
+        assert result.snapshot_id == store.snapshot_id
     finally:
         store.close()
 
