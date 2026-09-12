@@ -3,7 +3,7 @@
 - **Task ID / status:** C07 — Dev-исправления retrieval/routing и заморозка KB / **done** (no code fix was justified; freeze recorded)
 - **Owner / tool:** Эдуард / агент C / Claude Code
 - **Base SHA:** `56da4216b7bfd5e1cc3cbc620029cd90045f4391` (`origin/main`, совпадает с BASE_SHA из задания; `git fetch --prune origin && git switch main && git pull --ff-only origin main && git status --short` — HEAD совпал, working tree чист)
-- **Result SHA:** записывается в отдельном docs-only коммите этой же ветки после первого коммита с кодом/конфигом (см. §8)
+- **Result SHA:** `14761d2` (`task/c07`) — код/конфиг (`config/knowledge/kb_freeze.json`) и первая версия этого handoff; поверх него один docs-only коммит фиксирует этот SHA здесь буквально
 - **Ветка:** `task/c07`
 - **Contracts version:** `2.0.0-c0`, **не изменялся** (никакие поля/enum не потребовались)
 - **Machine / runtime:** M — MacBook Air M2 (arm64), macOS, без GPU. `torch`/`numpy` не установлены (`uv run python3 -c "import torch"` / `import numpy` → `ModuleNotFoundError`, проверено фактически). `health().mode` на этой машине — **`lexical_only`**, не `semantic`.
