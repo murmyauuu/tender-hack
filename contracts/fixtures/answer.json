@@ -39,6 +39,11 @@
       "author_id": null,
       "answer_origin": "rag",
       "content": "Тестовый ответ по инструкции.",
+      "structured_content": {
+        "summary": "Тестовый ответ по инструкции.",
+        "conditions": ["Действуйте от имени поставщика."],
+        "steps": ["Откройте карточку контракта."]
+      },
       "source_ids": ["source-demo"],
       "created_at": "2026-09-12T08:00:02Z"
     }

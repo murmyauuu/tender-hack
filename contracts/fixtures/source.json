@@ -1,0 +1,16 @@
+{
+  "source_id": "source-demo",
+  "source_type": "portal_knowledge_base_api",
+  "title": "Тестовая инструкция",
+  "excerpt": "Проверенный mock-фрагмент для проверки HTTP-контракта источника.",
+  "version": null,
+  "source_date": null,
+  "section_path": null,
+  "page_from": null,
+  "page_to": null,
+  "url": null,
+  "file_url": null,
+  "conditions": ["Действуйте от имени поставщика."],
+  "applicable_roles": ["supplier"],
+  "content_status": "complete"
+}

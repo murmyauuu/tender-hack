@@ -1,0 +1,23 @@
+{
+  "contracts_version": "2.1.0-a02",
+  "app_database": "var/app.sqlite",
+  "workers": 1,
+  "queue": {
+    "running": 1,
+    "waiting": 3
+  },
+  "policy_adapter": "knowledge.policy:build_policy",
+  "knowledge_adapter": "dependency_injected_c03",
+  "source_adapter_until_c03": "knowledge.kb.store:open_store",
+  "generator": {
+    "adapter": "ollama",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3:8b-q4_K_M",
+    "manifest_digest": "a0a5ad8024dd21401f07634d0c71393b9c9d37aa57a6b594e02b86ab72c450b4",
+    "gguf_sha256": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+    "thinking": false,
+    "num_ctx": 8192,
+    "temperature": 0.1,
+    "automatic_generation_retries": 0
+  }
+}
