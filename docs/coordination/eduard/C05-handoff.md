@@ -3,7 +3,7 @@
 - **Task ID / status:** C05 — Два черновика сценариев Эдуарда / **done**
 - **Owner / tool:** Эдуард / агент C / Claude Code
 - **Base SHA:** `f62ce7784d4e166cab4b6015732fa8e23c1c9254` (`origin/main`, совпадает с BASE_SHA из задания)
-- **Result SHA:** см. commit после этого файла (`task/c05`)
+- **Result SHA:** `f9afc86` (`task/c05`) — код/карточки; поверх него один docs-only коммит фиксирует этот SHA в handoff
 - **Ветка:** `task/c05`
 
 ## 0. Оговорка про базу — почему в истории есть merge-коммит
