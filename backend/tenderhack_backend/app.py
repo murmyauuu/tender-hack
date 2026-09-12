@@ -36,7 +36,12 @@ COOKIE_NAME = "tenderhack_session"
 
 
 def _error_responses(*codes: int) -> dict[int, dict[str, object]]:
-    return {code: {"model": ErrorEnvelope} for code in codes}
+    responses = {code: {"model": ErrorEnvelope} for code in codes}
+    # Python's HTTPStatus reason for 422 differs across supported runtimes.
+    # Keep generated OpenAPI byte-stable against the accepted contract.
+    if 422 in responses:
+        responses[422]["description"] = "Unprocessable Content"
+    return responses
 
 
 def _default_service(settings: Settings) -> BackendService:

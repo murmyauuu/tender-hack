@@ -17,7 +17,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import resource
 import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -35,7 +34,9 @@ def create_session(client: httpx.Client) -> None:
     r.raise_for_status()
 
 
-def send_ai_chat(base_url: str, index: int, text: str) -> dict:
+def send_ai_chat(
+    base_url: str, index: int, text: str, poll_timeout_seconds: float
+) -> dict:
     client = new_client(base_url)
     create_session(client)
     request_key = str(uuid.uuid4())
@@ -64,7 +65,7 @@ def send_ai_chat(base_url: str, index: int, text: str) -> dict:
 
     poll_start = time.perf_counter()
     final = None
-    while time.perf_counter() - poll_start < 60.0:
+    while time.perf_counter() - poll_start < poll_timeout_seconds:
         poll = client.get(f"/api/v1/requests/{request_id}")
         poll.raise_for_status()
         body = poll.json()
@@ -105,26 +106,31 @@ def send_lightweight(base_url: str, kind: str) -> dict:
     return {"kind": kind, "status_code": resp.status_code, "elapsed_ms": elapsed_ms}
 
 
-def peak_rss_mib() -> float:
-    usage = resource.getrusage(resource.RUSAGE_CHILDREN)
-    # macOS reports ru_maxrss in bytes; Linux in KiB.
-    return round(usage.ru_maxrss / (1024 * 1024), 2)
-
-
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--base-url", required=True)
     parser.add_argument("--clients", type=int, default=5)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--poll-timeout-seconds", type=float, default=300.0)
+    parser.add_argument(
+        "--question",
+        default="Как изменить банковские реквизиты организации на Портале поставщиков?",
+    )
     args = parser.parse_args()
 
-    heavy_texts = [f"Как подписать контракт номер {i}?" for i in range(args.clients)]
+    heavy_texts = [args.question for _ in range(args.clients)]
 
     lightweight_before = [send_lightweight(args.base_url, "read_health")]
 
     with ThreadPoolExecutor(max_workers=args.clients + 2) as pool:
         heavy_futures = [
-            pool.submit(send_ai_chat, args.base_url, i, heavy_texts[i])
+            pool.submit(
+                send_ai_chat,
+                args.base_url,
+                i,
+                heavy_texts[i],
+                args.poll_timeout_seconds,
+            )
             for i in range(args.clients)
         ]
         time.sleep(0.15)
@@ -142,9 +148,14 @@ def main() -> None:
         "heavy_results": heavy_results,
         "lightweight_results_during_heavy_load": light_results,
         "lightweight_before": lightweight_before,
-        "peak_child_rss_mib": peak_rss_mib(),
+        "resource_note": (
+            "Backend RAM/VRAM must be sampled from the separate server process; "
+            "the client driver does not report its own RSS as runtime evidence."
+        ),
     }
-    Path(args.output).write_text(json.dumps(output, ensure_ascii=False, indent=2))
+    output_path = Path(args.output)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(output, ensure_ascii=False, indent=2))
 
 

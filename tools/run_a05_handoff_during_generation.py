@@ -32,6 +32,8 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--base-url", required=True)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--generation-wait-seconds", type=float, default=180.0)
+    parser.add_argument("--slot-release-wait-seconds", type=float, default=180.0)
     args = parser.parse_args()
 
     result: dict = {}
@@ -42,7 +44,10 @@ def main() -> None:
     t_submit = time.perf_counter()
     resp = client_a.post(
         "/api/v1/chat",
-        json={"request_key": str(uuid.uuid4()), "text": "Как расторгнуть контракт?"},
+        json={
+            "request_key": str(uuid.uuid4()),
+            "text": "Как изменить банковские реквизиты организации на Портале поставщиков?",
+        },
     )
     resp.raise_for_status()
     accepted = resp.json()
@@ -83,7 +88,24 @@ def main() -> None:
     watcher_thread = threading.Thread(target=watch_status, daemon=True)
     watcher_thread.start()
 
-    time.sleep(0.4)
+    generation_wait_started = time.perf_counter()
+    observed_generating = False
+    while time.perf_counter() - generation_wait_started < args.generation_wait_seconds:
+        request = client_a.get(f"/api/v1/requests/{original_request_id}")
+        request.raise_for_status()
+        request_body = request.json()
+        if request_body["status"] == "processing" and request_body["progress"] == "generating":
+            observed_generating = True
+            break
+        if request_body["status"] in ("final", "error", "cancelled"):
+            break
+        time.sleep(0.05)
+    if not observed_generating:
+        raise RuntimeError(
+            "request never reached processing/generating; refusing to claim a generation handoff"
+        )
+    result["observed_generating_before_handoff"] = True
+    result["seconds_until_generating"] = round(time.perf_counter() - t_submit, 3)
     case_before = client_a.get(f"/api/v1/cases/{case_id}").json()
     version_before = case_before["case"]["case_version"]
     result["case_version_before_handoff"] = version_before
@@ -132,7 +154,7 @@ def main() -> None:
     slot_release_probe = []
     release_poll_start = time.perf_counter()
     slot_released_at_seconds_since_submit = None
-    while time.perf_counter() - release_poll_start < 15.0:
+    while time.perf_counter() - release_poll_start < args.slot_release_wait_seconds:
         c = httpx.Client(base_url=args.base_url, timeout=30.0)
         c.post("/api/v1/sessions").raise_for_status()
         r = c.post(
@@ -178,7 +200,9 @@ def main() -> None:
     )
 
     client_a.close()
-    Path(args.output).write_text(json.dumps(result, ensure_ascii=False, indent=2))
+    output_path = Path(args.output)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 
