@@ -20,5 +20,8 @@
 - **Обратная совместимость:** полная. Новых зависимостей нет, существующие пакеты и пути не переименовываются, `tests/**` продолжает собираться. `knowledge` — чистый Python/stdlib, вес нулевой.
 - **Предлагаемый тест:** после изменения `uv run pytest` собирает 28 + 221 = 249 тестов и проходит; `cd /tmp && uv run --project <repo> python -c "from knowledge.policy import build_policy; build_policy().check('тест')"` завершается без ошибки.
 - **Можно ли продолжить независимую часть:** да, C01 завершён и сдан. Обходной путь на сегодня: запускать backend из корня репозитория (cwd попадает в `sys.path`) и прогонять тесты C01 явным путём `uv run pytest knowledge/policy/tests -q`. `pyproject.toml` в C01 не редактировался.
-- **Решение A:** pending
-- **Decision SHA / новая версия contracts:** n/a — версия contracts не меняется
+- **Решение A:** accepted — `knowledge` включён в package discovery, а общий прогон включает
+  `knowledge/policy/tests` и `knowledge/kb/tests`; C02 использует публичный пакет
+  `tenderhack_contracts` вне cwd репозитория.
+- **Decision SHA / новая версия contracts:** `dc277e52b536aec62468d77dc2e7cc8a4b0d2dd2` /
+  contracts остаётся `2.0.0-c0`.
