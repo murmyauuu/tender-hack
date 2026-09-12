@@ -1,0 +1,30 @@
+{
+  "name": "tenderhack-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "generate:api": "openapi-ts -i ../contracts/openapi/openapi.json -o src/generated -c @hey-api/client-fetch",
+    "check:generated": "npm run generate:api && git diff --exit-code -- src/generated",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "npm run generate:api && tsc --noEmit && vite build"
+  },
+  "dependencies": {
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@hey-api/openapi-ts": "0.99.0",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/user-event": "14.6.7",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "6.1.1",
+    "jsdom": "30.0.1",
+    "typescript": "6.0.3",
+    "vite": "8.3.0",
+    "vitest": "5.0.0"
+  }
+}
