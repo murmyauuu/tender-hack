@@ -1,0 +1,106 @@
+{
+  "_purpose": "C07: release-ready immutable KB state (§16 spec 'Freeze'). Reproducible, git-tracked. Not a new snapshot rebuild — logical snapshot kb-4918a97f0874d1e8 is byte-identical to C02/C03/C04.",
+  "task_id": "C07",
+  "frozen_by": "eduard/agent-C",
+  "frozen_at_commit": "task/c07",
+  "snapshot_id": "kb-4918a97f0874d1e8",
+  "schema_version": "c02-schema-1.0.0",
+  "normalizer_version": "c02-normalizer-1.0.0",
+  "canonical_input_files": [
+    {
+      "name": "TenderHack_KnowledgeBase/knowledge_base_FINAL.jsonl",
+      "sha256": "71bf714a9e205a35f5d8ec0fd2d0f9bbd4ad3a8409968b754eb8de7b349d79ae"
+    },
+    {
+      "name": "Регламент_информационного_взаимодействия-4.pdf",
+      "sha256": "ef09670556196f6acf00d78e4e3aefe688665cecbf1fd8622afaa5fb488b707b"
+    },
+    {
+      "name": "НН 2026/Инструкция по работе с Порталом для заказчика.pdf",
+      "sha256": "7355b2c39b4aa4fbac758f64aeab0bdfd4a8219cc483dd5ca52e28eacb59fcde"
+    },
+    {
+      "name": "НН 2026/Инструкция по электронному актированию.pdf",
+      "sha256": "d14f883b14f8f117842541900300901404b37d43cdddf13c3e3266cfbd9155b3"
+    },
+    {
+      "name": "НН 2026/Инструкция по работе с машиночитаемыми доверенностями.pdf",
+      "sha256": "755870a7454fd166146bfd64a7c50009fc834340798d28ff9cee3132265272b9"
+    },
+    {
+      "name": "НН 2026/Инструкция по созданию оферты и СТЕ.pdf",
+      "sha256": "ce50227cb1bb29b9145dd0fb52181c353c03bb11e00a0ab467cf544914b20159"
+    },
+    {
+      "name": "НН 2026/Инструкция по работе с Порталом для поставщика.pdf",
+      "sha256": "3c52c3633b6bc84e99ca1a23336536e9408ba83b28f160ee5c02738a2f754c6b"
+    },
+    {
+      "name": "НН 2026/Инструкция по формированию YML.pdf",
+      "sha256": "753fc58d5c7ae3b15932ef658d88f4eb2886273af2e3067389c5aa0934bd9a9c"
+    }
+  ],
+  "knowledge_sqlite": {
+    "note": "gitignored (var/), byte-identical to C02/C03/C04 macOS build — reproduced locally this session via `python3 -m knowledge.kb.ingest --out var/knowledge` and hash-verified",
+    "sha256_macos": "6d1555777d9bbf9ae7f2df93a69cf61f53dd04263877a8ebaf7fc35e16a4bdf8",
+    "sha256_windows_g_reconstruction": "11e1f4b04b0e3c484c1fce1213f9f4ded4add513983600b4f5262c67d21753a6",
+    "cross_platform_verdict": "platform-specific SQLite container serialization difference, not a different logical snapshot — accepted by docs/coordination/stas/C03-runtime-acceptance.md §2"
+  },
+  "var_knowledge_manifest_json": {
+    "note": "local M-machine manifest (no embedding fields — this machine has no GPU/torch, dense index/id-mapping/manifest with stamped embedding fields exist only on G, see dense_index below)",
+    "sha256": "e0d01a74dcfe43f8a562a10837793fa04a052e775e60877115dce7785f24d061"
+  },
+  "dense_index": {
+    "status": "built on G, not rebuilt this session — no fix in C07 touched source text or embeddings, so no rebuild was warranted",
+    "persistent_directory_on_g": "A:\\AI\\retrieval-results\\c03-kb-4918a97f0874d1e8-gpu-abea7ae-20260912T1619Z",
+    "index_npy_sha256": "396e8ee4e5ce4c457292eea2b107058b7941ea0c498434a70f8da6abc9b8de87",
+    "index_ids_json_sha256": "b328deae1ba6868da115d66e81e19b60b92f6601cf20717cfb7070b14bca110d",
+    "manifest_json_sha256_g_stamped": "589600e50e02239806d98a43f41ee88e42d20bef5f3aabbb7ece4e844aae9f77",
+    "retrieval_log_dev20_json_sha256": "47718bb1f2bf72451bcb8abd5ef2d9ba1ae2710119b154cb524732498ddd0cf0",
+    "index_type": "numpy_exact_cosine",
+    "shape": "1528 x 1024",
+    "dtype": "float32",
+    "source": "docs/coordination/artem/A03-handoff.md, docs/coordination/stas/C03-runtime-acceptance.md"
+  },
+  "embedding_model": {
+    "name": "Qwen/Qwen3-Embedding-0.6B",
+    "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+    "safetensors_sha256": "0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd",
+    "pooling": "last_token",
+    "normalization": "l2",
+    "adapter": "c03-qwen3-embedding-last-token-l2-1.0.0",
+    "changed_this_session": false
+  },
+  "routing_config": {
+    "taxonomy_json_sha256": "4c95de98f5b507e6ff8a377af852c032ee6cfc81bd026df76523185c84b487ee",
+    "routing_lines_json_sha256": "381fc3093f1e0eaaa9aba20ae1f53a022f1aa7a3b2fe88c11138c2d2520bddb4",
+    "changed_this_session": false,
+    "fixing_commit": "37de466 (C04, feat: routing topic/subtopic/line/recipient)"
+  },
+  "other_config_hashes": {
+    "retrieval.json": "3eae71bf6edf775575041b7f5e899249e4e84b56db98d98da82f20a9b82ca8de",
+    "normalizer.json": "2373a08e5806d0a1aba13df7422e80f2ec5ee7440dc9063ce8f059dd365ea732",
+    "policy_rules.json": "d378f2e7679f4d03843ae9169470e3be310d1794ac5b5f1941d9a289500856af"
+  },
+  "c05_card_source_id_compatibility": {
+    "checked_via": "store.get_source() on the local reproduced snapshot, this session",
+    "result": "confirmed — snapshot unchanged, check is trivially true, verified by command not assumption",
+    "cards": [
+      {"card": "card-eduard-001.json", "source_ids": ["portal:559622:1", "portal:559732:1"], "status": "both FOUND, content_status=complete"},
+      {"card": "card-eduard-002.json", "source_ids": ["portal:588150:1"], "status": "FOUND, content_status=complete"}
+    ]
+  },
+  "dev20_reproduction_this_session": {
+    "runtime": "M (macOS, no GPU/torch) — health.mode=lexical_only, real KB + real FTS/exact fallback, mock dense encoder (same honest constraint as C03/C04)",
+    "gold_in_candidates": "20/20",
+    "gold_in_selected": "19/20",
+    "selected_miss": ["DEV-015"],
+    "artifact": "var/knowledge/c07_dev20_run.json (gitignored, var/)"
+  },
+  "known_limitations": {
+    "DEV-015": "verdict: confirmed-expected-behavior, not a defect. Gold source portal:563264:1 has content_status=incomplete in this snapshot; gate design (§10) never places incomplete sources in the ANSWER_ALLOWED selected set, even when they outrank complete sources by lexical score. No fix applied, none justified.",
+    "DEV-007": "verdict: confirmed-expected-behavior on real reproduction, previously mis-reported as a selected-miss in docs/coordination/eduard/C03-handoff.md §5 and docs/coordination/stas/C03-runtime-acceptance.md §5. Direct reproduction this session (same byte-identical KB snapshot, same deterministic retrieval.py logic, unchanged since C03/C04) shows one of the two near-duplicate gold KB entries (portal:559730:1) IS present in the selected 5-evidence set, and its full evidence text (not the truncated 400-char SourceRecord excerpt) contains the DIT_PP permission codes and the ЕИС caveat needed for a correct answer. No retrieval code change was needed or applied; see C07-handoff.md §5 for the full reproduction trace.",
+    "topic_line_coverage": "11/20 (55%), unchanged from C04 baseline — Snowball-stemmer limitation in the shared C02 normalizer (knowledge/kb/normalize.py), out of C07 scope (shared file, no confirmed dev-specific defect isolated to a single term).",
+    "recipient_coverage": "4/20 on this session's reproduction when QueryContext.text concatenates all turns of a multi-turn dev case (DEV-002 gains a correct recipient this way) vs 3/20 reported by C04 (which used only the latest turn's text). knowledge/kb does not consume QueryContext.recent_user_messages at all — multi-turn text assembly is the caller's (backend) responsibility, not a knowledge/kb defect. DEV-018 remains a genuine null (gold source not ranked into top-5 by CPU lexical fallback)."
+  }
+}
