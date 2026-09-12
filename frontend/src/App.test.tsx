@@ -1,6 +1,8 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
+import { ApiError, type TenderHackTransport } from './apiTransport';
+import type { AcceptedRequest, ChatInput } from './generated';
 import { mockTransport } from './mockTransport';
 
 const select = (name: string) => fireEvent.click(screen.getByRole('button', { name }));
@@ -8,7 +10,9 @@ const select = (name: string) => fireEvent.click(screen.getByRole('button', { na
 describe('TenderHack fixture UI', () => {
   it('renders all frozen fixture scenarios and transitional states', () => {
     render(<App />);
-    expect(screen.getAllByText('Тестовый ответ по инструкции.')).toHaveLength(2);
+    expect(screen.getByText('Тестовый ответ по инструкции.')).toBeTruthy();
+    expect(screen.getByText('Действуйте от имени поставщика.')).toBeTruthy();
+    expect(screen.getByText('Откройте карточку контракта.')).toBeTruthy();
     select('Queued'); expect(screen.getByText('Запрос в очереди')).toBeTruthy();
     select('Retrieval'); expect(screen.getByText('Ищу подходящую инструкцию')).toBeTruthy();
     select('Candidate source'); expect(screen.getByTestId('candidate').textContent).toContain('ещё не ответ');
@@ -18,7 +22,7 @@ describe('TenderHack fixture UI', () => {
     select('Operator reply'); expect(screen.getByText('Ответ специалиста в тестовом сценарии.')).toBeTruthy();
     select('Policy closure'); expect(screen.getByText(/обнаружена нецензурная лексика/)).toBeTruthy();
     select('Generic error'); expect(screen.getByText('Хранилище временно недоступно')).toBeTruthy();
-    select('Stale/version'); expect(screen.getByText('Состояние обращения изменилось')).toBeTruthy();
+    select('Stale/version'); expect(screen.getAllByText('Состояние обращения изменилось')).toHaveLength(2);
   });
 
   it('orders source, conditions and steps and opens an honest source drawer', () => {
@@ -52,5 +56,57 @@ describe('TenderHack fixture UI', () => {
   it('does not expose forbidden internal fields', () => {
     const { container } = render(<App />);
     expect(container.textContent).not.toMatch(/retrieval score|prompt|VRAM|trace-error-demo/i);
+  });
+});
+
+describe('TenderHack real API UI', () => {
+  beforeEach(() => localStorage.clear());
+
+  it('does not clear user input after a 429 rejection and labels the real mode', async () => {
+    const sendMessage = vi.fn(async (_input: ChatInput): Promise<AcceptedRequest> => { throw new ApiError(429, { error: { code: 'QUEUE_FULL', message: 'Очередь заполнена', retryable: true, trace_id: 'trace', current_case_version: null } }); });
+    const transport: TenderHackTransport = {
+      mode: 'real',
+      createSession: async () => ({ session_id: 'session', created_at: 'now', expires_at: 'later' }),
+      sendMessage,
+      getRequest: async () => { throw new Error('not called'); },
+      getCase: async () => { throw new Error('not called'); },
+      getSource: async () => { throw new Error('not called'); },
+      saveFeedback: async () => { throw new Error('not called'); },
+    };
+    render(<App mode="real" transport={transport} />);
+    await screen.findByText('API подключён');
+    const input = screen.getByLabelText('Сообщение') as HTMLTextAreaElement;
+    fireEvent.change(input, { target: { value: 'Сохраните этот ввод' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Отправить' }));
+    await screen.findByText('Очередь заполнена');
+    expect(input.value).toBe('Сохраните этот ввод');
+    expect(screen.getByText('Реальный API')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Отправить' }));
+    await vi.waitFor(() => expect(sendMessage).toHaveBeenCalledTimes(2));
+    expect(sendMessage.mock.calls[1][0].request_key).toBe(sendMessage.mock.calls[0][0].request_key);
+  });
+
+  it('restores a saved Case and renders duplicate message ids only once', async () => {
+    localStorage.setItem('tenderhack.current-case-id', 'case');
+    const restoredMessage = {
+      message_id: 'message', case_id: 'case', seq: 1, role: 'user' as const,
+      kind: 'question' as const, content: 'Восстановленный вопрос', created_at: 'now',
+    };
+    const getCase = vi.fn(async () => ({
+      case: { case_id: 'case', session_id: 'session', status: 'open' as const, case_version: 1, clarification_count: 0, created_at: 'now', updated_at: 'now' },
+      messages: [restoredMessage, restoredMessage],
+    }));
+    const transport: TenderHackTransport = {
+      mode: 'real',
+      createSession: async () => ({ session_id: 'session', created_at: 'now', expires_at: 'later' }),
+      sendMessage: async () => { throw new Error('not called'); },
+      getRequest: async () => { throw new Error('not called'); },
+      getCase,
+      getSource: async () => { throw new Error('not called'); },
+      saveFeedback: async () => { throw new Error('not called'); },
+    };
+    render(<App mode="real" transport={transport} />);
+    expect(await screen.findAllByText('Восстановленный вопрос')).toHaveLength(1);
+    expect(getCase).toHaveBeenCalledWith('case');
   });
 });

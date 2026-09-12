@@ -9,6 +9,8 @@ header { height: 76px; padding: 0 clamp(20px, 5vw, 72px); display: flex; align-i
 .brand small { display: block; color: #687b76; font-size: 11px; font-weight: 500; letter-spacing: .04em; }
 .mode { border: 1px solid #bfcfc5; background: #eff7f0; color: #315c50; padding: 8px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; }
 .mode i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #3b8b64; margin-right: 6px; }
+.mode.real { background: #eef3fa; border-color: #c6d4e7; color: #31577d; }
+.mode.real i { background: #3578b8; }
 main { max-width: 1300px; margin: 0 auto; padding: 36px clamp(18px, 4vw, 52px) 64px; display: grid; grid-template-columns: 250px minmax(0, 760px); gap: clamp(28px, 5vw, 72px); justify-content: center; }
 .eyebrow { display: block; text-transform: uppercase; letter-spacing: .1em; font-size: 10px; color: #70817c; font-weight: 800; margin-bottom: 7px; }
 .scenario-panel { position: sticky; top: 108px; align-self: start; }
@@ -18,6 +20,10 @@ main { max-width: 1300px; margin: 0 auto; padding: 36px clamp(18px, 4vw, 52px) 6
 .scenario-panel nav button { text-align: left; border: 0; border-radius: 10px; color: #50645e; background: transparent; padding: 9px 11px; font-size: 13px; }
 .scenario-panel nav button:hover, .scenario-panel nav button.active { background: #fff; color: #174b40; box-shadow: 0 5px 22px rgba(30,59,51,.08); }
 .scenario-panel > small { color: #80908a; }
+.real-status { display: grid; gap: 12px; }
+.connection { width: fit-content; border-radius: 999px; padding: 8px 11px; font-size: 12px; font-weight: 750; background: #f0eee7; color: #6a756f; }
+.connection.ready { background: #e8f4eb; color: #286346; }
+.connection.error { background: #fff0eb; color: #9a4937; }
 .chat { background: rgba(255,255,255,.82); border: 1px solid #deddd5; box-shadow: 0 24px 70px rgba(38,54,47,.11); border-radius: 26px; overflow: hidden; min-height: 720px; display: flex; flex-direction: column; }
 .chat-heading { padding: 28px 30px 23px; display: flex; gap: 24px; align-items: flex-start; justify-content: space-between; border-bottom: 1px solid #e7e5de; }
 .chat-heading h2 { margin: 0; font: 26px/1.15 Georgia, serif; letter-spacing: -.02em; }
@@ -46,6 +52,9 @@ main { max-width: 1300px; margin: 0 auto; padding: 36px clamp(18px, 4vw, 52px) 6
 .candidate p, .ticket p, .error p { margin: 5px 0; line-height: 1.5; font-size: 13px; }
 .ticket { background: #eff3f8; border-color: #d7e0e8; }
 .ticket h3, .error h3 { margin: 3px 0 10px; font-size: 17px; }
+.empty-chat { margin: auto 0; text-align: center; color: #687972; padding: 44px 20px; }
+.empty-chat strong { display: block; color: #294b42; margin-bottom: 8px; }
+.empty-chat p { margin: 0; line-height: 1.5; }
 .error { background: #fff1ec; border-color: #efcdbf; }
 .error.stale { background: #fff8e8; border-color: #ead7a6; }
 .error button, .handoff { border: 0; color: #fff; background: #174b40; padding: 11px 15px; border-radius: 10px; font-weight: 700; }
