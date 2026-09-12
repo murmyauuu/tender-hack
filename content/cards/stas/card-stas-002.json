@@ -1,0 +1,58 @@
+{
+  "card_id": "CARD-STAS-002",
+  "intent_id": "resolve_rdik_0474_outdated_oktmo",
+  "status": "draft",
+  "title": "Устранение интеграционного контроля РДИК_0474",
+  "utterances": [
+    "Сработал интеграционный контроль РДИК_0474. Как его устранить?",
+    "Что делать при ошибке РДИК_0474?",
+    "Как обновить ОКТМО, чтобы повторить подписание при РДИК_0474?"
+  ],
+  "applicable_roles": [
+    "customer",
+    "supplier"
+  ],
+  "required_facts": [
+    {
+      "key": "rdik_code",
+      "expected_value": "РДИК_0474"
+    },
+    {
+      "key": "organization_oktmo_state",
+      "expected_value": "outdated"
+    }
+  ],
+  "source_ids": [
+    "portal:588559:1"
+  ],
+  "content": {
+    "summary": "РДИК_0474 срабатывает, если в личном кабинете организации указан неактуальный код ОКТМО; для устранения контроля нужно подать заявку на изменение данных с корректным восьмизначным ОКТМО.",
+    "conditions": [
+      "Сработал именно интеграционный контроль РДИК_0474.",
+      "В личном кабинете организации указан неактуальный код ОКТМО."
+    ],
+    "steps": [
+      "Перейти в «Управление профилем» → «Профиль компании».",
+      "Нажать «Заявка на изменение данных».",
+      "В блоке «Статистические коды» указать корректный ОКТМО из восьми цифр.",
+      "Отправить заявку на изменение данных.",
+      "После обновления данных повторить подписание документа."
+    ]
+  },
+  "handoff_required": false,
+  "route": {
+    "topic_id": "TH8",
+    "subtopic_id": "ST75",
+    "support_line": "L2",
+    "recommended_recipient": null,
+    "basis_source_ids": [],
+    "rule_id": "ROUTE.LINE.THEME_DEFAULT",
+    "is_probable_defect": false,
+    "is_ambiguous": false,
+    "reason_codes": []
+  },
+  "author_id": "stas",
+  "reviewer_id": null,
+  "reviewed_at": null,
+  "snapshot_id": "kb-4918a97f0874d1e8"
+}
