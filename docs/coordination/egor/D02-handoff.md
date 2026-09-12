@@ -3,7 +3,7 @@
 - Status: done
 - Owner / tool: Егор / opencode (big-pickle)
 - Base SHA: c5d093c1d7ccc373fd87163cd7f0573ea62a88d5 (main + D01 `task/d01-dataset`)
-- Result SHA: (после коммита)
+- Result SHA: 25e57c3
 - Contracts version: 2.0.0-c0
 - Machine profile: локальный Windows, Python 3.14.5, pytest 9.0.3, fastapi 0.128.0, pydantic 2.12.5
 - Runtime SHA / KB snapshot: не требуется (runner работает на C0 fixtures без runtime)
