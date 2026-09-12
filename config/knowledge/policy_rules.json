@@ -1,0 +1,197 @@
+{
+  "ruleset_version": "c01.1",
+  "description": "Детерминированный policy-ruleset TenderHack. Данные правил; движок — knowledge/policy/. Нормализация применяется ТОЛЬКО для поиска совпадений, исходный текст не изменяется.",
+  "normalization": {
+    "fold_yo": true,
+    "max_char_run": 3,
+    "zero_width": ["​", "‌", "‍", "⁠", "﻿", "­"],
+    "homoglyph_map": {
+      "a": "а", "b": "в", "c": "с", "e": "е", "h": "н", "k": "к",
+      "m": "м", "o": "о", "p": "р", "t": "т", "x": "х", "y": "у"
+    },
+    "digit_map": {"0": "о", "3": "з", "4": "ч", "6": "б"},
+    "mapping_scope": "только слова, содержащие хотя бы одну кириллическую букву; чисто латинские токены не переписываются",
+    "word_merge": {
+      "max_words": 5,
+      "max_word_len": 3,
+      "require_short_word_len": 2
+    }
+  },
+  "technical_spans": [
+    {"id": "TECH.URL", "pattern": "(?:https?|ftp)://[^\\s<>\"']+"},
+    {"id": "TECH.WWW", "pattern": "\\bwww\\.[^\\s<>\"']+"},
+    {"id": "TECH.EMAIL", "pattern": "[\\w.+-]+@[\\w-]+\\.[\\w.-]+"},
+    {"id": "TECH.GUID", "pattern": "\\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\\b"},
+    {"id": "TECH.HEX", "pattern": "\\b(?:0x)?[0-9a-fA-F]{8,}\\b"},
+    {"id": "TECH.STACKFRAME", "pattern": "File \"[^\"]*\", line \\d+"},
+    {"id": "TECH.PATH", "pattern": "(?:[A-Za-z]:)?[\\\\/][A-Za-z0-9_.\\-]+(?:[\\\\/][A-Za-z0-9_.\\-]+)+"},
+    {"id": "TECH.DOTTED_IDENT", "pattern": "\\b[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)+\\b"},
+    {"id": "TECH.SNAKE_IDENT", "pattern": "\\b[A-Za-z][A-Za-z0-9]*_[A-Za-z0-9_]+\\b"},
+    {"id": "TECH.UNDERSCORE_IDENT", "pattern": "\\b_[A-Za-z][A-Za-z0-9_]*\\b"},
+    {"id": "TECH.CAMEL_IDENT", "pattern": "\\b[a-z]+[A-Z][A-Za-z0-9]*\\b"},
+    {"id": "TECH.DIGIT_RUN", "pattern": "\\b\\d{3,}\\b"}
+  ],
+  "profanity_rules": [
+    {
+      "rule_id": "POL.PROF.HUY",
+      "kind": "stem",
+      "atoms": ["х", "у", "йяеюи"],
+      "prefixes": ["", "по", "на", "за", "до", "ни", "о", "от", "не", "пере", "раз", "рас"],
+      "max_suffix": 6,
+      "max_masked": 1,
+      "exception_token_prefixes": []
+    },
+    {
+      "rule_id": "POL.PROF.PIZD",
+      "kind": "stem",
+      "atoms": ["п", "и", "з", "д"],
+      "prefixes": ["", "о", "по", "на", "за", "вы", "до", "рас", "раз", "не", "при", "от", "из", "с", "у"],
+      "max_suffix": 6,
+      "max_masked": 1,
+      "exception_token_prefixes": []
+    },
+    {
+      "rule_id": "POL.PROF.EB",
+      "kind": "stem",
+      "atoms": ["е", "б"],
+      "prefixes": ["", "за", "на", "по", "вы", "до", "пере", "раз", "рас", "разъ", "при", "из", "изъ", "у", "о", "от", "отъ", "подъ", "съ", "въ", "объ", "недо", "пиздо", "долбо", "мудо", "хуе"],
+      "max_suffix": 6,
+      "max_masked": 1,
+      "exception_token_prefixes": ["себ", "теб", "хлеб", "лебед", "ребен", "ребр", "щебен", "требов", "дебет", "жереб", "небес", "гребен", "серебр", "стебел", "плеб", "верб"]
+    },
+    {
+      "rule_id": "POL.PROF.BLYAD",
+      "kind": "stem",
+      "atoms": ["б", "л", "я", "дт"],
+      "prefixes": ["", "о", "по", "на", "за", "не"],
+      "max_suffix": 4,
+      "max_masked": 1,
+      "exception_token_prefixes": []
+    },
+    {
+      "rule_id": "POL.PROF.BLYA",
+      "kind": "stem",
+      "atoms": ["б", "л", "я"],
+      "prefixes": [""],
+      "max_suffix": 0,
+      "max_masked": 1,
+      "exception_token_prefixes": []
+    },
+    {
+      "rule_id": "POL.PROF.MUD",
+      "kind": "stem",
+      "atoms": ["м", "у", "д", "аоие"],
+      "prefixes": ["", "о", "по", "за"],
+      "max_suffix": 6,
+      "max_masked": 1,
+      "exception_token_prefixes": ["мудр"]
+    },
+    {
+      "rule_id": "POL.PROF.PIDOR",
+      "kind": "stem",
+      "atoms": ["п", "и", "д", "оа", "р"],
+      "prefixes": [""],
+      "max_suffix": 5,
+      "max_masked": 1,
+      "exception_token_prefixes": []
+    },
+    {
+      "rule_id": "POL.PROF.PIDR",
+      "kind": "stem",
+      "atoms": ["п", "и", "д", "р"],
+      "prefixes": [""],
+      "max_suffix": 3,
+      "max_masked": 1,
+      "exception_token_prefixes": []
+    },
+    {
+      "rule_id": "POL.PROF.ZALUPA",
+      "kind": "stem",
+      "atoms": ["з", "а", "л", "у", "п", "аыоеу"],
+      "prefixes": [""],
+      "max_suffix": 4,
+      "max_masked": 2,
+      "exception_token_prefixes": []
+    },
+    {
+      "rule_id": "POL.PROF.GANDON",
+      "kind": "stem",
+      "atoms": ["г", "ао", "н", "д", "оа", "н"],
+      "prefixes": [""],
+      "max_suffix": 4,
+      "max_masked": 2,
+      "exception_token_prefixes": []
+    },
+    {
+      "rule_id": "POL.PROF.HER",
+      "kind": "stem",
+      "atoms": ["х", "е", "р"],
+      "prefixes": ["", "по", "на", "до", "ни", "о"],
+      "max_suffix": 3,
+      "max_masked": 1,
+      "exception_token_prefixes": ["херсон", "херувим", "херес", "хером"]
+    },
+    {
+      "rule_id": "POL.PROF.SUKA",
+      "kind": "exact",
+      "script": "cyrillic",
+      "max_masked": 1,
+      "tokens": [
+        "сука", "суки", "суке", "суку", "сукой", "сукою", "сукам", "суками", "сукач",
+        "сучка", "сучки", "сучке", "сучку", "сучкой", "сучары", "сучара", "сученыш",
+        "сукин", "сукина", "сукины", "сукиной"
+      ]
+    },
+    {
+      "rule_id": "POL.PROF.TRANSLIT",
+      "kind": "exact",
+      "script": "latin",
+      "max_masked": 1,
+      "tokens": [
+        "blyat", "blyad", "blyat'", "blya", "bliat", "pizda", "pizdec", "pizdets",
+        "hui", "huy", "xyu", "xui", "ebat", "ebal", "eban", "suka", "pidor", "pidoras",
+        "mudak", "nahui", "nahuy", "pohui", "poshelnahui"
+      ]
+    }
+  ],
+  "human_request": {
+    "person_targets": ["оператор", "человек", "специалист", "сотрудник", "консультант", "менеджер"],
+    "channel_targets": ["поддержк", "техподдержк", "стп", "саппорт"],
+    "transfer_markers": [
+      "соедини", "соедините", "соединить", "переключи", "переключите", "переключить",
+      "переведи", "переведите", "перевести", "переадресуй", "переадресуйте",
+      "подключи", "подключите", "подключить", "свяжи", "свяжите", "связать",
+      "передай", "передайте", "передать", "перенаправь", "перенаправьте", "перенаправить",
+      "эскалируй", "эскалируйте", "эскалация", "эскалировать",
+      "позови", "позовите", "позвать", "вызови", "вызовите", "вызвать",
+      "пригласи", "пригласите", "пригласить", "дайте", "дай", "давайте"
+    ],
+    "need_markers": [
+      "нужен", "нужна", "нужно", "необходим", "необходима", "необходимо",
+      "хочу", "хотел", "хотела", "хотелось", "требую", "требуется", "прошу",
+      "можно", "могу", "позвольте", "соедините"
+    ],
+    "max_gap_tokens": 7,
+    "phrase_rules": [
+      {"rule_id": "POL.HUMAN.LIVE_PERSON", "pattern": "\\bжив(?:ой|ого|ым|ому|ая|ые|ых)\\s+(?:\\S+\\s+){0,2}?челове"},
+      {"rule_id": "POL.HUMAN.NOT_BOT", "pattern": "\\bне\\s+(?:с\\s+)?(?:бот|ботом|робот|роботом|машиной|автоответчиком)\\b"}
+    ],
+    "politeness_tokens": [
+      "пожалуйста", "плиз", "прошу", "очень", "срочно", "мне", "нам", "нужен", "нужна",
+      "нужно", "хочу", "дайте", "дай", "позовите", "позови", "здравствуйте", "добрый",
+      "день", "утро", "вечер", "ночи", "привет", "спасибо", "можно", "живого", "живой",
+      "живым", "реального", "настоящего", "с", "к", "на", "в", "и", "а", "же", "бы"
+    ],
+    "suppressors": [
+      {
+        "rule_id": "POL.HUMAN.SUPPRESS.HOWTO",
+        "question_pattern": "\\b(как|каким\\s+образом|где|куда|какой|какая|какие|каков|есть\\s+ли|имеется\\s+ли)\\b",
+        "contact_pattern": "\\b(связат|свяжус|найти|найду|позвонит|звонит|написат|обратит|обращат|телефон|номер|контакт|почт|email|мейл|чат|адрес|график|режим\\s+работы|время\\s+работы|горяч)"
+      },
+      {
+        "rule_id": "POL.HUMAN.SUPPRESS.NEGATION",
+        "pattern": "\\bне\\s+(нужен|нужна|нужно|надо|хочу|хочется|требуется|требую|прошу|обязательно)\\b"
+      }
+    ]
+  }
+}
