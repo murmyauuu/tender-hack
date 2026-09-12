@@ -1,0 +1,611 @@
+{
+  "source_file": "НН 2026/Темы_подтемы_обращений.xlsx",
+  "source_sha256": "f5649e083b5f0c13cf346e26387064aca2c33edb9c9e7ceee1c3cc4641f5d05a",
+  "themes_count": 9,
+  "subtopic_rows_count": 86,
+  "subtopics_distinct_count": 82,
+  "rows": [
+    {
+      "row_no": 1,
+      "theme_id": "TH1",
+      "theme": "Личный кабинет пользователя",
+      "subtopic_id": "ST01",
+      "subtopic": "Регистрация"
+    },
+    {
+      "row_no": 2,
+      "theme_id": "TH1",
+      "theme": "Личный кабинет пользователя",
+      "subtopic_id": "ST02",
+      "subtopic": "Полномочия"
+    },
+    {
+      "row_no": 3,
+      "theme_id": "TH1",
+      "theme": "Личный кабинет пользователя",
+      "subtopic_id": "ST03",
+      "subtopic": "Авторизация"
+    },
+    {
+      "row_no": 4,
+      "theme_id": "TH1",
+      "theme": "Личный кабинет пользователя",
+      "subtopic_id": "ST04",
+      "subtopic": "Восстановление доступа"
+    },
+    {
+      "row_no": 5,
+      "theme_id": "TH1",
+      "theme": "Личный кабинет пользователя",
+      "subtopic_id": "ST05",
+      "subtopic": "Сертификат ЭП"
+    },
+    {
+      "row_no": 6,
+      "theme_id": "TH1",
+      "theme": "Личный кабинет пользователя",
+      "subtopic_id": "ST06",
+      "subtopic": "Изменение ЭП"
+    },
+    {
+      "row_no": 7,
+      "theme_id": "TH1",
+      "theme": "Личный кабинет пользователя",
+      "subtopic_id": "ST07",
+      "subtopic": "Изменение электронной почты"
+    },
+    {
+      "row_no": 8,
+      "theme_id": "TH1",
+      "theme": "Личный кабинет пользователя",
+      "subtopic_id": "ST08",
+      "subtopic": "Настройка уведомлений"
+    },
+    {
+      "row_no": 9,
+      "theme_id": "TH1",
+      "theme": "Личный кабинет пользователя",
+      "subtopic_id": "ST09",
+      "subtopic": "Получение уведомлений"
+    },
+    {
+      "row_no": 10,
+      "theme_id": "TH1",
+      "theme": "Личный кабинет пользователя",
+      "subtopic_id": "ST10",
+      "subtopic": "Изменение данных пользователя"
+    },
+    {
+      "row_no": 11,
+      "theme_id": "TH1",
+      "theme": "Личный кабинет пользователя",
+      "subtopic_id": "ST11",
+      "subtopic": "Сквозная авторизация"
+    },
+    {
+      "row_no": 12,
+      "theme_id": "TH1",
+      "theme": "Личный кабинет пользователя",
+      "subtopic_id": "ST12",
+      "subtopic": "Архивация ЛК (ликвидация и иные причины)"
+    },
+    {
+      "row_no": 13,
+      "theme_id": "TH1",
+      "theme": "Личный кабинет пользователя",
+      "subtopic_id": "ST13",
+      "subtopic": "Изменение типа компании"
+    },
+    {
+      "row_no": 14,
+      "theme_id": "TH2",
+      "theme": "Закупочные процедуры",
+      "subtopic_id": "ST14",
+      "subtopic": "Создание Котировочной сессии"
+    },
+    {
+      "row_no": 15,
+      "theme_id": "TH2",
+      "theme": "Закупочные процедуры",
+      "subtopic_id": "ST15",
+      "subtopic": "Отображение Котировочной сессии"
+    },
+    {
+      "row_no": 16,
+      "theme_id": "TH2",
+      "theme": "Закупочные процедуры",
+      "subtopic_id": "ST16",
+      "subtopic": "Участие в Котировочной сессии"
+    },
+    {
+      "row_no": 17,
+      "theme_id": "TH2",
+      "theme": "Закупочные процедуры",
+      "subtopic_id": "ST17",
+      "subtopic": "Создание оферты по Котировочной сессии"
+    },
+    {
+      "row_no": 18,
+      "theme_id": "TH2",
+      "theme": "Закупочные процедуры",
+      "subtopic_id": "ST18",
+      "subtopic": "Отображение Потребности"
+    },
+    {
+      "row_no": 19,
+      "theme_id": "TH2",
+      "theme": "Закупочные процедуры",
+      "subtopic_id": "ST19",
+      "subtopic": "Обмен закупками с Региональными информационными системами (РИС)"
+    },
+    {
+      "row_no": 20,
+      "theme_id": "TH2",
+      "theme": "Закупочные процедуры",
+      "subtopic_id": "ST20",
+      "subtopic": "Создание Потребности"
+    },
+    {
+      "row_no": 21,
+      "theme_id": "TH2",
+      "theme": "Закупочные процедуры",
+      "subtopic_id": "ST21",
+      "subtopic": "Участие в Потребности"
+    },
+    {
+      "row_no": 22,
+      "theme_id": "TH2",
+      "theme": "Закупочные процедуры",
+      "subtopic_id": "ST22",
+      "subtopic": "Поиск Закупок"
+    },
+    {
+      "row_no": 23,
+      "theme_id": "TH2",
+      "theme": "Закупочные процедуры",
+      "subtopic_id": "ST23",
+      "subtopic": "Отображение Закупок"
+    },
+    {
+      "row_no": 24,
+      "theme_id": "TH2",
+      "theme": "Закупочные процедуры",
+      "subtopic_id": "ST24",
+      "subtopic": "Снятие КС"
+    },
+    {
+      "row_no": 25,
+      "theme_id": "TH2",
+      "theme": "Закупочные процедуры",
+      "subtopic_id": "ST25",
+      "subtopic": "Снятие блокировки с поставщика"
+    },
+    {
+      "row_no": 26,
+      "theme_id": "TH2",
+      "theme": "Закупочные процедуры",
+      "subtopic_id": "ST26",
+      "subtopic": "Прямая закупка"
+    },
+    {
+      "row_no": 27,
+      "theme_id": "TH2",
+      "theme": "Закупочные процедуры",
+      "subtopic_id": "ST27",
+      "subtopic": "Статус закупки"
+    },
+    {
+      "row_no": 28,
+      "theme_id": "TH2",
+      "theme": "Закупочные процедуры",
+      "subtopic_id": "ST28",
+      "subtopic": "Участие в Котировочной сессии по 46-ФЗ"
+    },
+    {
+      "row_no": 29,
+      "theme_id": "TH3",
+      "theme": "Карточка поставщика",
+      "subtopic_id": "ST29",
+      "subtopic": "Заполнение заявки"
+    },
+    {
+      "row_no": 30,
+      "theme_id": "TH3",
+      "theme": "Карточка поставщика",
+      "subtopic_id": "ST30",
+      "subtopic": "Объединение профилей"
+    },
+    {
+      "row_no": 31,
+      "theme_id": "TH3",
+      "theme": "Карточка поставщика",
+      "subtopic_id": "ST31",
+      "subtopic": "Отправка заявка на изменение данных компании"
+    },
+    {
+      "row_no": 32,
+      "theme_id": "TH3",
+      "theme": "Карточка поставщика",
+      "subtopic_id": "ST32",
+      "subtopic": "Отображение данных"
+    },
+    {
+      "row_no": 33,
+      "theme_id": "TH3",
+      "theme": "Карточка поставщика",
+      "subtopic_id": "ST33",
+      "subtopic": "Статус заявки"
+    },
+    {
+      "row_no": 34,
+      "theme_id": "TH3",
+      "theme": "Карточка поставщика",
+      "subtopic_id": "ST34",
+      "subtopic": "Консультация"
+    },
+    {
+      "row_no": 35,
+      "theme_id": "TH4",
+      "theme": "Работа с контрактами",
+      "subtopic_id": "ST35",
+      "subtopic": "Создание контракта"
+    },
+    {
+      "row_no": 36,
+      "theme_id": "TH4",
+      "theme": "Работа с контрактами",
+      "subtopic_id": "ST36",
+      "subtopic": "Дата заключения"
+    },
+    {
+      "row_no": 37,
+      "theme_id": "TH4",
+      "theme": "Работа с контрактами",
+      "subtopic_id": "ST37",
+      "subtopic": "Документ контракта"
+    },
+    {
+      "row_no": 38,
+      "theme_id": "TH4",
+      "theme": "Работа с контрактами",
+      "subtopic_id": "ST38",
+      "subtopic": "Отображение контрактов"
+    },
+    {
+      "row_no": 39,
+      "theme_id": "TH4",
+      "theme": "Работа с контрактами",
+      "subtopic_id": "ST39",
+      "subtopic": "Отправка контракта"
+    },
+    {
+      "row_no": 40,
+      "theme_id": "TH4",
+      "theme": "Работа с контрактами",
+      "subtopic_id": "ST40",
+      "subtopic": "Подписание контракта"
+    },
+    {
+      "row_no": 41,
+      "theme_id": "TH4",
+      "theme": "Работа с контрактами",
+      "subtopic_id": "ST41",
+      "subtopic": "Протокол разногласий"
+    },
+    {
+      "row_no": 42,
+      "theme_id": "TH4",
+      "theme": "Работа с контрактами",
+      "subtopic_id": "ST42",
+      "subtopic": "Обмен контрактами с Региональными информационными системами (РИС)"
+    },
+    {
+      "row_no": 43,
+      "theme_id": "TH4",
+      "theme": "Работа с контрактами",
+      "subtopic_id": "ST43",
+      "subtopic": "Расторжение контракта"
+    },
+    {
+      "row_no": 44,
+      "theme_id": "TH4",
+      "theme": "Работа с контрактами",
+      "subtopic_id": "ST44",
+      "subtopic": "Статус контракта"
+    },
+    {
+      "row_no": 45,
+      "theme_id": "TH4",
+      "theme": "Работа с контрактами",
+      "subtopic_id": "ST45",
+      "subtopic": "Исполнение контракта (неэлектронное исполнение)"
+    },
+    {
+      "row_no": 46,
+      "theme_id": "TH4",
+      "theme": "Работа с контрактами",
+      "subtopic_id": "ST46",
+      "subtopic": "Контракты по 46-ФЗ"
+    },
+    {
+      "row_no": 47,
+      "theme_id": "TH4",
+      "theme": "Работа с контрактами",
+      "subtopic_id": "ST47",
+      "subtopic": "Консультация"
+    },
+    {
+      "row_no": 48,
+      "theme_id": "TH5",
+      "theme": "Работа с СТЕ",
+      "subtopic_id": "ST48",
+      "subtopic": "Добавление категории СТЕ"
+    },
+    {
+      "row_no": 49,
+      "theme_id": "TH5",
+      "theme": "Работа с СТЕ",
+      "subtopic_id": "ST49",
+      "subtopic": "Изменение справочника СТЕ"
+    },
+    {
+      "row_no": 50,
+      "theme_id": "TH5",
+      "theme": "Работа с СТЕ",
+      "subtopic_id": "ST50",
+      "subtopic": "Массовая загрузка YML"
+    },
+    {
+      "row_no": 51,
+      "theme_id": "TH5",
+      "theme": "Работа с СТЕ",
+      "subtopic_id": "ST51",
+      "subtopic": "Ошибка заполнения заявки"
+    },
+    {
+      "row_no": 52,
+      "theme_id": "TH5",
+      "theme": "Работа с СТЕ",
+      "subtopic_id": "ST52",
+      "subtopic": "Ошибка отображения СТЕ"
+    },
+    {
+      "row_no": 53,
+      "theme_id": "TH5",
+      "theme": "Работа с СТЕ",
+      "subtopic_id": "ST53",
+      "subtopic": "Массовое подписание оферт"
+    },
+    {
+      "row_no": 54,
+      "theme_id": "TH5",
+      "theme": "Работа с СТЕ",
+      "subtopic_id": "ST54",
+      "subtopic": "Подписание оферты"
+    },
+    {
+      "row_no": 55,
+      "theme_id": "TH5",
+      "theme": "Работа с СТЕ",
+      "subtopic_id": "ST55",
+      "subtopic": "Отображение оферт в личном кабинете"
+    },
+    {
+      "row_no": 56,
+      "theme_id": "TH5",
+      "theme": "Работа с СТЕ",
+      "subtopic_id": "ST56",
+      "subtopic": "Заполнение оферты"
+    },
+    {
+      "row_no": 57,
+      "theme_id": "TH5",
+      "theme": "Работа с СТЕ",
+      "subtopic_id": "ST57",
+      "subtopic": "Создание заявки СТЕ"
+    },
+    {
+      "row_no": 58,
+      "theme_id": "TH5",
+      "theme": "Работа с СТЕ",
+      "subtopic_id": "ST58",
+      "subtopic": "Статус СТЕ"
+    },
+    {
+      "row_no": 59,
+      "theme_id": "TH5",
+      "theme": "Работа с СТЕ",
+      "subtopic_id": "ST59",
+      "subtopic": "Необходимы комментарии модератора"
+    },
+    {
+      "row_no": 60,
+      "theme_id": "TH5",
+      "theme": "Работа с СТЕ",
+      "subtopic_id": "ST60",
+      "subtopic": "Формирование СТЕ для электронного исполнения"
+    },
+    {
+      "row_no": 61,
+      "theme_id": "TH5",
+      "theme": "Работа с СТЕ",
+      "subtopic_id": "ST61",
+      "subtopic": "Консультация"
+    },
+    {
+      "row_no": 62,
+      "theme_id": "TH6",
+      "theme": "Уполномоченный орган (Региональный заказчик)",
+      "subtopic_id": "ST62",
+      "subtopic": "Создание профиля компании (УО)"
+    },
+    {
+      "row_no": 63,
+      "theme_id": "TH6",
+      "theme": "Уполномоченный орган (Региональный заказчик)",
+      "subtopic_id": "ST63",
+      "subtopic": "Утверждение заявки (УО)"
+    },
+    {
+      "row_no": 64,
+      "theme_id": "TH6",
+      "theme": "Уполномоченный орган (Региональный заказчик)",
+      "subtopic_id": "ST64",
+      "subtopic": "Статистика региона"
+    },
+    {
+      "row_no": 65,
+      "theme_id": "TH6",
+      "theme": "Уполномоченный орган (Региональный заказчик)",
+      "subtopic_id": "ST65",
+      "subtopic": "Полномочия УО"
+    },
+    {
+      "row_no": 66,
+      "theme_id": "TH6",
+      "theme": "Уполномоченный орган (Региональный заказчик)",
+      "subtopic_id": "ST66",
+      "subtopic": "Консультация"
+    },
+    {
+      "row_no": 67,
+      "theme_id": "TH7",
+      "theme": "Электронное исполнение (малый объем)",
+      "subtopic_id": "ST67",
+      "subtopic": "Заполнение спецификации исполнения"
+    },
+    {
+      "row_no": 68,
+      "theme_id": "TH7",
+      "theme": "Электронное исполнение (малый объем)",
+      "subtopic_id": "ST68",
+      "subtopic": "Установка связи с заказчиком"
+    },
+    {
+      "row_no": 69,
+      "theme_id": "TH7",
+      "theme": "Электронное исполнение (малый объем)",
+      "subtopic_id": "ST69",
+      "subtopic": "Подписание и отправка УПД"
+    },
+    {
+      "row_no": 70,
+      "theme_id": "TH7",
+      "theme": "Электронное исполнение (малый объем)",
+      "subtopic_id": "ST70",
+      "subtopic": "Статус исполнения"
+    },
+    {
+      "row_no": 71,
+      "theme_id": "TH7",
+      "theme": "Электронное исполнение (малый объем)",
+      "subtopic_id": "ST71",
+      "subtopic": "Регистрация в ЭДО"
+    },
+    {
+      "row_no": 72,
+      "theme_id": "TH7",
+      "theme": "Электронное исполнение (малый объем)",
+      "subtopic_id": "ST72",
+      "subtopic": "Создание исполнения (заполнение основных полей)"
+    },
+    {
+      "row_no": 73,
+      "theme_id": "TH8",
+      "theme": "Электронное исполнение (ЕИС)",
+      "subtopic_id": "ST73",
+      "subtopic": "Создание исполнения"
+    },
+    {
+      "row_no": 74,
+      "theme_id": "TH8",
+      "theme": "Электронное исполнение (ЕИС)",
+      "subtopic_id": "ST74",
+      "subtopic": "Заполнение данных"
+    },
+    {
+      "row_no": 75,
+      "theme_id": "TH8",
+      "theme": "Электронное исполнение (ЕИС)",
+      "subtopic_id": "ST75",
+      "subtopic": "Формирование УПД (вопросы по ошибкам РДИК)"
+    },
+    {
+      "row_no": 76,
+      "theme_id": "TH8",
+      "theme": "Электронное исполнение (ЕИС)",
+      "subtopic_id": "ST76",
+      "subtopic": "Отправка УПД и статус исполнения (ошибки интеграции)"
+    },
+    {
+      "row_no": 77,
+      "theme_id": "TH8",
+      "theme": "Электронное исполнение (ЕИС)",
+      "subtopic_id": "ST77",
+      "subtopic": "Установка связи с ЭДО ЕИС"
+    },
+    {
+      "row_no": 78,
+      "theme_id": "TH8",
+      "theme": "Электронное исполнение (ЕИС)",
+      "subtopic_id": "ST78",
+      "subtopic": "Формирование УПД (46-ФЗ)"
+    },
+    {
+      "row_no": 79,
+      "theme_id": "TH8",
+      "theme": "Электронное исполнение (ЕИС)",
+      "subtopic_id": "ST79",
+      "subtopic": "Исполнение по 46- ФЗ"
+    },
+    {
+      "row_no": 80,
+      "theme_id": "TH8",
+      "theme": "Электронное исполнение (ЕИС)",
+      "subtopic_id": "ST80",
+      "subtopic": "Консультация"
+    },
+    {
+      "row_no": 81,
+      "theme_id": "TH9",
+      "theme": "Блокировка личного кабинета",
+      "subtopic_id": "ST81",
+      "subtopic": "Причины блокировки"
+    },
+    {
+      "row_no": 82,
+      "theme_id": "TH9",
+      "theme": "Блокировка личного кабинета",
+      "subtopic_id": "ST82",
+      "subtopic": "Снятие блокировки"
+    },
+    {
+      "row_no": 83,
+      "theme_id": "TH9",
+      "theme": "Блокировка личного кабинета",
+      "subtopic_id": "ST83",
+      "subtopic": "Компания включена в РНП"
+    },
+    {
+      "row_no": 84,
+      "theme_id": "TH9",
+      "theme": "Блокировка личного кабинета",
+      "subtopic_id": "ST84",
+      "subtopic": "Компания исключена из РНП"
+    },
+    {
+      "row_no": 85,
+      "theme_id": "TH9",
+      "theme": "Блокировка личного кабинета",
+      "subtopic_id": "ST85",
+      "subtopic": "Разблокировка пользователя"
+    },
+    {
+      "row_no": 86,
+      "theme_id": "TH9",
+      "theme": "Блокировка личного кабинета",
+      "subtopic_id": "ST86",
+      "subtopic": "Срок блокировки"
+    }
+  ]
+}
