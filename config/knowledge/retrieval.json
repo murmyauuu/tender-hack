@@ -1,0 +1,37 @@
+{
+  "retrieval_version": "c03-retrieval-1.0.0",
+  "comment": "Конфигурация dense retrieval + evidence gate C03 (config/knowledge — зона C, файл не трогает policy_rules.json зоны C01 и normalizer.json зоны C02).",
+  "embedding": {
+    "comment": "Буквально по A01 (docs/coordination/artem/A01-handoff.md, ветка task/a01). Не подбиралось агентом C03.",
+    "model": "Qwen/Qwen3-Embedding-0.6B",
+    "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+    "dim": 1024,
+    "pooling": "last_token",
+    "normalization": "l2",
+    "safetensors_sha256": "0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd",
+    "query_instruction": "Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery: {query}",
+    "query_instruction_applies_to": "query_only",
+    "documents_get_instruction": false,
+    "e5_prefixes_used": false,
+    "adapter_version": "c03-qwen3-embedding-last-token-l2-1.0.0"
+  },
+  "index": {
+    "type": "numpy_exact_cosine",
+    "comment": "DEC-001 (config/runtime/c0.json, файл A). Точный (brute-force) cosine по всему корпусу, без ANN и без numpy-пакета (pyproject.toml — файл A, numpy туда не добавлялся); .npy читается/пишется stdlib-парсером knowledge/kb/dense/vectors.py.",
+    "artifact_path": "var/knowledge/index.npy",
+    "mapping_path": "var/knowledge/index_ids.json",
+    "input_snapshot_id": "kb-4918a97f0874d1e8",
+    "input_chunks_sha256": "6d1555777d9bbf9ae7f2df93a69cf61f53dd04263877a8ebaf7fc35e16a4bdf8",
+    "status_on_m": "not_built: реальный forward-pass требует GPU/torch, которых на M нет (blocked-on-G)"
+  },
+  "pipeline": {
+    "comment": "Структурные константы пайплайна (knowledge/kb/retrieval.py), НЕ подобраны по final.",
+    "dense_top_k": 10,
+    "evidence_max": 5,
+    "clarification_max_count": 1
+  },
+  "mock": {
+    "comment": "MockQueryEncoder (knowledge/kb/dense/encoder.py) — детерминированная, НЕ семантическая заглушка для CPU-логики на M. health().mode остаётся lexical_only, пока энкодер mock, даже если корпус векторов реальный.",
+    "is_mock": true
+  }
+}
