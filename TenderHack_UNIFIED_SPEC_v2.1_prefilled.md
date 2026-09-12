@@ -599,7 +599,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент A проекта TenderHack. Выполни только задачу A00: Bootstrap и заморозка C0.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: G — i7-12650H; RTX 3070 Laptop, 8 ГБ VRAM.
 Создай/используй отдельную ветку task/a00 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: Нет; первый чат Артёма.
@@ -622,7 +622,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент A проекта TenderHack. Выполни только задачу A01: Ранний Linux/GPU/model smoke.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: G — i7-12650H; RTX 3070 Laptop, 8 ГБ VRAM.
 Создай/используй отдельную ветку task/a01 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: A00 принят.
@@ -645,7 +645,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент A проекта TenderHack. Выполни только задачу A02: Backend core и минимальная обработка.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: G — i7-12650H; RTX 3070 Laptop, 8 ГБ VRAM.
 Создай/используй отдельную ветку task/a02 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: A00; A01 перед реальным adapter config.
@@ -668,7 +668,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент A проекта TenderHack. Выполни только задачу A03: Интеграция первого настоящего E2E.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: G — i7-12650H; RTX 3070 Laptop, 8 ГБ VRAM.
 Создай/используй отдельную ветку task/a03 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: A02, C01, C03 и B01 приняты; A01 прошёл.
@@ -691,7 +691,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент A проекта TenderHack. Выполни только задачу A04: Handoff и настоящий operator reply.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: G — i7-12650H; RTX 3070 Laptop, 8 ГБ VRAM.
 Создай/используй отдельную ветку task/a04 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: A03 и C04 при готовности; B03 может работать по fixtures.
@@ -714,7 +714,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент A проекта TenderHack. Выполни только задачу A08: Два черновика сценариев Артёма.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: G — i7-12650H; RTX 3070 Laptop, 8 ГБ VRAM.
 Создай/используй отдельную ветку task/a08 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: A03; проверенные источники C02/C03.
@@ -737,7 +737,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент A проекта TenderHack. Выполни только задачу A05: Устойчивость, очередь и offline runbook.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: G — i7-12650H; RTX 3070 Laptop, 8 ГБ VRAM.
 Создай/используй отдельную ветку task/a05 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: A04; C06 по готовности, B03.
@@ -760,7 +760,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент A проекта TenderHack. Выполни только задачу A06: Заморозка release candidate.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: G — i7-12650H; RTX 3070 Laptop, 8 ГБ VRAM.
 Создай/используй отдельную ветку task/a06 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: A05, B06, C07, D09 приняты.
@@ -783,7 +783,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент A проекта TenderHack. Выполни только задачу A07: Релиз, архив и резерв.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: G — i7-12650H; RTX 3070 Laptop, 8 ГБ VRAM.
 Создай/используй отдельную ветку task/a07 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: A06, D07; исправления только отдельными FIX с повторной проверкой.
@@ -806,7 +806,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент B проекта TenderHack. Выполни только задачу B00: План пользовательского пути до C0.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: W — i5-4210U; 12 ГБ RAM; Intel HD; Windows.
 Создай/используй отдельную ветку task/b00 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: Нет; параллельно A00.
@@ -829,7 +829,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент B проекта TenderHack. Выполни только задачу B01: Frontend на frozen fixtures.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: W — i5-4210U; 12 ГБ RAM; Intel HD; Windows.
 Создай/используй отдельную ветку task/b01 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: A00 и B00.
@@ -852,7 +852,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент B проекта TenderHack. Выполни только задачу B02: Подключение первого реального API.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: W — i5-4210U; 12 ГБ RAM; Intel HD; Windows.
 Создай/используй отдельную ветку task/b02 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: B01 и A02 API-ready; для real E2E A03/C03.
@@ -875,7 +875,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент B проекта TenderHack. Выполни только задачу B03: Полный пользовательский цикл с человеком.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: W — i5-4210U; 12 ГБ RAM; Intel HD; Windows.
 Создай/используй отдельную ветку task/b03 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: B02; A04 для real проверки, до него fixtures.
@@ -898,7 +898,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент B проекта TenderHack. Выполни только задачу B04: Независимая историческая разметка Стаса.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: W — i5-4210U; 12 ГБ RAM; Intel HD; Windows.
 Создай/используй отдельную ветку task/b04 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: D00/D01 и B03; реальные 30 пар доступны.
@@ -921,7 +921,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент B проекта TenderHack. Выполни только задачу B05: Два черновика сценариев Стаса.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: W — i5-4210U; 12 ГБ RAM; Intel HD; Windows.
 Создай/используй отдельную ветку task/b05 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: B04; KB snapshot/ScenarioCard schema.
@@ -944,7 +944,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент B проекта TenderHack. Выполни только задачу B06: Frontend regression и offline polish.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: W — i5-4210U; 12 ГБ RAM; Intel HD; Windows.
 Создай/используй отдельную ветку task/b06 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: B03; A04/A05 runtime, C06 по готовности.
@@ -967,7 +967,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент C проекта TenderHack. Выполни только задачу C00: Аудит реальных входов KB до C0.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: M — MacBook Air M2; 8 ГБ RAM.
 Создай/используй отдельную ветку task/c00 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: Нет; параллельно A00.
@@ -990,7 +990,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент C проекта TenderHack. Выполни только задачу C01: Детерминированный policy-модуль.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: M — MacBook Air M2; 8 ГБ RAM.
 Создай/используй отдельную ветку task/c01 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: A00; C00 полезен, но не блокирует.
@@ -1013,7 +1013,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент C проекта TenderHack. Выполни только задачу C02: Нормализация KB и source lookup.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: M — MacBook Air M2; 8 ГБ RAM.
 Создай/используй отдельную ветку task/c02 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: A00, C00.
@@ -1036,7 +1036,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент C проекта TenderHack. Выполни только задачу C03: Dense retrieval и минимальный evidence gate.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: M — MacBook Air M2; 8 ГБ RAM.
 Создай/используй отдельную ветку task/c03 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: C02, A00; A01 прошёл.
@@ -1059,7 +1059,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент C проекта TenderHack. Выполни только задачу C04: Маршрутизация и уточнение knowledge-поведения.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: M — MacBook Air M2; 8 ГБ RAM.
 Создай/используй отдельную ветку task/c04 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: C03; D01 dev и C01 policy.
@@ -1082,7 +1082,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент C проекта TenderHack. Выполни только задачу C05: Два черновика сценариев Эдуарда.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: M — MacBook Air M2; 8 ГБ RAM.
 Создай/используй отдельную ветку task/c05 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: C03/C04.
@@ -1105,7 +1105,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент C проекта TenderHack. Выполни только задачу C06: Перекрёстная проверка и импорт карточек.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: M — MacBook Air M2; 8 ГБ RAM.
 Создай/используй отдельную ветку task/c06 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: A08, B05, C05, D06 drafts приняты.
@@ -1128,7 +1128,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент C проекта TenderHack. Выполни только задачу C07: Dev-исправления retrieval и заморозка KB.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: M — MacBook Air M2; 8 ГБ RAM.
 Создай/используй отдельную ветку task/c07 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: C04, C06 по готовности; dev results D02/A03.
@@ -1151,7 +1151,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент D проекта TenderHack. Выполни только задачу D00: Рубрика и план оценки до C0.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: N — Azerty RB-1551; N5095; 16 ГБ RAM; Intel UHD.
 Создай/используй отдельную ветку task/d00 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: Нет; параллельно A00.
@@ -1174,7 +1174,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент D проекта TenderHack. Выполни только задачу D01: 20 dev, 40 final и единая историческая выборка.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: N — Azerty RB-1551; N5095; 16 ГБ RAM; Intel UHD.
 Создай/используй отдельную ветку task/d01 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: D00, A00, C00 inventory.
@@ -1197,7 +1197,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент D проекта TenderHack. Выполни только задачу D02: Тестовый runner и детерминированный report skeleton.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: N — Azerty RB-1551; N5095; 16 ГБ RAM; Intel UHD.
 Создай/используй отдельную ветку task/d02 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: A00 export schema, D01 dev; A02 API по готовности.
@@ -1220,7 +1220,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент D проекта TenderHack. Выполни только задачу D03: Независимая историческая разметка Егора.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: N — Azerty RB-1551; N5095; 16 ГБ RAM; Intel UHD.
 Создай/используй отдельную ветку task/d03 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: D00/D01; реальные 30 пар.
@@ -1243,7 +1243,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент D проекта TenderHack. Выполни только задачу D04: Согласование истории и содержательный вывод.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: N — Azerty RB-1551; N5095; 16 ГБ RAM; Intel UHD.
 Создай/используй отдельную ветку task/d04 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: B04 и D03 независимые commits.
@@ -1266,7 +1266,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент D проекта TenderHack. Выполни только задачу D05: Настоящая BPMN-модель процесса.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: N — Azerty RB-1551; N5095; 16 ГБ RAM; Intel UHD.
 Создай/используй отдельную ветку task/d05 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: A04/B03 согласованный flow; D00.
@@ -1289,7 +1289,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент D проекта TenderHack. Выполни только задачу D06: Два черновика сценариев Егора.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: N — Azerty RB-1551; N5095; 16 ГБ RAM; Intel UHD.
 Создай/используй отдельную ветку task/d06 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: D01, KB snapshot; после D05 по личной очереди.
@@ -1312,7 +1312,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент D проекта TenderHack. Выполни только задачу D09: Отчёт по реальному dev и экспорту перед RC.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: N — Azerty RB-1551; N5095; 16 ГБ RAM; Intel UHD.
 Создай/используй отдельную ветку task/d09 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: D02, D04, A04 export; A05/C07/B06 результаты по готовности.
@@ -1335,7 +1335,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент D проекта TenderHack. Выполни только задачу D07: Независимый final на frozen RC.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: N — Azerty RB-1551; N5095; 16 ГБ RAM; Intel UHD.
 Создай/используй отдельную ветку task/d07 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: A06 RC, D01 sealed suite, D02 runner.
@@ -1358,7 +1358,7 @@ Inputs needed by next task:
 
 ~~~text
 Ты агент D проекта TenderHack. Выполни только задачу D08: Материалы защиты и репетиция.
-Репозиторий: <REPO_PATH>. База: <BASE_SHA>. Фактическая машина: <MACHINE_PROFILE>.
+Репозиторий: https://github.com/murmyauuu/tender-hack. База: <BASE_SHA>. Фактическая машина: N — Azerty RB-1551; N5095; 16 ГБ RAM; Intel UHD.
 Создай/используй отдельную ветку task/d08 от принятого BASE_SHA и отдельный worktree.
 Прочитай AGENTS.md и TenderHack_UNIFIED_SPEC_v2.md. Contracts/fixtures и handoff читай только если они уже созданы выполненными обязательными зависимостями. В A00/B00/C00/D00 их изначально нет и создавать чужой результат нельзя. Старые чаты не являются входом; конфликтующие S1/S2 не реализуй.
 Обязательные зависимости: D04/D05/D07, A07 release по готовности.
