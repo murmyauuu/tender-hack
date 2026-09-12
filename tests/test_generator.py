@@ -58,6 +58,8 @@ def test_adapter_uses_a01_pin_and_disables_thinking() -> None:
     assert "maxLength" not in schema_text
     assert "minLength" not in schema_text
     assert "maxItems" not in schema_text
+    assert calls[0][1]["format"]["properties"]["action"]["const"] == "answer"
+    assert "$defs" not in calls[0][1]["format"]
     assert generator.calls == 1
 
 

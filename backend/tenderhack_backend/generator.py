@@ -6,7 +6,7 @@ from collections.abc import Callable
 from urllib.request import Request, urlopen
 
 from pydantic import TypeAdapter, ValidationError
-from tenderhack_contracts import GenerationInput, GenerationProposal
+from tenderhack_contracts import GenerationAnswer, GenerationInput, GenerationProposal
 
 from .verifier import InvalidGeneration
 
@@ -17,6 +17,7 @@ A01_GGUF_SHA256 = "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745
 Transport = Callable[[str, dict, float], dict]
 InfoTransport = Callable[[str, float], dict]
 _PROPOSAL_ADAPTER = TypeAdapter(GenerationProposal)
+_ANSWER_ADAPTER = TypeAdapter(GenerationAnswer)
 
 
 def _ollama_schema() -> dict:
@@ -33,7 +34,7 @@ def _ollama_schema() -> dict:
             return [sanitize(item) for item in value]
         return value
 
-    return sanitize(_PROPOSAL_ADAPTER.json_schema())
+    return sanitize(_ANSWER_ADAPTER.json_schema())
 
 
 def _http_transport(url: str, payload: dict, timeout: float) -> dict:
@@ -131,8 +132,9 @@ class OllamaGenerator:
         ]
         return (
             "/no_think\n"
-            "Верни только один JSON-объект по переданной JSON Schema: answer, clarify или "
-            "escalate. Для answer: summary — краткий ответ; conditions — дословно сохрани "
+            "Evidence gate уже вынес ANSWER_ALLOWED. Верни только JSON-ответ action=answer "
+            "по переданной JSON Schema; не выбирай clarify или escalate. summary — краткий "
+            "ответ; conditions — дословно сохрани "
             "все непустые условия evidence; steps — конкретные шаги; source_ids — только "
             "значения из allowed_source_ids. Не придумывай URL, даты или выполненные действия.\n"
             + json.dumps(
