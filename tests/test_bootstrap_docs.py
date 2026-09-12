@@ -2,6 +2,7 @@ import hashlib
 import json
 import subprocess
 import sys
+import tomllib
 from pathlib import Path
 
 
@@ -113,3 +114,36 @@ def test_readme_has_reproducible_c0_commands() -> None:
         "uv run uvicorn tenderhack_backend.app:app",
     ):
         assert command in readme
+
+
+def test_knowledge_package_and_tests_are_in_project_configuration() -> None:
+    project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+
+    package_find = project["tool"]["setuptools"]["packages"]["find"]
+    assert "." in package_find["where"]
+    assert "knowledge*" in package_find["include"]
+
+    testpaths = project["tool"]["pytest"]["ini_options"]["testpaths"]
+    assert "knowledge/policy/tests" in testpaths
+    assert "knowledge/kb/tests" in testpaths
+
+
+def test_installed_knowledge_modules_import_outside_repository(tmp_path: Path) -> None:
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            (
+                "from knowledge.policy import build_policy; "
+                "from knowledge.kb.store import open_store; "
+                "assert build_policy().check('тест').profanity is False; "
+                "assert callable(open_store)"
+            ),
+        ],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stdout + result.stderr

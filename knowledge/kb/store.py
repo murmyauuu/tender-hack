@@ -8,8 +8,7 @@ KnowledgeResult. Пустой результат с решением gate выг
 не делает.
 
 Импорт backend отсутствует (критерий A00: KnowledgePort не зависит от
-backend). Пакет contracts импортируется от корня репозитория — см.
-CR-EDUARD-001, отдельный CR на то же не создаётся.
+backend). Контракт импортируется из установленного публичного пакета.
 """
 
 from __future__ import annotations
@@ -19,7 +18,7 @@ import os
 import sqlite3
 from typing import Any
 
-from contracts.python.tenderhack_contracts.models import (  # noqa: E402
+from tenderhack_contracts.models import (
     KnowledgeHealth,
     ScenarioCard,
     SourceRecord,

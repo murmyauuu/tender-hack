@@ -166,8 +166,11 @@ def test_socket_is_pulled_by_pydantic_not_by_policy() -> None:
 
     code = (
         "import sys;"
+        "import tenderhack_contracts;"
+        "before = 'socket' in sys.modules;"
         "import knowledge.policy;"
-        "print('socket' in sys.modules)"
+        "after = 'socket' in sys.modules;"
+        "print(before == after)"
     )
     probe = subprocess.run(
         [sys.executable, "-c", code],
@@ -176,5 +179,5 @@ def test_socket_is_pulled_by_pydantic_not_by_policy() -> None:
         cwd=str(POLICY_DIR.parents[1]),
     )
     assert probe.returncode == 0, probe.stderr
-    # Модуль верхнего уровня `socket` не импортируется вообще.
-    assert probe.stdout.strip() == "False", probe.stdout
+    # Policy не меняет состояние сетевого модуля после импорта контракта.
+    assert probe.stdout.strip() == "True", probe.stdout

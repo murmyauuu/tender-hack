@@ -20,10 +20,11 @@ dev = [
 ]
 
 [tool.setuptools.packages.find]
-where = ["contracts/python", "backend"]
+where = ["contracts/python", "backend", "."]
+include = ["tenderhack_contracts*", "tenderhack_backend*", "knowledge*"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "knowledge/policy/tests", "knowledge/kb/tests"]
 addopts = "-q"
 filterwarnings = [
   "ignore:The anyio.abc.BlockingPortal alias is deprecated:DeprecationWarning:starlette.testclient",
