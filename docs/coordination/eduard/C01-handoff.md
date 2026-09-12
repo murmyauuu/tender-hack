@@ -6,7 +6,7 @@
 - **Worktree path:** `/Users/gunter/Desktop/tenderhack-c01`
 - **Branch:** `task/c01`
 - **Base SHA:** `27d45b1675cc884350e6b06aba431d5d867fb76c` (tag `bootstrap-contracts-v2`, принятый C0 от A00)
-- **Result SHA:** `<RESULT_SHA>`
+- **Result SHA:** `350b93f6bc2076028e4afb7e0877c1f51f602657` — код, ruleset, тесты и handoff. Поверх него один docs-only commit, фиксирующий этот SHA в handoff; HEAD ветки `task/c01` указан в финальном сообщении чата и содержимое кода не меняет.
 - **Contracts version:** `2.0.0-c0`. Contracts не изменялись ни в одном файле.
 - **Machine / runtime SHA / KB snapshot:** профиль M — MacBook Air M2 (arm64), 8 GiB RAM, macOS 14.4.1, Python 3.13.12, GPU не использовался. Runtime code = result SHA. KB snapshot **не используется**: C01 не читает KB и от C02/C03 не зависит. Новых зависимостей не добавлено — модуль на чистом stdlib.
 
