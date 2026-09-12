@@ -3,7 +3,7 @@
 - **Task ID / status:** C02 — Нормализация KB и source lookup / **done**
 - **Owner / tool:** Эдуард / агент C / Claude Code
 - **Base SHA:** `27d45b1675cc884350e6b06aba431d5d867fb76c` (тег `bootstrap-contracts-v2`)
-- **Result SHA:** см. финальное сообщение чата (проставляется после commit)
+- **Result SHA:** `39b29f65cf156e7521e0680f95a063bd4b21a694`
 - **Ветка / worktree:** `task/c02` / `/Users/gunter/Desktop/tenderhack-c02` (отдельный, worktree C00 и C01 не тронуты)
 - **Contracts version:** `2.0.0-c0`, контракты не изменялись
 - **Machine:** M — MacBook Air M2 (arm64), 8 GiB RAM, macOS 14.4.1, без GPU. Python 3.13.12, uv 0.11.27.
