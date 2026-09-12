@@ -110,7 +110,7 @@ def stem_ru(word: str) -> str:
     rv, r2 = _regions(word)
 
     # Шаг 1: perfective gerund -> иначе reflexive, затем adjectival/verb/noun
-    step = _strip(word, rv, _PERFECTIVE_2) 
+    step = _strip(word, rv, _PERFECTIVE_2)
     if step is None:
         step = _strip(word, rv, _PERFECTIVE_1, after="ая")
     if step is not None:
