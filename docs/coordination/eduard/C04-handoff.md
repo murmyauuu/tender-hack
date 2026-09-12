@@ -3,7 +3,7 @@
 - **Task ID / status:** C04 — Маршрутизация и уточнение knowledge-поведения / **done** (CPU-only, G не требовался)
 - **Owner / tool:** Эдуард / агент C / Claude Code
 - **Base SHA:** `7d7b44c41f6996478105534ec933aa920f6fc1f1` (`origin/main`, совпадает с BASE_SHA из задания)
-- **Result SHA:** см. финальное сообщение чата (HEAD ветки `task/c04` после этого handoff-коммита)
+- **Result SHA:** `3a256db6a402f31dce061931cf22cad7325147c9` (`task/c04`) — код/config/тесты; поверх него один docs-only коммит фиксирует этот SHA в handoff
 - **Ветка / worktree:** `task/c04` / `/Users/gunter/Desktop/tenderhack-c04`
 
 ## 0. Важная оговорка про базу — почему в истории есть merge-коммит
