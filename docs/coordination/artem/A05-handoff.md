@@ -10,8 +10,8 @@
   `git fetch --prune origin && git switch main && git pull --ff-only origin main &&
   git status --short` — HEAD matched exactly, working tree clean except the pre-existing,
   unrelated untracked `data/processed/`).
-- Result SHA: recorded in a follow-up docs-only commit on this branch (same pattern C07 used),
-  see the final commit on `task/a05`.
+- Result SHA: `1130767` (`task/a05`, implementation commit); this docs-only follow-up commit
+  records that SHA here, same pattern C07 used.
 - Contracts: `2.1.0-a02`, **unchanged**. The one behavioral fix in this task (see §"Backend
   defect fixed") reuses the existing `ErrorEnvelope`/`DomainError` shape and an HTTP status
   (`503`) already documented for `/api/v1/chat` in the accepted OpenAPI; no CR was needed.
