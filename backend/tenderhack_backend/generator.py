@@ -19,6 +19,23 @@ InfoTransport = Callable[[str, float], dict]
 _PROPOSAL_ADAPTER = TypeAdapter(GenerationProposal)
 
 
+def _ollama_schema() -> dict:
+    """Keep validation limits in Pydantic without exceeding Ollama grammar limits."""
+
+    def sanitize(value):
+        if isinstance(value, dict):
+            return {
+                key: sanitize(item)
+                for key, item in value.items()
+                if key not in {"maxLength", "minLength", "maxItems"}
+            }
+        if isinstance(value, list):
+            return [sanitize(item) for item in value]
+        return value
+
+    return sanitize(_PROPOSAL_ADAPTER.json_schema())
+
+
 def _http_transport(url: str, payload: dict, timeout: float) -> dict:
     request = Request(
         url,
@@ -77,7 +94,7 @@ class OllamaGenerator:
             "prompt": prompt,
             "stream": False,
             "think": False,
-            "format": _PROPOSAL_ADAPTER.json_schema(),
+            "format": _ollama_schema(),
             "options": {"num_ctx": 8192, "temperature": 0.1, "seed": 42},
             "keep_alive": "5m",
         }

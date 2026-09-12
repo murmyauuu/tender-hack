@@ -54,6 +54,10 @@ def test_adapter_uses_a01_pin_and_disables_thinking() -> None:
     assert "/no_think" in calls[0][1]["prompt"]
     assert calls[0][1]["options"]["num_ctx"] == 8192
     assert isinstance(calls[0][1]["format"], dict)
+    schema_text = json.dumps(calls[0][1]["format"])
+    assert "maxLength" not in schema_text
+    assert "minLength" not in schema_text
+    assert "maxItems" not in schema_text
     assert generator.calls == 1
 
 
