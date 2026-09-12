@@ -21,7 +21,7 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = ["contracts/python", "backend", "."]
-include = ["tenderhack_contracts*", "tenderhack_backend*", "knowledge*"]
+include = ["tenderhack_contracts*", "tenderhack_backend*", "knowledge*", "tools*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "knowledge/policy/tests", "knowledge/kb/tests"]

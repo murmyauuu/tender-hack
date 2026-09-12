@@ -252,6 +252,7 @@ class BackendService:
         elapsed_ms = round((perf_counter() - started) * 1000, 3)
         generation_ms = round((perf_counter() - generation_started) * 1000, 3)
         if isinstance(proposal, GenerationAnswer):
+            adapter_timings = dict(getattr(self.generator, "last_timings_ms", {}) or {})
             self.database.publish_message(
                 request_id,
                 case_status=CaseStatus.AWAITING_FEEDBACK,
@@ -267,7 +268,11 @@ class BackendService:
                 },
                 source_ids=proposal.source_ids,
                 route=knowledge.route,
-                timings={"generation_total": generation_ms, "total": elapsed_ms},
+                timings={
+                    **adapter_timings,
+                    "generation_total": generation_ms,
+                    "total": elapsed_ms,
+                },
             )
         elif isinstance(proposal, GenerationClarify):
             if context["clarification_count"] >= 1:

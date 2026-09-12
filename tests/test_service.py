@@ -133,6 +133,32 @@ def test_chat_poll_answer_source_feedback_flow(tmp_path: Path) -> None:
     assert feedback.case_status == "resolved"
 
 
+def test_generation_adapter_timings_are_persisted(tmp_path: Path) -> None:
+    knowledge, generator = answer_dependencies()
+    generator.last_timings_ms = {
+        "prompt_eval": 14.25,
+        "decode": 28.5,
+        "ollama_total": 50.0,
+    }
+    service = BackendService(
+        Database(tmp_path / "app.sqlite"), FakePolicy(), knowledge, generator
+    )
+    session, _ = service.create_session(None)
+    accepted = run(
+        service.accept_chat(
+            session.session_id,
+            {"request_key": str(uuid4()), "text": "Как подписать контракт?"},
+            is_demo=True,
+        )
+    )
+
+    run(service.process_next())
+
+    timings = service.get_request(session.session_id, accepted.request_id).timings_ms
+    assert timings["prompt_eval"] == 14.25
+    assert timings["decode"] == 28.5
+
+
 def test_exact_chat_repeat_does_not_duplicate_queue_or_generation(
     tmp_path: Path,
 ) -> None:

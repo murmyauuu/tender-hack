@@ -2,13 +2,21 @@ import json
 from pathlib import Path
 
 from fastapi.testclient import TestClient
-from tenderhack_backend.app import app
+from tenderhack_backend.app import app, create_app
+from tenderhack_backend.config import Settings
 
 ROOT = Path(__file__).parents[1]
 
 
-def test_health_is_runnable_without_models_or_kb() -> None:
-    response = TestClient(app).get("/api/v1/health")
+def test_health_is_runnable_without_models_or_kb(tmp_path: Path) -> None:
+    application = create_app(
+        settings=Settings(
+            db_path=tmp_path / "app.sqlite",
+            knowledge_dir=tmp_path / "missing-kb",
+            ollama_url="http://127.0.0.1:1",
+        )
+    )
+    response = TestClient(application).get("/api/v1/health")
     assert response.status_code == 200
     assert response.json() == {
         "status": "degraded",

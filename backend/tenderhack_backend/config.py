@@ -13,6 +13,11 @@ class Settings:
     is_demo: bool = False
     auto_worker: bool = True
     ollama_url: str = "http://127.0.0.1:11434"
+    ollama_timeout_seconds: float = 120.0
+    runtime_mode: str = "real"
+    knowledge_dir: Path = Path("var/knowledge")
+    hf_home: Path = Path("var/huggingface")
+    embedding_device: str = "cuda"
 
     @classmethod
     def from_env(cls) -> Settings:
@@ -26,4 +31,11 @@ class Settings:
             is_demo=os.getenv("TENDERHACK_IS_DEMO", "false").lower() == "true",
             auto_worker=os.getenv("TENDERHACK_AUTO_WORKER", "true").lower() == "true",
             ollama_url=os.getenv("TENDERHACK_OLLAMA_URL", "http://127.0.0.1:11434"),
+            ollama_timeout_seconds=float(
+                os.getenv("TENDERHACK_OLLAMA_TIMEOUT_SECONDS", "120")
+            ),
+            runtime_mode=os.getenv("TENDERHACK_RUNTIME_MODE", "real").lower(),
+            knowledge_dir=Path(os.getenv("TENDERHACK_KNOWLEDGE_DIR", "var/knowledge")),
+            hf_home=Path(os.getenv("TENDERHACK_HF_HOME", "var/huggingface")),
+            embedding_device=os.getenv("TENDERHACK_EMBEDDING_DEVICE", "cuda"),
         )

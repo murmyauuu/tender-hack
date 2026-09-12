@@ -1,2 +1,1 @@
-"""TenderHack developer tools."""
-
+"""TenderHack command-line tools."""
