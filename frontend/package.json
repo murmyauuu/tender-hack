@@ -9,6 +9,7 @@
     "check:generated": "npm run generate:api && git diff --exit-code -- src/generated",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "smoke:api": "vitest run src/apiTransport.live.test.ts",
     "build": "npm run generate:api && tsc --noEmit && vite build"
   },
   "dependencies": {
