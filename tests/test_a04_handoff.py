@@ -367,9 +367,18 @@ def test_feedback_applies_only_to_current_operator_answer(tmp_path: Path) -> Non
         ),
         author_id="operator-local",
     )
+    not_solved = service.save_feedback(
+        session.session_id,
+        FeedbackInput(message_id=answer.message_id, specialist_rating=5, solved=False),
+    )
+    continuing = service.get_case(session.session_id, accepted.case_id)
+    assert not_solved.outcome_applied is True
+    assert continuing.case.status == "handed_off"
+    assert continuing.ticket.status == "new"
+
     saved = service.save_feedback(
         session.session_id,
-        FeedbackInput(message_id=answer.message_id, specialist_rating=5, solved=True),
+        FeedbackInput(message_id=answer.message_id, solved=True),
     )
     resolved = service.get_case(session.session_id, accepted.case_id)
     assert saved.outcome_applied is True
