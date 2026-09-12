@@ -6,7 +6,7 @@
 |---|---|---|---|---|---|---|
 | Рабочий репозиторий | yes | `C:\Users\Artem\Desktop\Tender_Hack\tender-hack` / A | Git, clean at BASE_SHA | `ab2c182b45cfd9040f0d62a30574970083c15967` | A00 и далее | — |
 | Правила/регламент хакатона | unknown | В репозитории есть презентации задачи, отдельный файл правил не найден | PDF 10 стр. + PPTX 5,17 МБ | см. `input_manifest.sha256` | контекст задачи, не доказательство соответствия правилам | проверку требований |
-| Локальная KB | yes | `TenderHack_KnowledgeBase/knowledge_base_FINAL.jsonl` | JSONL, 3 022 702 байта, 1468 строк | `439e7041b233498a894a9eab41917e07e79109408e1f09b7cbb96668c1b8df2c` | вход C02; содержание ещё не принято как frozen snapshot | C02/C03 |
+| Локальная KB | yes | `TenderHack_KnowledgeBase/knowledge_base_FINAL.jsonl` | canonical raw JSONL организаторов, 3 021 234 байта, 1468 records / 1468 unique id | `71bf714a9e205a35f5d8ec0fd2d0f9bbd4ad3a8409968b754eb8de7b349d79ae` | текущий вход C02/C03; содержание ещё не принято как frozen snapshot | C02/C03 |
 | Регламент как trusted source | yes | `Регламент_информационного_взаимодействия-4.pdf` | PDF, 57 стр., 846 143 байта | `ef09670556196f6acf00d78e4e3aefe688665cecbf1fd8622afaa5fb488b707b` | после проверки применимости C02 | нормативные ответы |
 | PDF originals/приложения | yes | корень + `НН 2026/*.pdf` | 7 source PDF, 887 стр., 53 889 317 байт | пофайлово в `input_manifest.sha256` | source lookup/citations после C02 | точные citations |
 | История обращений | yes | `НН 2026/Выгрузка СТП за 2026.xlsx` | XLSX, 1 лист, 24 960 строк данных + header, 6 столбцов, 6 200 799 байт | `8159199e23214439ba26554d821c7c37b087f3188bc02949d989e8fbc63d83c9` | D01/B04/D03; решения не trusted KB | — |

@@ -1,0 +1,29 @@
+# FIX-A-01 — canonical raw KB reconciliation handoff
+
+- Status: done
+- Owner / tool: Артём / agent A / Codex
+- Branch: `codex/fix/fix-a-01-canonical-raw-kb`
+- Base SHA: `8cc02b7e13050d5c3d7ddb1ccba9961dd1e95392` (`origin/task/a00`)
+- C00 evidence SHA: `7a8c813fbb118eb0244f8c616bba99188c726e53` (`origin/task/c00-input-audit`)
+- Result SHA: commit containing this handoff; exact SHA is reported with the final handoff message because a commit cannot contain its own SHA
+- Contracts version: `2.0.0-c0`, unchanged
+- Machine profile: G / Windows checkout with system `core.autocrlf=true`
+- Runtime SHA / KB snapshot: runtime unchanged; current raw input is `TenderHack_KnowledgeBase/knowledge_base_FINAL.jsonl`, SHA-256 `71bf714a9e205a35f5d8ec0fd2d0f9bbd4ad3a8409968b754eb8de7b349d79ae`, 3 021 234 bytes, 1468 JSONL records / 1468 unique id
+- Changed files: `.gitattributes`; `docs/integration/input_inventory.md`; `docs/integration/input_manifest.sha256`; `docs/coordination/artem/A00-handoff.md` (reconciliation annotation only); `tests/test_bootstrap_docs.py`; this handoff. The tracked KB blob was already canonical and therefore has no content diff; the local worktree copy was refreshed byte-for-byte from that blob.
+- Implemented behavior: disable Git text/EOL conversion only for the canonical organizer JSONL; make the canonical SHA the live inventory and manifest value; add a regression check for raw bytes and record/id counts.
+- Root cause: the tracked Git blob `75981be753b31edb7e6229e5b3a437150fb10af0` contains the canonical LF bytes. A00 measured a Windows checkout without a path attribute, where `core.autocrlf=true` inserted one CR byte for each of 1468 lines, changing the size from 3 021 234 to 3 022 702 bytes and the SHA-256 from canonical `71bf714a…` to checkout-only `439e7041…`.
+- Historical reconciliation: the full `439e7041…` actual output remains in `docs/coordination/artem/A00-handoff.md` and in the immutable `bootstrap-contracts-v2` tree as historical A00 evidence. The handoff now marks it superseded and not a current input. C00 actual outputs remain unchanged. The tag was not moved or rewritten.
+- Acceptance: passed. The live inventory/manifest resolve the KB to `71bf714a…`; no current input declaration uses `439e7041…`; the canonical file parses as 1468 records with 1468 unique id; existing C0 tests pass.
+- Commands and actual outputs:
+  - pre-fix `Get-FileHash` on the Windows checkout → `439e7041b233498a894a9eab41917e07e79109408e1f09b7cbb96668c1b8df2c`, 3 022 702 bytes; this reproduced A00.
+  - direct hash of Git blob `75981be753b31edb7e6229e5b3a437150fb10af0` → `71bf714a9e205a35f5d8ec0fd2d0f9bbd4ad3a8409968b754eb8de7b349d79ae`, 3 021 234 bytes; this matched C00 and the organizer canonical input.
+  - regression RED → expected `71bf714a…`, received `439e7041…`.
+  - regression GREEN → `1 passed`.
+  - manifest verification → `INPUT_HASHES_OK=14`.
+  - KB validation → `KB_SHA256=71bf714a9e205a35f5d8ec0fd2d0f9bbd4ad3a8409968b754eb8de7b349d79ae`; `KB_JSONL_VALID=1468 UNIQUE_IDS=1468 NULL_IDS=0`.
+  - `uv run pytest` → `29 passed in 1.18s`.
+- Data mode: real canonical organizer raw bytes; no normalization, rebuilding, portal download, fixture substitution, or raw content transformation.
+- Artifacts and paths: `TenderHack_KnowledgeBase/knowledge_base_FINAL.jsonl`; `docs/integration/input_inventory.md`; `docs/integration/input_manifest.sha256`.
+- Known blockers and reproducible defects: none for FIX-A-01. Existing A00/C00 blockers remain outside this task.
+- Contract change requests: none; contracts/API were not changed.
+- Inputs required by next task: use this FIX result commit as the downstream base and treat only `71bf714a9e205a35f5d8ec0fd2d0f9bbd4ad3a8409968b754eb8de7b349d79ae` as the current canonical KB input SHA.
