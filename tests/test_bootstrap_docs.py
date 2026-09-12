@@ -1,10 +1,17 @@
 import hashlib
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 
 ROOT = Path(__file__).parents[1]
 CANONICAL_KB_SHA256 = "71bf714a9e205a35f5d8ec0fd2d0f9bbd4ad3a8409968b754eb8de7b349d79ae"
+RAW_TEXT_PATHS = (
+    "TenderHack_KnowledgeBase/knowledge_base_FINAL.jsonl",
+    "TenderHack_KnowledgeBase/TenderHack_KnowledgeBase_summary.txt",
+    "TenderHack_KnowledgeBase/api_report.json",
+)
 
 
 def test_canonical_raw_kb_is_byte_stable() -> None:
@@ -18,6 +25,70 @@ def test_canonical_raw_kb_is_byte_stable() -> None:
 
     attributes = (ROOT / ".gitattributes").read_text(encoding="utf-8")
     assert "TenderHack_KnowledgeBase/knowledge_base_FINAL.jsonl -text" in attributes
+
+
+def test_raw_text_manifest_hashes_are_byte_stable() -> None:
+    manifest_path = ROOT / "docs" / "integration" / "input_manifest.sha256"
+    manifest = {
+        path: digest
+        for digest, path in (
+            line.split("  ", 1)
+            for line in manifest_path.read_text(encoding="utf-8").splitlines()
+        )
+    }
+
+    attributes = set((ROOT / ".gitattributes").read_text(encoding="utf-8").splitlines())
+    for raw_path in RAW_TEXT_PATHS:
+        raw_bytes = (ROOT / raw_path).read_bytes()
+        blob_oid = subprocess.check_output(
+            ["git", "rev-parse", f"HEAD:{raw_path}"], cwd=ROOT, text=True
+        ).strip()
+        blob_bytes = subprocess.check_output(
+            ["git", "cat-file", "blob", blob_oid], cwd=ROOT
+        )
+        blob_sha256 = hashlib.sha256(blob_bytes).hexdigest()
+        assert manifest[raw_path] == blob_sha256
+        assert hashlib.sha256(raw_bytes).hexdigest() == blob_sha256
+
+    for raw_path in RAW_TEXT_PATHS:
+        assert f"{raw_path} -text" in attributes
+
+
+def test_input_manifest_verifier_reports_success_and_failure(tmp_path: Path) -> None:
+    verifier = ROOT / "tools" / "verify_input_manifest.py"
+    assert verifier.is_file()
+
+    result = subprocess.run(
+        [sys.executable, str(verifier)],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "14/14 OK" in result.stdout
+
+    (tmp_path / "sample.txt").write_bytes(b"wrong bytes\n")
+    (tmp_path / "manifest.sha256").write_text(
+        f"{'0' * 64}  sample.txt\n",
+        encoding="utf-8",
+    )
+    failed = subprocess.run(
+        [
+            sys.executable,
+            str(verifier),
+            "--manifest",
+            str(tmp_path / "manifest.sha256"),
+            "--root",
+            str(tmp_path),
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert failed.returncode != 0
+    assert "FAILED" in failed.stdout
 
 
 def test_runtime_config_freezes_numpy_index_and_contract_version() -> None:
