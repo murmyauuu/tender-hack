@@ -1,0 +1,19 @@
+{
+  "request_id": "33333333-3333-4333-8333-333333333333",
+  "case_id": "22222222-2222-4222-8222-222222222222",
+  "status": "processing",
+  "progress": "sources_found",
+  "candidate_sources": [
+    {
+      "source_id": "source-demo",
+      "title": "Тестовая инструкция",
+      "source_type": "portal_knowledge_base_api",
+      "version": null,
+      "page_from": null,
+      "page_to": null
+    }
+  ],
+  "result_message_ids": [],
+  "error": null,
+  "timings_ms": {"queue": 12, "retrieval": 34, "time_to_first_source": 46}
+}

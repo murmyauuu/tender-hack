@@ -2,9 +2,7 @@ import json
 from pathlib import Path
 
 from fastapi.testclient import TestClient
-
 from tenderhack_backend.app import app
-
 
 ROOT = Path(__file__).parents[1]
 
@@ -18,7 +16,7 @@ def test_health_is_runnable_without_models_or_kb() -> None:
         "storage": "ready",
         "knowledge": "unavailable",
         "generator": "unavailable",
-        "contracts_version": "2.0.0-c0",
+        "contracts_version": "2.1.0-a02",
     }
 
 
@@ -44,7 +42,9 @@ def test_openapi_contains_exactly_nine_required_operations() -> None:
 
 
 def test_generated_openapi_matches_runtime() -> None:
-    generated = json.loads((ROOT / "contracts" / "openapi" / "openapi.json").read_text(encoding="utf-8"))
+    generated = json.loads(
+        (ROOT / "contracts" / "openapi" / "openapi.json").read_text(encoding="utf-8")
+    )
     assert generated == app.openapi()
 
 
@@ -52,7 +52,8 @@ def test_generated_export_schema_matches_model() -> None:
     from tenderhack_contracts import EvaluationExport
 
     generated = json.loads(
-        (ROOT / "contracts" / "schemas" / "evaluation-export.schema.json").read_text(encoding="utf-8")
+        (ROOT / "contracts" / "schemas" / "evaluation-export.schema.json").read_text(
+            encoding="utf-8"
+        )
     )
     assert generated == EvaluationExport.model_json_schema()
-

@@ -318,6 +318,17 @@
           "title": "Text",
           "type": "string"
         },
+        "structured_content": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StructuredAnswer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "source_ids": {
           "items": {
             "type": "string"
@@ -579,6 +590,42 @@
         }
       },
       "title": "RoutingResult",
+      "type": "object"
+    },
+    "StructuredAnswer": {
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Summary",
+          "type": "string"
+        },
+        "conditions": {
+          "items": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Conditions",
+          "type": "array"
+        },
+        "steps": {
+          "items": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Steps",
+          "type": "array"
+        }
+      },
+      "required": [
+        "summary"
+      ],
+      "title": "StructuredAnswer",
       "type": "object"
     },
     "TicketStatus": {

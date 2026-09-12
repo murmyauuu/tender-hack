@@ -7,8 +7,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-
-CONTRACTS_VERSION = "2.0.0-c0"
+CONTRACTS_VERSION = "2.1.0-a02"
+AnswerSection = Annotated[str, Field(min_length=1, max_length=2000)]
 
 
 class ContractModel(BaseModel):
@@ -103,13 +103,21 @@ class Case(ContractModel):
     case_version: int = Field(ge=0)
     active_request_id: UUID | None = None
     clarification_count: int = Field(ge=0, le=1)
-    confirmed_facts: dict[str, str | int | float | bool | None] = Field(default_factory=dict)
+    confirmed_facts: dict[str, str | int | float | bool | None] = Field(
+        default_factory=dict
+    )
     topic_id: str | None = None
     subtopic_id: str | None = None
     route: RoutingResult | None = None
     is_demo: bool = False
     created_at: datetime
     updated_at: datetime
+
+
+class StructuredAnswer(ContractModel):
+    summary: str = Field(min_length=1, max_length=4000)
+    conditions: list[AnswerSection] = Field(default_factory=list, max_length=20)
+    steps: list[AnswerSection] = Field(default_factory=list, max_length=20)
 
 
 class Message(ContractModel):
@@ -122,6 +130,7 @@ class Message(ContractModel):
     author_id: str | None = None
     answer_origin: Literal["rag", "card", "operator", "system"] | None = None
     content: str
+    structured_content: StructuredAnswer | None = None
     source_ids: list[str] = Field(default_factory=list)
     created_at: datetime
 
@@ -183,6 +192,8 @@ class ChatInput(ContractModel):
     def validate_operation_shape(self) -> ChatInput:
         if self.retry_of is None and self.text is None:
             raise ValueError("text is required for a new question")
+        if self.text is not None and not self.text.strip():
+            raise ValueError("text must not be blank")
         if self.retry_of is not None and self.text is not None:
             raise ValueError("retry requires text=null")
         if self.case_id is None and self.expected_case_version is not None:
@@ -216,8 +227,9 @@ class FeedbackInput(ContractModel):
 
     @model_validator(mode="after")
     def require_a_rating(self) -> FeedbackInput:
-        if self.useful is None and self.solved is None and self.specialist_rating is None:
-            raise ValueError("at least one rating is required")
+        mutable = {"useful", "solved", "specialist_rating", "reason_codes", "comment"}
+        if not self.model_fields_set.intersection(mutable):
+            raise ValueError("at least one feedback field is required")
         return self
 
 
@@ -323,7 +335,9 @@ class KnowledgeResult(ContractModel):
 
 class QueryContext(ContractModel):
     text: str
-    confirmed_facts: dict[str, str | int | float | bool | None] = Field(default_factory=dict)
+    confirmed_facts: dict[str, str | int | float | bool | None] = Field(
+        default_factory=dict
+    )
     recent_user_messages: list[str] = Field(default_factory=list)
     clarification_count: int = Field(ge=0, le=1)
     trace_id: str
@@ -338,16 +352,18 @@ class KnowledgeHealth(ContractModel):
 
 class GenerationInput(ContractModel):
     question: str
-    confirmed_facts: dict[str, str | int | float | bool | None] = Field(default_factory=dict)
+    confirmed_facts: dict[str, str | int | float | bool | None] = Field(
+        default_factory=dict
+    )
     evidence: list[EvidenceItem] = Field(default_factory=list)
     allowed_source_ids: list[str] = Field(default_factory=list)
 
 
 class GenerationAnswer(ContractModel):
     action: Literal["answer"] = "answer"
-    summary: str = Field(min_length=1)
-    conditions: list[str] = Field(default_factory=list)
-    steps: list[str] = Field(default_factory=list)
+    summary: str = Field(min_length=1, max_length=4000)
+    conditions: list[AnswerSection] = Field(default_factory=list, max_length=20)
+    steps: list[AnswerSection] = Field(default_factory=list, max_length=20)
     source_ids: list[str] = Field(min_length=1)
 
 
@@ -406,6 +422,7 @@ class ExportMessage(ContractModel):
     author_id: str | None = None
     answer_origin: Literal["rag", "card", "operator", "system"] | None = None
     text: str
+    structured_content: StructuredAnswer | None = None
     source_ids: list[str] = Field(default_factory=list)
     created_at: datetime
 
