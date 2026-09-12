@@ -1,0 +1,501 @@
+{
+  "schema": "tenderhack.history_pairs_manifest/v1",
+  "source_file": "НН 2026/Выгрузка СТП за 2026.xlsx",
+  "source_sha256": "8159199e23214439ba26554d821c7c37b087f3188bc02949d989e8fbc63d83c9",
+  "taxonomy_file": "НН 2026/Темы_подтемы_обращений.xlsx",
+  "taxonomy_sha256": "f5649e083b5f0c13cf346e26387064aca2c33edb9c9e7ceee1c3cc4641f5d05a",
+  "rows_total": 24960,
+  "exclude_training_examples_rows": [
+    0,
+    2677,
+    4452,
+    11957,
+    12574,
+    17047,
+    22653,
+    24029
+  ],
+  "notes": "Пара — реальная строка выгрузки: Описание (вопрос) -> Решение (фактический ответ оператора). Решение не является trusted gold само по себе; оценка по рубрике D00/D01. Отбор: валидность (Описание>=25, Решение>=40 после очистки), дедуп точных и близких пар, стратификация по подтемам, исключены учебные примеры D00 (TRN rows).",
+  "pairs": [
+    {
+      "pair_id": "HIST-0001",
+      "row_index": 80,
+      "content_hashes": {
+        "sha256_description": "e5e6da6c1af7ce5c7004dfc5f6dbae6c512c5512454a4bc32b71c2ca67c3a67d",
+        "sha256_resolution": "f5b6cbeeb1e8d66214b7046a1283ee046d3e0de1cf2908e4391284005ecee333"
+      },
+      "topic_raw": "Электронное исполнение (ЕИС)",
+      "subtopic_raw": "Отправка УПД и статус исполнения (ошибки интеграции)",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0002",
+      "row_index": 83,
+      "content_hashes": {
+        "sha256_description": "0ff358431adbf0d1cd8ca4796136c4220905bcfcdb1fe5e027c634f28c0fe614",
+        "sha256_resolution": "524cb6d95f145d25648d2dfe3967e459ead5f53fce5d77bc2c17625b82151cc5"
+      },
+      "topic_raw": "Электронное исполнение (ЕИС).",
+      "subtopic_raw": "Отправка УПД и статус исполнения (ошибки интеграции)",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0003",
+      "row_index": 149,
+      "content_hashes": {
+        "sha256_description": "e58df48595f1f5df849aaffd6549d1b409c9574c29974e3bcdf7aa1e51c55dea",
+        "sha256_resolution": "7ec3ef739fa161df19ca5deb0b26f1eb448963c6e899adae49de86ba7ed5db6a"
+      },
+      "topic_raw": "Электронное исполнение (ЕИС)",
+      "subtopic_raw": "Отправка УПД и статус исполнения (ошибки интеграции)",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0004",
+      "row_index": 15,
+      "content_hashes": {
+        "sha256_description": "d076496e24e080052c83ef14621ddb20712cd149d2e3c3caf6214de7edcb2603",
+        "sha256_resolution": "63cbd9f46ef7f58a8a1194ee70ca42c5c96e187f540a58a11dcd70678aafe9ad"
+      },
+      "topic_raw": "Электронное исполнение (ЕИС)",
+      "subtopic_raw": "Формирование УПД (вопросы по ошибкам РДИК)",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0005",
+      "row_index": 25,
+      "content_hashes": {
+        "sha256_description": "3b82fc4bf8adb1c90a69b48e665f62b5ab44f948bef064813dd271f71ef4cb96",
+        "sha256_resolution": "9530789501b2fbc8718dff6a8e83947158900204d121a2c5c41de229970218cb"
+      },
+      "topic_raw": "Электронное исполнение (ЕИС)",
+      "subtopic_raw": "Формирование УПД (вопросы по ошибкам РДИК)",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0006",
+      "row_index": 147,
+      "content_hashes": {
+        "sha256_description": "ad6e1ed2ef52714a78f6ce613bd3d938f7646e04373863bf1dce38db704964e5",
+        "sha256_resolution": "63ee783ed72abf7141211ec18e22f72a1f201057ffa127b3f5fdfdc18d4f6c01"
+      },
+      "topic_raw": "Электронное исполнение (ЕИС)",
+      "subtopic_raw": "Формирование УПД (вопросы по ошибкам РДИК)",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0007",
+      "row_index": 70,
+      "content_hashes": {
+        "sha256_description": "508ea820ad01d0c72c53ce199601c66cf6e4d3762378033643795bc88aba3025",
+        "sha256_resolution": "fb22ad8d1dab99956b7dd9a90d36564002011190a9d77fc6f30eed7d581b8daa"
+      },
+      "topic_raw": "Электронное исполнение (малый объем)",
+      "subtopic_raw": "Подписание и отправка УПД",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0008",
+      "row_index": 93,
+      "content_hashes": {
+        "sha256_description": "172972ae784166ec0e9019db0c8e790ba20dd101d6aca28522c25cac0e3028a7",
+        "sha256_resolution": "f67074f7056da0039bc1bd4b4fd5e6f12fa5847581d4b6119b87d7d08c0e2a28"
+      },
+      "topic_raw": "INTEGRTP-58506",
+      "subtopic_raw": "Подписание и отправка УПД",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0009",
+      "row_index": 122,
+      "content_hashes": {
+        "sha256_description": "36d29016e1893a1aa7f214eb3d386b607ec8418de4b6b77a777200b6e2dacd26",
+        "sha256_resolution": "ce60465cb236ced24cb00f45577a69de4b791af80b9677eb9e7cbaf497215cce"
+      },
+      "topic_raw": "INTEGRTP-58386",
+      "subtopic_raw": "Подписание и отправка УПД",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0010",
+      "row_index": 47,
+      "content_hashes": {
+        "sha256_description": "0ef4095c694929ebc3b55ab46fc385bc37aa38a508310719ee354976bc25b1a7",
+        "sha256_resolution": "a0eb16b770b1337de8dee106c69cca6c53a6f73b08dea076a87443dab726b9be"
+      },
+      "topic_raw": "Работа с контрактами",
+      "subtopic_raw": "Подписание контракта",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0011",
+      "row_index": 39,
+      "content_hashes": {
+        "sha256_description": "6765e6f0cb917dd794be3295956a09714ee7b4034b6536e2d4f94f0457557242",
+        "sha256_resolution": "37862f3a9ad2889e1b638735048b1494db4d5444a54e8575ef33fa72afad4486"
+      },
+      "topic_raw": "Работа с контрактами",
+      "subtopic_raw": "Подписание контракта",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0012",
+      "row_index": 3,
+      "content_hashes": {
+        "sha256_description": "9c7fb4fd270f1015d6d14066c3fa7b8852d543bd78279359d3794337f55a98fc",
+        "sha256_resolution": "80d2cea67d8a6ff74cb65a4428f08434562e28a0f4b9285309c69dfd35360ebb"
+      },
+      "topic_raw": "Работа с контрактами",
+      "subtopic_raw": "Документ контракта",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0013",
+      "row_index": 4,
+      "content_hashes": {
+        "sha256_description": "4bc342d5445fa4f268dfe3035fb4734c9730b3ecf4e1c05cc22535200ccbc0ae",
+        "sha256_resolution": "961aa1f4a431bbaa961fda84c491ea6fa33894cd8acef6f0c4ef31df7bc293f1"
+      },
+      "topic_raw": "Работа с контрактами",
+      "subtopic_raw": "Документ контракта",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0014",
+      "row_index": 59,
+      "content_hashes": {
+        "sha256_description": "aaa8077f3554c0dd02603ced0afb0b3ee37f07b6718b8653e90761d7493862b3",
+        "sha256_resolution": "a14b0dddc7dc174e31c6e8820bf5325b3db1095ab619610a47d2d50864e6ce00"
+      },
+      "topic_raw": "Электронное исполнение (ЕИС)",
+      "subtopic_raw": "Создание исполнения",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0015",
+      "row_index": 65,
+      "content_hashes": {
+        "sha256_description": "25011cc9ba73e7a3e4ed7b9f6b63b45fc758992ec1056bdf6b49e61cb14a2d1b",
+        "sha256_resolution": "a192b526e73b81e7bbaee75dc3e1f2bb23d25fdcc811cafe683f406fa467195f"
+      },
+      "topic_raw": "Электронное исполнение (ЕИС)",
+      "subtopic_raw": "Создание исполнения",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0016",
+      "row_index": 67,
+      "content_hashes": {
+        "sha256_description": "2e7ed596b2f4747a21e655c9c9f6c4649fda7376fb0e11b8208bf94db89c5c3c",
+        "sha256_resolution": "a84587048e0681f5340b0f421865ba9fc2ec0bce1722cd03265215f599856c79"
+      },
+      "topic_raw": "Работа с контрактами",
+      "subtopic_raw": "Консультация",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0017",
+      "row_index": 121,
+      "content_hashes": {
+        "sha256_description": "a4134acc4eaa8770dc9b75e074194bb5bf228eee0829798c13ff3027ec3d6b42",
+        "sha256_resolution": "2129f036320ee5dfcdda6bae17323cbd8af77d5cff27ad1a7217e5265a8918bb"
+      },
+      "topic_raw": "Личный кабинет пользователя",
+      "subtopic_raw": "Консультация",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0018",
+      "row_index": 48,
+      "content_hashes": {
+        "sha256_description": "99cfc32d33c1c9b5ae85e16e47a13d498a98081d0a88078e66fbe0ecc73cbb47",
+        "sha256_resolution": "5fdf68952c181b232a591c9b4f0fd9fad0ee70cc2d40e339aac540ca87512a35"
+      },
+      "topic_raw": "Работа с контрактами",
+      "subtopic_raw": "Исполнение контракта",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0019",
+      "row_index": 76,
+      "content_hashes": {
+        "sha256_description": "360fdbee69679e79430cbc488895c193be6f972dbaeba69857aa4b748885a3b0",
+        "sha256_resolution": "fc0193b76a6b0229535ce4b850c37f849f86876e02b12b7558915026de074081"
+      },
+      "topic_raw": "Электронное исполнение (малый объем)",
+      "subtopic_raw": "Установка связи с заказчиком",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0020",
+      "row_index": 63,
+      "content_hashes": {
+        "sha256_description": "9d378c2f6cf36145346bf261335539fc93769c982ebafdccb5c582542cc1bb20",
+        "sha256_resolution": "38526f530746248fea16af16d8e5606656a90b8a489c91916e9be5b4f7948ddf"
+      },
+      "topic_raw": "Электронное исполнение (ЕИС)",
+      "subtopic_raw": "Установка связи с ЭДО ЕИС",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0021",
+      "row_index": 557,
+      "content_hashes": {
+        "sha256_description": "d62a43f53adf9481cff80f76648d15c28fa91d36f4dbbfb7934778a20c733067",
+        "sha256_resolution": "b0aa43510c8bbe5513b8387264acd5f7a43e73963047929fb5582cac159db1da"
+      },
+      "topic_raw": "Электронное исполнение (малый объем)",
+      "subtopic_raw": "Регистрация в ЭДО",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0022",
+      "row_index": 317,
+      "content_hashes": {
+        "sha256_description": "01419d3429f88d917990f1587e678e87c4a86134bfcd13094f7a1e0ab7766bf5",
+        "sha256_resolution": "9e3de20752f4e0e7a67dc3ae5302adcf16ab105ab107e1ff25cb7755e5b5d0bc"
+      },
+      "topic_raw": "Личный кабинет пользователя",
+      "subtopic_raw": "Регистрация",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0023",
+      "row_index": 196,
+      "content_hashes": {
+        "sha256_description": "be916812a5a03f8bedaf85e4268c1ea26f7cc2698bc8db8b48315018d3a470d0",
+        "sha256_resolution": "0e9693565e10b2782415f2b740f44baf030bd6812ba00d3cddf2605fe9f11bd1"
+      },
+      "topic_raw": "Личный кабинет пользователя",
+      "subtopic_raw": "Изменение данных пользователя",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0024",
+      "row_index": 721,
+      "content_hashes": {
+        "sha256_description": "cea24c9a2ed084d852d9aa30511c0de01a1cc6d9f6becfaff8cc40af9e1c5993",
+        "sha256_resolution": "5f2bef9cba0b43f257a564eb20c4c447f3af1d99adfee1fa3b6bee2aebf008cd"
+      },
+      "topic_raw": "Личный кабинет пользователя",
+      "subtopic_raw": "Полномочия",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0025",
+      "row_index": 885,
+      "content_hashes": {
+        "sha256_description": "b325406523070d37bc5bcc3311472aa6e831c9d759a8f87ef9d125715455be93",
+        "sha256_resolution": "d77f29245e16e31922f803aeff34cb681f9f0e4587a5c9920193580dcb4e8174"
+      },
+      "topic_raw": "Личный кабинет пользователя",
+      "subtopic_raw": "Сертификат ЭП",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0026",
+      "row_index": 1148,
+      "content_hashes": {
+        "sha256_description": "b8bc5ca5d9f3c49baa38a801154eb12cda0afc0d00c36f8d4200c181f23c8a9a",
+        "sha256_resolution": "f0667c192ad5e6ce75af497815da2a965062b22d75aa57787675f1bc9e7947f2"
+      },
+      "topic_raw": "Блокировка личного кабинета",
+      "subtopic_raw": "Снятие блокировки",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0027",
+      "row_index": 107,
+      "content_hashes": {
+        "sha256_description": "b473f68ff6cd45934d5e9de9fb9baee24a604c20fdab28e1df7d5af54e87c8a5",
+        "sha256_resolution": "174e342a693127798192b938578b76ce53e8814ce36e0b54bbd239cbe29e4952"
+      },
+      "topic_raw": "Закупочные процедуры",
+      "subtopic_raw": "Создание оферты по Котировочной сессии",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0028",
+      "row_index": 17,
+      "content_hashes": {
+        "sha256_description": "6e90f76c3df613a8544ee582efb5fc377051b140580d6b536e7ed5392c33a8bf",
+        "sha256_resolution": "199bcda35128bd798137125fd094cadb610ef8f0cbddb2cfdfb407314f88187f"
+      },
+      "topic_raw": "Работа с СТЕ",
+      "subtopic_raw": "Добавление категории СТЕ",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0029",
+      "row_index": 143,
+      "content_hashes": {
+        "sha256_description": "9ea3b4a1e30d6b9a46f8a49fc10a01879f40b1c01d4dd64174f782e71f00af43",
+        "sha256_resolution": "08b9baaa1e7a969e561941d750ccc68efeee1f7e45c5268e704d63269b42d412"
+      },
+      "topic_raw": "Работа с СТЕ",
+      "subtopic_raw": "Создание заявки СТЕ",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-0030",
+      "row_index": 556,
+      "content_hashes": {
+        "sha256_description": "5916b21e064228d926271626ef70c228f3acd4538fd694f9e6359c0d539835a7",
+        "sha256_resolution": "be2d0ec8c5191ea3c4944dd1cf45f8bbe37e89c17d55a238ac696815294bb8c6"
+      },
+      "topic_raw": "Работа с СТЕ",
+      "subtopic_raw": "Подписание оферты",
+      "pair_status": "selected",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-R01",
+      "row_index": 64,
+      "content_hashes": {
+        "sha256_description": "59b7cc78ad41df6bd8ceb30dbc30a9df32d646145ee55d731ff7ae1a5f6f8d4b",
+        "sha256_resolution": "f37f4eb921f81a2cf104d9a5d159f816054c028bed5db3ef9cc4783fa77b268a"
+      },
+      "topic_raw": "Электронное исполнение (ЕИС)",
+      "subtopic_raw": "Отправка УПД и статус исполнения (ошибки интеграции)",
+      "pair_status": "reserve",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-R02",
+      "row_index": 268,
+      "content_hashes": {
+        "sha256_description": "541b151e523db5fac8f8f2bc8eda5790d2f2257936c26ffa29a1ef546cb97c15",
+        "sha256_resolution": "52638ea19edc90ef87ca4cceb9902e0c5615fc8914eca80225ad09b01a517664"
+      },
+      "topic_raw": "Электронное исполнение (ЕИС)",
+      "subtopic_raw": "Формирование УПД (вопросы по ошибкам РДИК)",
+      "pair_status": "reserve",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-R03",
+      "row_index": 138,
+      "content_hashes": {
+        "sha256_description": "0bd2568b4b5a555735e3e7c1f8f450ee0dbe596c0a23b6fe6de3472bae430ede",
+        "sha256_resolution": "cd2dcb3f429b49cae22d4dfcdf71ae63fb4ebad48237154c94afe3bc8b637e02"
+      },
+      "topic_raw": "Электронное исполнение (малый объем)",
+      "subtopic_raw": "Подписание и отправка УПД",
+      "pair_status": "reserve",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-R04",
+      "row_index": 341,
+      "content_hashes": {
+        "sha256_description": "c1ea340f0559a026b19792f939ff2c044ca7e079ed7f41d735bcefdf22bebd42",
+        "sha256_resolution": "0375a8e8a8356897211ef4bc37b76c81b63ee589572828fb61f1f96b28ece16c"
+      },
+      "topic_raw": "Работа с контрактами",
+      "subtopic_raw": "Подписание контракта",
+      "pair_status": "reserve",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-R05",
+      "row_index": 137,
+      "content_hashes": {
+        "sha256_description": "0bfbf63939ec71eadead4add3341e3705d38771e3434a4f6426e74b26760eec1",
+        "sha256_resolution": "190d3c80c558eab87117effb414dccff92290d8c70ace78387fe6534074a6333"
+      },
+      "topic_raw": "INTEGRTP-58450",
+      "subtopic_raw": "Документ контракта",
+      "pair_status": "reserve",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-R06",
+      "row_index": 150,
+      "content_hashes": {
+        "sha256_description": "34dedff325e154a07fbd0de50b7cbcaf681ff944bf814cfbdd7daec343f501a9",
+        "sha256_resolution": "949480e42f43b1c84ae8b972230a466bab7aa2bb3c240c6279ea670d0551df09"
+      },
+      "topic_raw": "Электронное исполнение (ЕИС)",
+      "subtopic_raw": "Создание исполнения",
+      "pair_status": "reserve",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-R07",
+      "row_index": 236,
+      "content_hashes": {
+        "sha256_description": "bdbc66aa950c30a45ac35edcbc1c27ebd27f29f0e31d43fbc12e7d4719d608b0",
+        "sha256_resolution": "37862f3a9ad2889e1b638735048b1494db4d5444a54e8575ef33fa72afad4486"
+      },
+      "topic_raw": "Личный кабинет пользователя",
+      "subtopic_raw": "Консультация",
+      "pair_status": "reserve",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-R08",
+      "row_index": 544,
+      "content_hashes": {
+        "sha256_description": "4a544441a867be30e23acd3bd2cb52a49caf4edee5fc4df4bf4aad08d5fb85a0",
+        "sha256_resolution": "4089441166c51043c7ca3d2835dadfa122eda6df9e78bebfd9a0e09464dbc8d1"
+      },
+      "topic_raw": "INTEGRTP-58416",
+      "subtopic_raw": "Установка связи с заказчиком",
+      "pair_status": "reserve",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-R09",
+      "row_index": 230,
+      "content_hashes": {
+        "sha256_description": "b9f4258ff41665826e4309eda129b6b44044befeab11707c7c01b3643914e510",
+        "sha256_resolution": "cbed9e57cf912d91f54cb6bb74626a979c20080308d77245a7d21d81d6e6b539"
+      },
+      "topic_raw": "Электронное исполнение (ЕИС)",
+      "subtopic_raw": "Установка связи с ЭДО ЕИС",
+      "pair_status": "reserve",
+      "notes_null": []
+    },
+    {
+      "pair_id": "HIST-R10",
+      "row_index": 273,
+      "content_hashes": {
+        "sha256_description": "b16ac28af008d2b23ac2902eb556db0535f54b6c5e678a35009b3540b410855a",
+        "sha256_resolution": "57283f293a0f1ca33f4305841b93d5eff061040c41d4337fed2df2cf7c3419e8"
+      },
+      "topic_raw": "Электронное исполнение (малый объем)",
+      "subtopic_raw": "Регистрация в ЭДО",
+      "pair_status": "reserve",
+      "notes_null": []
+    }
+  ]
+}

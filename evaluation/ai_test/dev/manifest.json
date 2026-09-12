@@ -1,0 +1,257 @@
+{
+  "schema": "tenderhack.ai_test_manifest/dev-v1",
+  "set": "dev",
+  "count": 20,
+  "groups": [
+    "GRP-D01",
+    "GRP-D02",
+    "GRP-D03",
+    "GRP-D04",
+    "GRP-D05",
+    "GRP-D06",
+    "GRP-D07",
+    "GRP-D08",
+    "GRP-D09",
+    "GRP-D10",
+    "GRP-D11",
+    "GRP-D12",
+    "GRP-D13",
+    "GRP-D14",
+    "GRP-D15",
+    "GRP-D16",
+    "GRP-D17",
+    "GRP-D18"
+  ],
+  "file": "ai_test_dev.jsonl",
+  "sha256": "7dff9fc14660e1f938208987400dd65ec70bde164f1c91168b1e91350084cda2",
+  "generated_at": null,
+  "cases": [
+    {
+      "test_id": "DEV-001",
+      "group_id": "GRP-D01",
+      "answerable": true,
+      "gold_source_ids": [
+        "1e239ab1bd755c48db21"
+      ],
+      "hashes": {
+        "sha256_case": "126b85dc1d5f0125a55fba042729a9324bc486b3c132bb198bfea39349f91ca2"
+      }
+    },
+    {
+      "test_id": "DEV-002",
+      "group_id": "GRP-D01",
+      "answerable": true,
+      "gold_source_ids": [
+        "1e239ab1bd755c48db21",
+        "f07eeccb7391993643cb"
+      ],
+      "hashes": {
+        "sha256_case": "a3808266e0d39b5fbb3a2b2589d50a193c319a2e888bd82563bb5963b4d0806d"
+      }
+    },
+    {
+      "test_id": "DEV-003",
+      "group_id": "GRP-D02",
+      "answerable": true,
+      "gold_source_ids": [
+        "f07eeccb7391993643cb",
+        "4cd23589a20719a31700"
+      ],
+      "hashes": {
+        "sha256_case": "4cf33aca6a5ac41f50e6f478275506ccc4d00b35a4d13fef9e3c88c49ae07a95"
+      }
+    },
+    {
+      "test_id": "DEV-004",
+      "group_id": "GRP-D03",
+      "answerable": true,
+      "gold_source_ids": [
+        "1881606f4dd384a69bf5"
+      ],
+      "hashes": {
+        "sha256_case": "2f1081a56be982b5a287b2bf9be1ed4228c977ebfa9676b4b6f10b10f2eebd88"
+      }
+    },
+    {
+      "test_id": "DEV-005",
+      "group_id": "GRP-D04",
+      "answerable": true,
+      "gold_source_ids": [
+        "57f55c0bf16f7c32125b"
+      ],
+      "hashes": {
+        "sha256_case": "85b48d1e9a83427ce76f44327c3bc528f9bf2f73c3f048b74f8f3a90d03233cc"
+      }
+    },
+    {
+      "test_id": "DEV-006",
+      "group_id": "GRP-D04",
+      "answerable": true,
+      "gold_source_ids": [
+        "57f55c0bf16f7c32125b",
+        "d5395ef3de690c75b419"
+      ],
+      "hashes": {
+        "sha256_case": "da51f7ba1b83adceba72671dcbec854e530b220032777dd438872a819a8ac43f"
+      }
+    },
+    {
+      "test_id": "DEV-007",
+      "group_id": "GRP-D05",
+      "answerable": true,
+      "gold_source_ids": [
+        "74277b582b2ca98895b9",
+        "1a485c4a3d7d1cfa14e1"
+      ],
+      "hashes": {
+        "sha256_case": "dcd400f955459efec2bbdced68d12003bbd1c939e71f4baf5c09bee1ba12bf09"
+      }
+    },
+    {
+      "test_id": "DEV-008",
+      "group_id": "GRP-D06",
+      "answerable": true,
+      "gold_source_ids": [
+        "2d53e6247ffba83f77e1"
+      ],
+      "hashes": {
+        "sha256_case": "3ecfbf085fea92850d366556d210b281d1d0cfe2557d91ec0f6083aec45eaff4"
+      }
+    },
+    {
+      "test_id": "DEV-009",
+      "group_id": "GRP-D07",
+      "answerable": true,
+      "gold_source_ids": [
+        "23994fa9015966d76043"
+      ],
+      "hashes": {
+        "sha256_case": "d4407e46a16864bd7e90a3f73aebcc172ba0adfc97498efd4f1acd815866bee8"
+      }
+    },
+    {
+      "test_id": "DEV-010",
+      "group_id": "GRP-D08",
+      "answerable": true,
+      "gold_source_ids": [
+        "25646aa5d0332dac13b7"
+      ],
+      "hashes": {
+        "sha256_case": "f2980e7a01d45d54f1022c7838b60dd8ef12bd438f9f5bbff0d208c7e8259427"
+      }
+    },
+    {
+      "test_id": "DEV-011",
+      "group_id": "GRP-D09",
+      "answerable": true,
+      "gold_source_ids": [
+        "770187213b53051c832b",
+        "a7f58adcd7d08925d743"
+      ],
+      "hashes": {
+        "sha256_case": "d307182803f5f5b8e033de1332c874fd74e43d653556b56a9e754442ab9ed0f6"
+      }
+    },
+    {
+      "test_id": "DEV-012",
+      "group_id": "GRP-D10",
+      "answerable": true,
+      "gold_source_ids": [
+        "84b256801b171252bc93"
+      ],
+      "hashes": {
+        "sha256_case": "6577137237f5cd763a355d5270b9b070a8e501f18321d01d365b380e5e49960a"
+      }
+    },
+    {
+      "test_id": "DEV-013",
+      "group_id": "GRP-D11",
+      "answerable": true,
+      "gold_source_ids": [
+        "a29437a814d0e0c14e20"
+      ],
+      "hashes": {
+        "sha256_case": "13b385b309b6ca0f4037e542be63a3e5a2f0e3dbfe67d0aaf503d3aa1ca2d5c9"
+      }
+    },
+    {
+      "test_id": "DEV-014",
+      "group_id": "GRP-D12",
+      "answerable": true,
+      "gold_source_ids": [
+        "08f74f93340174a76520"
+      ],
+      "hashes": {
+        "sha256_case": "36faeb4ba59934e9e15e606ed874a71146fb3c5884710b9d5dd266c34712f4a2"
+      }
+    },
+    {
+      "test_id": "DEV-015",
+      "group_id": "GRP-D13",
+      "answerable": true,
+      "gold_source_ids": [
+        "15e0fac0bbd05f9a724d"
+      ],
+      "hashes": {
+        "sha256_case": "0279fb8c780a1b57bc7c497dd64c4c4ac3ccc3dd8d9246b1c5e42554f49e1383"
+      }
+    },
+    {
+      "test_id": "DEV-016",
+      "group_id": "GRP-D14",
+      "answerable": true,
+      "gold_source_ids": [
+        "0dd5cf16da6390966454",
+        "0bdaf32f75995e3046c3"
+      ],
+      "hashes": {
+        "sha256_case": "25fa121ba806d3068ae0124ccff46b54d65f3c8346b8ce858537d663f0a7e4dd"
+      }
+    },
+    {
+      "test_id": "DEV-017",
+      "group_id": "GRP-D15",
+      "answerable": true,
+      "gold_source_ids": [
+        "7d7b5df7153097c48de8",
+        "30290ec620ebb2243939"
+      ],
+      "hashes": {
+        "sha256_case": "7f07aa1c8d7bcd14227871896b43228c3d817d8c5faf68a495e32e806cf1c0f8"
+      }
+    },
+    {
+      "test_id": "DEV-018",
+      "group_id": "GRP-D16",
+      "answerable": true,
+      "gold_source_ids": [
+        "8da3c54b250b493bd9d1"
+      ],
+      "hashes": {
+        "sha256_case": "d93301e80b291faee0168f167f3b0bc6ba36b2864df2c4bc40606dc73c8bcc99"
+      }
+    },
+    {
+      "test_id": "DEV-019",
+      "group_id": "GRP-D17",
+      "answerable": true,
+      "gold_source_ids": [
+        "b8f92ee7051cefb745b9"
+      ],
+      "hashes": {
+        "sha256_case": "a392713de3fa4fa0b2239036763fcb3eca39ebc6f2bf6092af3c017135e314ab"
+      }
+    },
+    {
+      "test_id": "DEV-020",
+      "group_id": "GRP-D18",
+      "answerable": true,
+      "gold_source_ids": [
+        "0e0523bd8561e1bb8a69"
+      ],
+      "hashes": {
+        "sha256_case": "c1c3ebd3126cd0af07a0900223e0c2e1be8df9a447cbba6821a432ee7a058a25"
+      }
+    }
+  ]
+}
