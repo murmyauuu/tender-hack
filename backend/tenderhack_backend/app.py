@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import secrets
 from contextlib import asynccontextmanager
 from uuid import UUID, uuid4
 
@@ -177,14 +178,16 @@ def create_app(
         status_code=status.HTTP_201_CREATED,
     )
     async def create_handoff(
-        request: Request, case_id: UUID, payload: HandoffInput
+        request: Request, response: Response, case_id: UUID, payload: HandoffInput
     ) -> Ticket:
-        del case_id, payload
         check_origin(request)
-        require_session(request)
-        raise DomainError(
-            "NOT_IMPLEMENTED", "Handoff реализуется в A04", status_code=501
+        ticket, created = service.confirm_handoff(
+            require_session(request), case_id, payload
         )
+        response.status_code = (
+            status.HTTP_201_CREATED if created else status.HTTP_200_OK
+        )
+        return ticket
 
     @application.get(
         "/api/v1/sources/{source_id}",
@@ -239,11 +242,33 @@ def create_app(
             contracts_version=CONTRACTS_VERSION,
         )
 
-    @application.post("/internal/tickets/{ticket_id}/reply", response_model=Message)
-    async def operator_reply(ticket_id: UUID, payload: OperatorReplyInput) -> Message:
-        del ticket_id, payload
-        raise DomainError(
-            "NOT_IMPLEMENTED", "Operator reply реализуется в A04", status_code=501
+    @application.post(
+        "/internal/tickets/{ticket_id}/reply",
+        response_model=Message,
+    )
+    async def operator_reply(
+        request: Request, ticket_id: UUID, payload: OperatorReplyInput
+    ) -> Message:
+        configured_key = settings.operator_reply_key
+        if configured_key is None:
+            raise DomainError(
+                "INTERNAL_AUTH_NOT_CONFIGURED",
+                "Internal operator authentication is not configured",
+                status_code=503,
+            )
+        authorization = request.headers.get("authorization", "")
+        scheme, separator, supplied_key = authorization.partition(" ")
+        if (
+            not separator
+            or scheme.lower() != "bearer"
+            or not supplied_key
+            or not secrets.compare_digest(supplied_key, configured_key)
+        ):
+            raise DomainError(
+                "UNAUTHORIZED", "Неверный ключ ответа специалиста", status_code=401
+            )
+        return service.reply_as_operator(
+            ticket_id, payload, author_id=settings.operator_author_id
         )
 
     return application
