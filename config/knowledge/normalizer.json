@@ -1,0 +1,64 @@
+{
+  "normalizer_version": "c02-normalizer-1.0.0",
+  "schema_version": "c02-schema-1.0.0",
+  "comment": "Конфигурация нормализации KB для C02. Файл принадлежит зоне C (config/knowledge). policy_rules.json принадлежит C01 и здесь не затрагивается.",
+  "inputs": {
+    "kb_snapshot": "TenderHack_KnowledgeBase/knowledge_base_FINAL.jsonl",
+    "reglament_pdf": "Регламент_информационного_взаимодействия-4.pdf",
+    "instruction_pdfs": {
+      "supplier_instruction": "НН 2026/Инструкция по работе с Порталом для поставщика.pdf",
+      "customer_instruction": "НН 2026/Инструкция по работе с Порталом для заказчика.pdf",
+      "offer_ste": "НН 2026/Инструкция по созданию оферты и СТЕ.pdf",
+      "electronic_acceptance": "НН 2026/Инструкция по электронному актированию.pdf",
+      "yml": "НН 2026/Инструкция по формированию YML.pdf",
+      "mchd": "НН 2026/Инструкция по работе с машиночитаемыми доверенностями.pdf"
+    }
+  },
+  "chunking": {
+    "comment": "Ориентир раздела 10. Существующие пригодные children снимка НЕ режутся заново; параметры применяются только к вновь загружаемому Регламенту.",
+    "child_tokens_min": 220,
+    "child_tokens_max": 400,
+    "child_overlap_tokens": 40,
+    "parent_tokens_min": 600,
+    "parent_tokens_max": 1000,
+    "reuse_existing_children": true
+  },
+  "field_renames": {
+    "comment": "BL-C00-5: снимок не содержит ни адреса статьи, ни даты актуальности.",
+    "updated_at": "collected_at",
+    "source_url": "collection_endpoint"
+  },
+  "never_invent": {
+    "comment": "Эти поля DTO остаются None при отсутствии реального значения.",
+    "SourceRecord.url": null,
+    "SourceRecord.source_date": null,
+    "per_article_url": null
+  },
+  "roles": {
+    "comment": "§10.4 — instruction не роль; general/пусто не означает все роли.",
+    "role_values": ["supplier", "customer"],
+    "not_a_role": ["instruction", "general", ""]
+  },
+  "reglament_boilerplate_lines": [
+    "Приказ Тендерного комитета г. Москвы от 14.02.2024 N 70",
+    "- 01",
+    "- 17/24",
+    "(ред. от 10.06.2025)",
+    "\"Об утверждении Регламента информа...\"",
+    "\"Об утверждении Регламента информа...",
+    "Документ предоставлен КонсультантПлюс",
+    "Дата сохранения: 15.07.2025",
+    "КонсультантПлюс",
+    "надежная правовая поддержка",
+    "www.consultant.ru",
+    "из 57"
+  ],
+  "embedding": {
+    "comment": "C02 embeddings не строит. Поля заполняются null/unknown явно. Смена adapter/весов требует пересборки снимка (контракт для C03).",
+    "embedding_model": null,
+    "embedding_revision": null,
+    "embedding_dim": null,
+    "adapter_version": null,
+    "index_type": null
+  }
+}
