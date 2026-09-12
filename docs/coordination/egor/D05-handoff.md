@@ -5,6 +5,7 @@
 - **Status**: done
 - **Branch**: `task/d05`
 - **BASE_SHA**: `461c114` (fresh `origin/main` after A04 merge)
+- **Result SHA**: `dd249655ffd6a23eda8ee2dce20068338e57200b` (task/d05 commit)
 - **Owner**: D / Егор
 
 ## A04 / B03 states reflected in this BPMN
