@@ -28,9 +28,7 @@ from tenderhack_contracts import (
 
 from .config import Settings
 from .errors import DomainError
-from .generator import OllamaGenerator
 from .service import BackendService
-from .storage import Database
 
 COOKIE_NAME = "tenderhack_session"
 
@@ -40,15 +38,9 @@ def _error_responses(*codes: int) -> dict[int, dict[str, object]]:
 
 
 def _default_service(settings: Settings) -> BackendService:
-    from knowledge.kb.store import open_store
-    from knowledge.policy import build_policy
+    from .runtime import build_runtime_service
 
-    return BackendService(
-        Database(settings.db_path),
-        policy=build_policy(),
-        knowledge=open_store(),
-        generator=OllamaGenerator(base_url=settings.ollama_url),
-    )
+    return build_runtime_service(settings)
 
 
 def create_app(
@@ -230,12 +222,20 @@ def create_app(
     async def health() -> HealthResponse:
         knowledge = await service.knowledge.health()
         knowledge_status = "ready" if knowledge.mode == "semantic" else knowledge.mode
+        generator_health = getattr(service.generator, "health", None)
+        generator_ready = bool(
+            await generator_health() if generator_health is not None else False
+        )
         return HealthResponse(
-            status="ready" if knowledge_status == "ready" else "degraded",
+            status=(
+                "ready"
+                if knowledge_status == "ready" and generator_ready
+                else "degraded"
+            ),
             ready=True,
             storage="ready",
             knowledge=knowledge_status,
-            generator="unavailable",
+            generator="ready" if generator_ready else "unavailable",
             contracts_version=CONTRACTS_VERSION,
         )
 

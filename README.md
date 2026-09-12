@@ -37,6 +37,19 @@ uv run uvicorn tenderhack_backend.app:app --host 127.0.0.1 --port 8000
 значение `Origin` должно совпадать с `TENDERHACK_ALLOWED_ORIGIN`. Production wiring никогда не включает
 test fakes; controlled dependencies передаются только через `create_app(..., service=...)` в тестах.
 
+Для A03 real dense runtime задайте `TENDERHACK_RUNTIME_MODE=real`,
+`TENDERHACK_KNOWLEDGE_DIR`, `TENDERHACK_HF_HOME` и
+`TENDERHACK_EMBEDDING_DEVICE=cuda`. Real mode прекращает обработку, если C03
+не сообщает `health.mode=semantic`; скрытого перехода на lexical fallback нет.
+
+Воспроизводимый A03 HTTP-client прогон:
+
+~~~powershell
+python -m tools.run_a03_e2e --question "..." --db var/a03/app.sqlite `
+  --evidence var/a03/real-e2e.json --export var/a03/export.json `
+  --app-commit <git-sha>
+~~~
+
 Единый export из согласованного SQLite read snapshot:
 
 ~~~powershell

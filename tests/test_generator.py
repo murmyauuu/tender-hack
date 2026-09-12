@@ -53,6 +53,65 @@ def test_adapter_uses_a01_pin_and_disables_thinking() -> None:
     assert calls[0][1]["stream"] is False
     assert "/no_think" in calls[0][1]["prompt"]
     assert calls[0][1]["options"]["num_ctx"] == 8192
+    assert isinstance(calls[0][1]["format"], dict)
+    assert generator.calls == 1
+
+
+def test_adapter_records_ollama_timings_without_another_generation() -> None:
+    def transport(url, payload, timeout):
+        return {
+            "response": json.dumps(
+                {
+                    "action": "answer",
+                    "summary": "Откройте карточку.",
+                    "conditions": [],
+                    "steps": ["Откройте карточку."],
+                    "source_ids": ["source-demo"],
+                }
+            ),
+            "prompt_eval_duration": 12_500_000,
+            "eval_duration": 25_000_000,
+            "total_duration": 50_000_000,
+        }
+
+    generator = OllamaGenerator(transport=transport)
+    asyncio.run(generator.generate(task()))
+
+    assert generator.calls == 1
+    assert generator.last_timings_ms == {
+        "prompt_eval": 12.5,
+        "decode": 25.0,
+        "ollama_total": 50.0,
+    }
+
+
+def test_health_requires_the_exact_a01_model_digest() -> None:
+    checks = []
+
+    def info_transport(url, timeout):
+        checks.append((url, timeout))
+        return {
+            "models": [
+                {
+                    "name": "qwen3:8b-q4_K_M",
+                    "digest": A01_MODEL_DIGEST,
+                }
+            ]
+        }
+
+    generator = OllamaGenerator(info_transport=info_transport)
+    assert asyncio.run(generator.health()) is True
+    assert checks == [("http://127.0.0.1:11434/api/tags", 60.0)]
+    assert generator.calls == 0
+
+
+def test_health_rejects_wrong_model_digest() -> None:
+    generator = OllamaGenerator(
+        info_transport=lambda url, timeout: {
+            "models": [{"name": "qwen3:8b-q4_K_M", "digest": "wrong"}]
+        }
+    )
+    assert asyncio.run(generator.health()) is False
 
 
 def test_invalid_json_is_not_retried() -> None:
@@ -67,6 +126,7 @@ def test_invalid_json_is_not_retried() -> None:
     with pytest.raises(InvalidGeneration):
         asyncio.run(generator.generate(task()))
     assert calls == 1
+    assert generator.calls == 1
 
 
 def test_mixed_union_fields_are_rejected_without_retry() -> None:
