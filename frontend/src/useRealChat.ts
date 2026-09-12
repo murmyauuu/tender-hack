@@ -12,6 +12,8 @@ import {
   normalizeCaseView,
   pollRequestUntilTerminal,
   readStoredCase,
+  HUMAN_BACKGROUND_POLL_MS,
+  HUMAN_FOREGROUND_POLL_MS,
   STORED_CASE_KEY,
 } from './realChat';
 
@@ -124,6 +126,25 @@ export function useRealChat(
     });
     return () => { cancelled = true; generation.current += 1; };
   }, [followRequest, isCurrent, loadCase, storage, transport]);
+
+  useEffect(() => {
+    const caseId = caseView?.case.case_id;
+    if (!caseId || caseView.case.status !== 'handed_off' || currentCaseId.current !== caseId) return;
+    const token = generation.current;
+    let stopped = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const schedule = () => {
+      timer = globalThis.setTimeout(async () => {
+        await loadCase(caseId, token);
+        if (!stopped && isCurrent(caseId, token)) schedule();
+      }, globalThis.document?.hidden ? HUMAN_BACKGROUND_POLL_MS : HUMAN_FOREGROUND_POLL_MS);
+    };
+    schedule();
+    return () => {
+      stopped = true;
+      if (timer !== null) globalThis.clearTimeout(timer);
+    };
+  }, [caseView?.case.case_id, caseView?.case.case_version, caseView?.case.status, isCurrent, loadCase]);
 
   const sendMessage = useCallback(async (text: string): Promise<boolean> => {
     const trimmed = text.trim();

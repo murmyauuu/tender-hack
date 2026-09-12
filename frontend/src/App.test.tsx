@@ -155,6 +155,40 @@ describe('TenderHack real API UI', () => {
     expect(getCase).toHaveBeenCalledWith('case');
   });
 
+  it('polls a handed-off Case until an operator resolves it', async () => {
+    localStorage.setItem('tenderhack.current-case-id', 'case');
+    const firstReply = {
+      message_id: 'operator-1', case_id: 'case', seq: 1, role: 'assistant' as const,
+      kind: 'answer' as const, responder_type: 'operator' as const, answer_origin: 'operator' as const,
+      content: 'Первый ответ специалиста', created_at: 'now',
+    };
+    const finalReply = { ...firstReply, message_id: 'operator-2', seq: 2, content: 'Специалист завершил обращение' };
+    let read = 0;
+    const getCase = vi.fn(async () => {
+      read += 1;
+      if (read === 1) return {
+        case: { case_id: 'case', session_id: 'session', status: 'handed_off' as const, case_version: 4, clarification_count: 0, created_at: 'now', updated_at: 'now' },
+        ticket: { ticket_id: 'ticket', case_id: 'case', status: 'waiting_user' as const, created_at: 'now', updated_at: 'now' },
+        messages: [firstReply],
+      };
+      return {
+        case: { case_id: 'case', session_id: 'session', status: 'resolved' as const, case_version: 5, clarification_count: 0, created_at: 'now', updated_at: 'later' },
+        ticket: { ticket_id: 'ticket', case_id: 'case', status: 'resolved' as const, resolved_by: 'operator' as const, created_at: 'now', updated_at: 'later' },
+        messages: [firstReply, finalReply],
+      };
+    });
+    const transport: TenderHackTransport = {
+      mode: 'real', createSession: async () => ({ session_id: 'session', created_at: 'now', expires_at: 'later' }),
+      sendMessage: async () => { throw new Error('not called'); }, getRequest: async () => { throw new Error('not called'); }, getCase,
+      getSource: async () => { throw new Error('not called'); }, saveFeedback: async () => { throw new Error('not called'); }, createHandoff: async () => { throw new Error('not called'); },
+    };
+    render(<App mode="real" transport={transport} />);
+    expect(await screen.findByText('Первый ответ специалиста')).toBeTruthy();
+    expect(await screen.findByText('Специалист завершил обращение', {}, { timeout: 2500 })).toBeTruthy();
+    expect(screen.getByText('Обращение завершено. Начните новую тему.')).toBeTruthy();
+    expect(getCase).toHaveBeenCalledTimes(2);
+  });
+
   it('sends explicit handoff to the real transport with the freshly loaded case_version', async () => {
     localStorage.setItem('tenderhack.current-case-id', 'case');
     let handedOff = false;
