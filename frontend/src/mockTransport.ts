@@ -9,10 +9,13 @@ import ticketFixture from '../../contracts/fixtures/ticket.json';
 import type {
   CandidateSource,
   CaseView,
+  ChatInput,
   FeedbackInput,
   FeedbackResponse,
+  HandoffInput,
   RequestView,
   SourceRecord,
+  Ticket,
 } from './generated';
 
 export const fixtureNames = [
@@ -27,7 +30,7 @@ export const fixtureNames = [
 ] as const;
 
 export type FixtureName = (typeof fixtureNames)[number];
-export type ScenarioName = 'queued' | 'retrieving' | 'candidate' | FixtureName;
+export type ScenarioName = 'queued' | 'retrieving' | 'candidate' | 'retry' | FixtureName;
 
 type FrozenErrorEnvelope = typeof errorFixture | typeof staleFixture;
 
@@ -58,7 +61,7 @@ const requestBase: Omit<RequestView, 'status' | 'progress' | 'candidate_sources'
   timings_ms: {},
 };
 
-export const transitionalRequests: Record<'queued' | 'retrieving' | 'candidate', RequestView> = {
+export const transitionalRequests: Record<'queued' | 'retrieving' | 'candidate' | 'retry', RequestView> = {
   queued: { ...requestBase, status: 'queued', progress: 'queued', candidate_sources: [] },
   retrieving: { ...requestBase, status: 'processing', progress: 'retrieving', candidate_sources: [] },
   candidate: {
@@ -67,25 +70,33 @@ export const transitionalRequests: Record<'queued' | 'retrieving' | 'candidate',
     progress: 'sources_found',
     candidate_sources: [candidate],
   },
+  retry: {
+    ...requestBase,
+    status: 'error',
+    progress: null,
+    candidate_sources: [],
+    error: { code: 'GENERATION_FAILED', message: 'Не удалось получить ответ', retryable: true },
+  },
 };
 
 export type MockAction =
   | { operation: 'POST /api/v1/feedback'; body: FeedbackInput }
-  | { operation: 'POST /api/v1/chat'; text: string }
-  | { operation: 'POST /api/v1/cases/{case_id}/handoff'; caseId: string };
+  | { operation: 'POST /api/v1/chat'; body: ChatInput }
+  | { operation: 'POST /api/v1/cases/{case_id}/handoff'; caseId: string; body: HandoffInput };
 
 export class MockTransport {
   readonly mode = 'mock' as const;
   readonly actions: MockAction[] = [];
+  private readonly handoffReceipts = new Map<string, Ticket>();
 
   getCase(name: ScenarioName): CaseView | null {
-    if (name === 'queued' || name === 'retrieving' || name === 'candidate') return answerCase;
+    if (name === 'queued' || name === 'retrieving' || name === 'candidate' || name === 'retry') return answerCase;
     if (name === 'error' || name === 'stale') return null;
     return cases[name];
   }
 
   getRequest(name: ScenarioName): RequestView | null {
-    if (name === 'queued' || name === 'retrieving' || name === 'candidate') {
+    if (name === 'queued' || name === 'retrieving' || name === 'candidate' || name === 'retry') {
       return transitionalRequests[name];
     }
     return null;
@@ -114,12 +125,21 @@ export class MockTransport {
     } satisfies FeedbackResponse;
   }
 
-  async sendMessage(text: string) {
-    this.actions.push({ operation: 'POST /api/v1/chat', text });
+  async sendMessage(body: ChatInput) {
+    this.actions.push({ operation: 'POST /api/v1/chat', body });
   }
 
-  async handoff(caseId: string) {
-    this.actions.push({ operation: 'POST /api/v1/cases/{case_id}/handoff', caseId });
+  async createHandoff(caseId: string, body: HandoffInput): Promise<Ticket> {
+    this.actions.push({ operation: 'POST /api/v1/cases/{case_id}/handoff', caseId, body });
+    const existing = this.handoffReceipts.get(caseId);
+    if (existing) return existing;
+    if (caseId !== cases.handoff_offered.case.case_id || body.expected_case_version !== cases.handoff_offered.case.case_version) {
+      throw new Error('STALE_CASE_VERSION');
+    }
+    const ticket = cases.ticket.ticket;
+    if (!ticket) throw new Error('Fixture Ticket is missing');
+    this.handoffReceipts.set(caseId, ticket);
+    return ticket;
   }
 }
 

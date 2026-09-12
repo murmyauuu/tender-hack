@@ -1,5 +1,6 @@
 import {
   acceptChatApiV1ChatPost,
+  createHandoffApiV1CasesCaseIdHandoffPost,
   createSessionApiV1SessionsPost,
   getCaseApiV1CasesCaseIdGet,
   getRequestApiV1RequestsRequestIdGet,
@@ -14,9 +15,11 @@ import type {
   ErrorEnvelope,
   FeedbackInput,
   FeedbackResponse,
+  HandoffInput,
   RequestView,
   Session,
   SourceRecord,
+  Ticket,
 } from './generated/types.gen';
 
 export type FrontendMode = 'mock' | 'real';
@@ -29,6 +32,7 @@ export interface TenderHackTransport {
   getCase(caseId: string): Promise<CaseView>;
   getSource(sourceId: string): Promise<SourceRecord>;
   saveFeedback(input: FeedbackInput): Promise<FeedbackResponse>;
+  createHandoff(caseId: string, input: HandoffInput): Promise<Ticket>;
 }
 
 export class ApiError extends Error {
@@ -126,5 +130,13 @@ export class RealApiTransport implements TenderHackTransport {
 
   async saveFeedback(input: FeedbackInput): Promise<FeedbackResponse> {
     return unwrap(await saveFeedbackApiV1FeedbackPost({ body: input, client: this.apiClient }));
+  }
+
+  async createHandoff(caseId: string, input: HandoffInput): Promise<Ticket> {
+    return unwrap(await createHandoffApiV1CasesCaseIdHandoffPost({
+      body: input,
+      client: this.apiClient,
+      path: { case_id: caseId },
+    }));
   }
 }

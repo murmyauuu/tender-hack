@@ -2,8 +2,8 @@
 
 React/TypeScript/Vite клиент с двумя явно разделёнными режимами транспорта:
 
-- `VITE_API_MODE=mock` — frozen C0 fixtures, сеть не используется;
-- `VITE_API_MODE=real` — sessions/chat/requests/cases/sources/feedback через A02 OpenAPI client.
+- `VITE_API_MODE=mock` — frozen C0 fixtures и controlled B03 interaction fixtures, сеть не используется;
+- `VITE_API_MODE=real` — sessions/chat/requests/cases/sources/feedback/handoff через generated OpenAPI client.
 
 Без явного `real` приложение запускается в mock-режиме. В real-режиме cookie отправляются с
 `credentials: include`; браузер не читает HttpOnly cookie, SQLite или Ollama напрямую.
@@ -33,6 +33,14 @@ same-origin. Для production `VITE_API_BASE_URL` можно оставить �
 При отклонении chat с 409/429/503 или сетевой ошибке текст остаётся в поле. Автоматического слепого
 повтора mutation нет.
 
+Handoff требует отдельного подтверждения и отправляет `expected_case_version` из последнего Case.
+Статусы Ticket описывают локальную очередь специалистов нашего сервиса. Operator key и internal reply
+endpoint в browser-клиент не подключаются. Повтор failed Request отправляется как `retry_of` с `text=null`,
+а ответ пользователя после operator reply остаётся в том же Case и использует его свежую версию.
+
+До публикации A04 состояния clarify/handoff/Ticket/operator/policy и их переходы проверяются только на
+явно помеченных frozen/controlled fixtures. Это не real operator/handoff PASS.
+
 ## Проверки
 
 ```powershell
@@ -43,5 +51,5 @@ npm test
 npm run build
 ```
 
-Полный browser RAG E2E не относится к текущему smoke: он ожидает опубликованный A03 runtime и
-реальный C03 dense index. Mock/lexical-only результат нельзя считать финальным real RAG E2E.
+Полный B03 operator/handoff E2E ожидает опубликованный A04 runtime. Fixture или controlled-transport
+результат нельзя считать финальным real B03 PASS.

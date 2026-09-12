@@ -25,4 +25,23 @@ describe('frozen fixture transport', () => {
       body: { message_id: '55555555-5555-4555-8555-555555555555', useful: true, reason_codes: [] },
     });
   });
+
+  it('creates at most one Ticket per Case and sends the current version', async () => {
+    const transport = new MockTransport();
+    const body = { request_key: 'handoff-key', expected_case_version: 2 };
+    const first = await transport.createHandoff('22222222-2222-4222-8222-222222222222', body);
+    const second = await transport.createHandoff('22222222-2222-4222-8222-222222222222', { ...body, request_key: 'another-key' });
+    expect(second.ticket_id).toBe(first.ticket_id);
+    expect(new Set([first.ticket_id, second.ticket_id]).size).toBe(1);
+    expect(transport.actions[0]).toMatchObject({ operation: 'POST /api/v1/cases/{case_id}/handoff', body: { expected_case_version: 2 } });
+  });
+
+  it('represents retry with retry_of and no duplicate user text', async () => {
+    const transport = new MockTransport();
+    await transport.sendMessage({ case_id: 'case', expected_case_version: 7, request_key: 'retry-key', text: null, retry_of: 'failed-request' });
+    expect(transport.actions[0]).toEqual({
+      operation: 'POST /api/v1/chat',
+      body: { case_id: 'case', expected_case_version: 7, request_key: 'retry-key', text: null, retry_of: 'failed-request' },
+    });
+  });
 });

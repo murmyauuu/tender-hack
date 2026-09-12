@@ -20,6 +20,7 @@ const transport = (requests: RequestView[]): TenderHackTransport => ({
   getCase: vi.fn(async () => caseView),
   getSource: vi.fn(),
   saveFeedback: vi.fn(),
+  createHandoff: vi.fn(),
 });
 
 describe('real chat orchestration', () => {
@@ -53,6 +54,20 @@ describe('real chat orchestration', () => {
     const result = await pollRequestUntilTerminal(api, 'old-request', 'old-case', () => false, async () => undefined);
     expect(result.caseView).toBeNull();
     expect(api.getRequest).not.toHaveBeenCalled();
+    expect(api.getCase).not.toHaveBeenCalled();
+  });
+
+  it('drops a response that becomes stale while getRequest is in flight', async () => {
+    let current = true;
+    const api = transport([{ request_id: 'old-request', case_id: 'old-case', status: 'final' }]);
+    vi.mocked(api.getRequest).mockImplementationOnce(async () => {
+      current = false;
+      return { request_id: 'old-request', case_id: 'old-case', status: 'final' };
+    });
+    const updates: RequestView[] = [];
+    const result = await pollRequestUntilTerminal(api, 'old-request', 'old-case', () => current, async () => undefined, () => false, (item) => updates.push(item));
+    expect(result.caseView).toBeNull();
+    expect(updates).toHaveLength(0);
     expect(api.getCase).not.toHaveBeenCalled();
   });
 

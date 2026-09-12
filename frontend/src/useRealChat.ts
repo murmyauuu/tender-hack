@@ -4,6 +4,7 @@ import type {
   CaseView,
   ErrorDetail,
   FeedbackInput,
+  FeedbackResponse,
   RequestView,
   SourceRecord,
 } from './generated/types.gen';
@@ -23,7 +24,9 @@ export interface RealChatModel {
   sourceLoading: boolean;
   sending: boolean;
   sendMessage(text: string): Promise<boolean>;
-  saveFeedback(input: FeedbackInput): Promise<void>;
+  retryRequest(requestId: string): Promise<boolean>;
+  confirmHandoff(): Promise<boolean>;
+  saveFeedback(input: FeedbackInput): Promise<FeedbackResponse>;
   openSource(sourceId: string): Promise<void>;
   closeSource(): void;
   newTopic(): void;
@@ -62,6 +65,7 @@ export function useRealChat(
     expectedVersion: number | null;
     requestKey: string;
   } | null>(null);
+  const pendingHandoff = useRef<{ caseId: string; expectedVersion: number; requestKey: string } | null>(null);
 
   const isCurrent = useCallback(
     (candidate: string, token: number) => currentCaseId.current === candidate && generation.current === token,
@@ -178,11 +182,69 @@ export function useRealChat(
     }
   }, [caseView, followRequest, loadCase, sending, storage, transport]);
 
+  const retryRequest = useCallback(async (requestId: string): Promise<boolean> => {
+    const current = caseView?.case;
+    if (!current || current.case_id !== currentCaseId.current || sending) return false;
+    setSending(true);
+    setError(null);
+    try {
+      const accepted = await transport.sendMessage({
+        case_id: current.case_id,
+        expected_case_version: current.case_version,
+        request_key: crypto.randomUUID(),
+        text: null,
+        retry_of: requestId,
+      });
+      generation.current += 1;
+      const token = generation.current;
+      setRequest({ request_id: accepted.request_id, case_id: accepted.case_id, status: accepted.status });
+      void loadCase(accepted.case_id, token);
+      void followRequest(accepted.request_id, accepted.case_id, token);
+      return true;
+    } catch (caught) {
+      const apiError = caught instanceof ApiError ? caught : new ApiError(null, caught);
+      setError(apiError.detail);
+      if (apiError.status === 409) await loadCase(current.case_id);
+      return false;
+    } finally {
+      setSending(false);
+    }
+  }, [caseView, followRequest, loadCase, sending, transport]);
+
+  const confirmHandoff = useCallback(async (): Promise<boolean> => {
+    const current = caseView?.case;
+    if (!current || current.case_id !== currentCaseId.current || current.status !== 'handoff_offered' || sending) return false;
+    const previous = pendingHandoff.current;
+    const pending = previous?.caseId === current.case_id && previous.expectedVersion === current.case_version
+      ? previous
+      : { caseId: current.case_id, expectedVersion: current.case_version, requestKey: crypto.randomUUID() };
+    pendingHandoff.current = pending;
+    setSending(true);
+    setError(null);
+    try {
+      await transport.createHandoff(current.case_id, {
+        request_key: pending.requestKey,
+        expected_case_version: current.case_version,
+      });
+      pendingHandoff.current = null;
+      await loadCase(current.case_id);
+      return true;
+    } catch (caught) {
+      const apiError = caught instanceof ApiError ? caught : new ApiError(null, caught);
+      setError(apiError.detail);
+      if (apiError.status === 409) await loadCase(current.case_id);
+      return false;
+    } finally {
+      setSending(false);
+    }
+  }, [caseView, loadCase, sending, transport]);
+
   const saveFeedback = useCallback(async (input: FeedbackInput) => {
     setError(null);
     try {
-      await transport.saveFeedback(input);
+      const response = await transport.saveFeedback(input);
       if (currentCaseId.current) await loadCase(currentCaseId.current);
+      return response;
     } catch (caught) {
       setError(clientError(caught));
       if (caught instanceof ApiError && caught.status === 409 && currentCaseId.current) {
@@ -214,6 +276,7 @@ export function useRealChat(
     currentCaseId.current = null;
     storage.removeItem(STORED_CASE_KEY);
     pendingSubmission.current = null;
+    pendingHandoff.current = null;
     setCaseView(null);
     setRequest(null);
     setError(null);
@@ -229,6 +292,8 @@ export function useRealChat(
     sourceLoading,
     sending,
     sendMessage,
+    retryRequest,
+    confirmHandoff,
     saveFeedback,
     openSource,
     closeSource,

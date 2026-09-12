@@ -7,7 +7,7 @@ const json = (body: unknown, status = 200) => new Response(JSON.stringify(body),
 });
 
 describe('real A02 transport', () => {
-  it('uses the generated client for sessions, chat, requests, cases, sources and feedback', async () => {
+  it('uses the generated client for sessions, chat, requests, cases, sources, feedback and handoff', async () => {
     const requests: Request[] = [];
     const fetchMock = vi.fn(async (request: Request) => {
       requests.push(request);
@@ -18,6 +18,7 @@ describe('real A02 transport', () => {
       if (path === '/api/v1/cases/case') return json({ case: { case_id: 'case', session_id: 'session', status: 'open', case_version: 1, clarification_count: 0, created_at: 'now', updated_at: 'now' }, messages: [] });
       if (path === '/api/v1/sources/source') return json({ source_id: 'source', source_type: 'portal', title: 'Title', excerpt: 'Excerpt', content_status: 'complete' });
       if (path === '/api/v1/feedback') return json({ feedback_id: 'feedback', message_id: 'message', case_version: 2, case_status: 'resolved', outcome_applied: true }, 201);
+      if (path === '/api/v1/cases/case/handoff') return json({ ticket_id: 'ticket', case_id: 'case', status: 'new', created_at: 'now', updated_at: 'now' }, 201);
       return json({}, 404);
     });
     const transport = new RealApiTransport('http://api.test', fetchMock as typeof fetch);
@@ -28,6 +29,7 @@ describe('real A02 transport', () => {
     await transport.getCase('case');
     await transport.getSource('source');
     await transport.saveFeedback({ message_id: 'message', useful: true });
+    await transport.createHandoff('case', { request_key: 'handoff-key', expected_case_version: 2 });
 
     expect(requests.map((request) => `${request.method} ${new URL(request.url).pathname}`)).toEqual([
       'POST /api/v1/sessions',
@@ -36,6 +38,7 @@ describe('real A02 transport', () => {
       'GET /api/v1/cases/case',
       'GET /api/v1/sources/source',
       'POST /api/v1/feedback',
+      'POST /api/v1/cases/case/handoff',
     ]);
     expect(requests.every((request) => request.credentials === 'include')).toBe(true);
   });

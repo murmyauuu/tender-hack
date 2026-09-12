@@ -59,6 +59,10 @@ main { max-width: 1300px; margin: 0 auto; padding: 36px clamp(18px, 4vw, 52px) 6
 .error.stale { background: #fff8e8; border-color: #ead7a6; }
 .error button, .handoff { border: 0; color: #fff; background: #174b40; padding: 11px 15px; border-radius: 10px; font-weight: 700; }
 .handoff { align-self: flex-start; }
+.handoff-confirm { padding: 18px; border: 1px solid #cadbd3; border-radius: 14px; background: #f2f7f3; }
+.handoff-confirm p { margin: 7px 0 14px; color: #64766f; font-size: 13px; }
+.handoff-confirm div { display: flex; gap: 8px; }
+.handoff-confirm div > button:not(.handoff) { border: 1px solid #cad6d0; border-radius: 10px; background: #fff; color: #365a50; padding: 10px 14px; }
 .feedback { margin-top: 18px; padding-top: 16px; border-top: 1px solid #e7e5df; display: grid; grid-template-columns: auto 1fr; gap: 8px 14px; align-items: center; font-size: 12px; }
 .feedback-row { display: flex; gap: 6px; }
 .feedback button { border: 1px solid #cfdbd5; background: #fff; color: #31594f; border-radius: 8px; padding: 6px 10px; }
