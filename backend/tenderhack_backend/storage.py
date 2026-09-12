@@ -19,13 +19,17 @@ from tenderhack_contracts import (
     ChatInput,
     FeedbackInput,
     FeedbackResponse,
+    HandoffInput,
     Message,
+    OperatorReplyInput,
+    ReasonCode,
     RequestError,
     RequestStatus,
     RequestView,
     RoutingResult,
     Session,
     Ticket,
+    TicketStatus,
 )
 
 from .errors import DomainError, not_found
@@ -199,6 +203,34 @@ class Database:
             )
             return created, True
 
+    @staticmethod
+    def _ticket_from_row(row: sqlite3.Row) -> Ticket:
+        return Ticket(
+            ticket_id=row["ticket_id"],
+            case_id=row["case_id"],
+            status=row["status"],
+            route=(
+                RoutingResult.model_validate_json(row["route_json"])
+                if row["route_json"]
+                else None
+            ),
+            reason_codes=json.loads(row["reason_codes_json"]),
+            missing_information=json.loads(row["missing_information_json"]),
+            context_snapshot=json.loads(row["context_snapshot_json"]),
+            created_at=row["created_at"],
+            updated_at=row["updated_at"],
+            resolved_by=row["resolved_by"],
+        )
+
+    def case_has_ticket(self, session_id: UUID, case_id: UUID) -> bool:
+        with self.transaction() as connection:
+            row = connection.execute(
+                """SELECT 1 FROM tickets JOIN cases USING(case_id)
+                WHERE case_id=? AND session_id=?""",
+                (str(case_id), str(session_id)),
+            ).fetchone()
+        return row is not None
+
     def get_receipt(
         self, session_id: UUID, payload: ChatInput
     ) -> AcceptedRequest | None:
@@ -225,6 +257,7 @@ class Database:
         *,
         is_demo: bool,
         supersede_active: bool = False,
+        chat_mode: str = "ai",
     ) -> tuple[AcceptedRequest, bool]:
         now = utc_now()
         body_hash = hash_payload(payload.model_dump(mode="json"))
@@ -319,12 +352,27 @@ class Database:
                         "UPDATE cases SET active_request_id=NULL,case_version=?,updated_at=? WHERE case_id=?",
                         (current_version, now.isoformat(), str(case_id)),
                     )
-                if connection.execute(
-                    "SELECT 1 FROM tickets WHERE case_id=?", (str(case_id),)
-                ).fetchone():
+                ticket = connection.execute(
+                    "SELECT * FROM tickets WHERE case_id=?", (str(case_id),)
+                ).fetchone()
+                if ticket is not None and chat_mode not in ("operator", "policy"):
                     raise DomainError(
                         "INVALID_TRANSITION",
                         "Обращение передано специалисту",
+                        status_code=409,
+                    )
+                if ticket is None and chat_mode == "operator":
+                    raise DomainError(
+                        "INVALID_TRANSITION",
+                        "Обращение не ожидает ответа специалисту",
+                        status_code=409,
+                    )
+                if ticket is not None and chat_mode == "operator" and ticket[
+                    "status"
+                ] != TicketStatus.WAITING_USER.value:
+                    raise DomainError(
+                        "INVALID_TRANSITION",
+                        "Специалист ещё не запросил ответ пользователя",
                         status_code=409,
                     )
 
@@ -377,6 +425,58 @@ class Database:
                         ),
                     )
                 case_version = current_version + 1
+                if ticket is not None and chat_mode == "operator":
+                    connection.execute(
+                        """UPDATE tickets SET status=?,updated_at=?,resolved_by=NULL
+                        WHERE ticket_id=?""",
+                        (TicketStatus.NEW.value, now.isoformat(), ticket["ticket_id"]),
+                    )
+                    connection.execute(
+                        """UPDATE cases SET status=?,case_version=?,active_request_id=NULL,
+                        updated_at=? WHERE case_id=?""",
+                        (
+                            CaseStatus.HANDED_OFF.value,
+                            case_version,
+                            now.isoformat(),
+                            str(case_id),
+                        ),
+                    )
+                    accepted = AcceptedRequest(
+                        request_id=request_id,
+                        case_id=case_id,
+                        user_message_id=user_message_id,
+                        case_version=case_version,
+                        status=RequestStatus.FINAL,
+                        trace_id=trace_id,
+                    )
+                    connection.execute(
+                        """INSERT INTO requests
+                        (request_id,case_id,user_message_id,accepted_case_version,status,progress,
+                         result_message_ids_json,trace_id,timings_json,created_at,finished_at)
+                        VALUES (?,?,?,?,?,NULL,'[]',?,?,?,?)""",
+                        (
+                            str(request_id),
+                            str(case_id),
+                            str(user_message_id),
+                            case_version,
+                            RequestStatus.FINAL.value,
+                            trace_id,
+                            json.dumps({key: None for key in TIMING_KEYS}),
+                            now.isoformat(),
+                            now.isoformat(),
+                        ),
+                    )
+                    connection.execute(
+                        "INSERT INTO receipts VALUES (?, 'chat', ?, ?, ?, ?)",
+                        (
+                            str(session_id),
+                            str(payload.request_key),
+                            body_hash,
+                            accepted.model_dump_json(),
+                            now.isoformat(),
+                        ),
+                    )
+                    return accepted, True
                 connection.execute(
                     "UPDATE cases SET status=?,case_version=?,active_request_id=?,updated_at=? WHERE case_id=?",
                     (
@@ -424,7 +524,386 @@ class Database:
             )
             return accepted, True
 
-    def mark_processing(self, request_id: UUID, progress: str) -> None:
+    @staticmethod
+    def _handoff_context(
+        connection: sqlite3.Connection,
+        case: sqlite3.Row,
+        route: RoutingResult,
+        reason: ReasonCode,
+    ) -> dict[str, Any]:
+        history_rows = connection.execute(
+            "SELECT * FROM messages WHERE case_id=? ORDER BY seq", (case["case_id"],)
+        ).fetchall()
+        history = [
+            {
+                "message_id": item["message_id"],
+                "seq": item["seq"],
+                "role": item["role"],
+                "kind": item["kind"],
+                "responder_type": item["responder_type"],
+                "author_id": item["author_id"],
+                "answer_origin": item["answer_origin"],
+                "content": item["content"],
+                "structured_content": (
+                    json.loads(item["structured_content_json"])
+                    if item["structured_content_json"]
+                    else None
+                ),
+                "source_ids": json.loads(item["source_ids_json"]),
+            }
+            for item in history_rows
+        ]
+        source_ids = list(route.basis_source_ids)
+        for item in history:
+            for source_id in item["source_ids"]:
+                if source_id not in source_ids:
+                    source_ids.append(source_id)
+        routing: dict[str, Any] = {
+            "topic_id": route.topic_id,
+            "subtopic_id": route.subtopic_id,
+            "support_line": route.support_line,
+            "basis_source_ids": route.basis_source_ids,
+            "rule_id": route.rule_id,
+            "is_probable_defect": route.is_probable_defect,
+            "is_ambiguous": route.is_ambiguous,
+        }
+        if route.recommended_recipient is not None:
+            routing["recommended_recipient"] = route.recommended_recipient
+        return {
+            "case": {
+                "case_id": case["case_id"],
+                "status": case["status"],
+                "case_version": case["case_version"],
+                "confirmed_facts": json.loads(case["confirmed_facts_json"]),
+            },
+            "history": history,
+            "handoff_reason": reason.value,
+            "routing": routing,
+            "source_context": {"source_ids": source_ids},
+        }
+
+    def confirm_handoff(
+        self, session_id: UUID, case_id: UUID, payload: HandoffInput
+    ) -> tuple[Ticket, bool]:
+        now = utc_now().isoformat()
+        body_hash = hash_payload(
+            {"case_id": str(case_id), **payload.model_dump(mode="json")}
+        )
+        with self.transaction(immediate=True) as connection:
+            case = connection.execute(
+                "SELECT * FROM cases WHERE case_id=? AND session_id=?",
+                (str(case_id), str(session_id)),
+            ).fetchone()
+            if case is None:
+                raise not_found()
+            receipt = connection.execute(
+                """SELECT body_hash,response_json FROM receipts
+                WHERE actor_id=? AND operation='handoff' AND request_key=?""",
+                (str(session_id), str(payload.request_key)),
+            ).fetchone()
+            if receipt is not None:
+                if receipt["body_hash"] != body_hash:
+                    raise DomainError(
+                        "IDEMPOTENCY_CONFLICT",
+                        "Ключ запроса уже использован с другим телом",
+                        status_code=409,
+                    )
+                return Ticket.model_validate_json(receipt["response_json"]), False
+            current_version = int(case["case_version"])
+            if payload.expected_case_version != current_version:
+                raise DomainError(
+                    "STALE_CASE_VERSION",
+                    "Состояние обращения изменилось",
+                    status_code=409,
+                    current_case_version=current_version,
+                )
+            existing = connection.execute(
+                "SELECT * FROM tickets WHERE case_id=?", (str(case_id),)
+            ).fetchone()
+            if existing is not None:
+                ticket = self._ticket_from_row(existing)
+                connection.execute(
+                    "INSERT INTO receipts VALUES (?, 'handoff', ?, ?, ?, ?)",
+                    (
+                        str(session_id),
+                        str(payload.request_key),
+                        body_hash,
+                        ticket.model_dump_json(),
+                        now,
+                    ),
+                )
+                return ticket, False
+            if case["status"] != CaseStatus.HANDOFF_OFFERED.value:
+                raise DomainError(
+                    "INVALID_TRANSITION",
+                    "Передача специалисту не предложена",
+                    status_code=409,
+                )
+            if case["active_request_id"] is not None:
+                connection.execute(
+                    """UPDATE requests SET status='cancelled',progress=NULL,
+                    error_code='SUPERSEDED_BY_HANDOFF',error_message='Запрос отменён передачей специалисту',
+                    error_retryable=0,finished_at=? WHERE request_id=?""",
+                    (now, case["active_request_id"]),
+                )
+            route = (
+                RoutingResult.model_validate_json(case["route_json"])
+                if case["route_json"]
+                else RoutingResult(reason_codes=[ReasonCode.NO_EVIDENCE])
+            )
+            reason = route.reason_codes[-1] if route.reason_codes else ReasonCode.NO_EVIDENCE
+            ticket = Ticket(
+                ticket_id=uuid4(),
+                case_id=case_id,
+                status=TicketStatus.NEW,
+                route=route,
+                reason_codes=route.reason_codes or [reason],
+                missing_information=[],
+                context_snapshot=self._handoff_context(connection, case, route, reason),
+                created_at=now,
+                updated_at=now,
+            )
+            connection.execute(
+                """INSERT INTO tickets
+                (ticket_id,case_id,status,route_json,reason_codes_json,missing_information_json,
+                 context_snapshot_json,created_at,updated_at,resolved_by)
+                VALUES (?,?,?,?,?,?,?,?,?,NULL)""",
+                (
+                    str(ticket.ticket_id),
+                    str(case_id),
+                    ticket.status.value,
+                    route.model_dump_json(),
+                    json.dumps([item.value for item in ticket.reason_codes]),
+                    "[]",
+                    json.dumps(ticket.context_snapshot, ensure_ascii=False),
+                    now,
+                    now,
+                ),
+            )
+            connection.execute(
+                """UPDATE cases SET status=?,case_version=case_version+1,
+                active_request_id=NULL,updated_at=? WHERE case_id=?""",
+                (CaseStatus.HANDED_OFF.value, now, str(case_id)),
+            )
+            connection.execute(
+                "INSERT INTO receipts VALUES (?, 'handoff', ?, ?, ?, ?)",
+                (
+                    str(session_id),
+                    str(payload.request_key),
+                    body_hash,
+                    ticket.model_dump_json(),
+                    now,
+                ),
+            )
+            return ticket, True
+
+    def publish_explicit_handoff(
+        self, request_id: UUID, route: RoutingResult, reason: ReasonCode
+    ) -> Ticket:
+        now = utc_now().isoformat()
+        with self.transaction(immediate=True) as connection:
+            request = connection.execute(
+                "SELECT * FROM requests WHERE request_id=?", (str(request_id),)
+            ).fetchone()
+            if request is None:
+                raise not_found()
+            case = connection.execute(
+                "SELECT * FROM cases WHERE case_id=?", (request["case_id"],)
+            ).fetchone()
+            if case is None or case["active_request_id"] != str(request_id):
+                raise DomainError(
+                    "INVALID_TRANSITION", "Запрос уже неактуален", status_code=409
+                )
+            existing = connection.execute(
+                "SELECT * FROM tickets WHERE case_id=?", (request["case_id"],)
+            ).fetchone()
+            if existing is not None:
+                return self._ticket_from_row(existing)
+            reason_codes = list(route.reason_codes)
+            if reason not in reason_codes:
+                reason_codes.append(reason)
+            route = route.model_copy(update={"reason_codes": reason_codes})
+            ticket = Ticket(
+                ticket_id=uuid4(),
+                case_id=request["case_id"],
+                status=TicketStatus.NEW,
+                route=route,
+                reason_codes=reason_codes,
+                missing_information=[],
+                context_snapshot=self._handoff_context(connection, case, route, reason),
+                created_at=now,
+                updated_at=now,
+            )
+            seq = int(
+                connection.execute(
+                    "SELECT COALESCE(MAX(seq),0)+1 FROM messages WHERE case_id=?",
+                    (request["case_id"],),
+                ).fetchone()[0]
+            )
+            message_id = uuid4()
+            connection.execute(
+                """INSERT INTO messages
+                (message_id,case_id,seq,role,kind,responder_type,answer_origin,content,
+                 source_ids_json,created_at)
+                VALUES (?,?,?,'assistant','notice','system','system',?,'[]',?)""",
+                (
+                    str(message_id),
+                    request["case_id"],
+                    seq,
+                    "Обращение передано специалисту по вашему запросу.",
+                    now,
+                ),
+            )
+            connection.execute(
+                """INSERT INTO tickets
+                (ticket_id,case_id,status,route_json,reason_codes_json,missing_information_json,
+                 context_snapshot_json,created_at,updated_at,resolved_by)
+                VALUES (?,?,?,?,?,?,?,?,?,NULL)""",
+                (
+                    str(ticket.ticket_id),
+                    request["case_id"],
+                    ticket.status.value,
+                    route.model_dump_json(),
+                    json.dumps([item.value for item in reason_codes]),
+                    "[]",
+                    json.dumps(ticket.context_snapshot, ensure_ascii=False),
+                    now,
+                    now,
+                ),
+            )
+            connection.execute(
+                """UPDATE cases SET status=?,case_version=case_version+1,
+                active_request_id=NULL,topic_id=COALESCE(?,topic_id),
+                subtopic_id=COALESCE(?,subtopic_id),route_json=?,updated_at=? WHERE case_id=?""",
+                (
+                    CaseStatus.HANDED_OFF.value,
+                    route.topic_id,
+                    route.subtopic_id,
+                    route.model_dump_json(),
+                    now,
+                    request["case_id"],
+                ),
+            )
+            connection.execute(
+                """UPDATE requests SET status='final',progress=NULL,result_message_ids_json=?,
+                finished_at=? WHERE request_id=?""",
+                (json.dumps([str(message_id)]), now, str(request_id)),
+            )
+            return ticket
+
+    def reply_as_operator(
+        self, ticket_id: UUID, payload: OperatorReplyInput, *, author_id: str
+    ) -> Message:
+        now = utc_now().isoformat()
+        body_hash = hash_payload(
+            {"ticket_id": str(ticket_id), **payload.model_dump(mode="json")}
+        )
+        with self.transaction(immediate=True) as connection:
+            receipt = connection.execute(
+                """SELECT body_hash,response_json FROM receipts
+                WHERE actor_id=? AND operation='operator_reply' AND request_key=?""",
+                (author_id, str(payload.request_key)),
+            ).fetchone()
+            if receipt is not None:
+                if receipt["body_hash"] != body_hash:
+                    raise DomainError(
+                        "IDEMPOTENCY_CONFLICT",
+                        "Ключ запроса уже использован с другим телом",
+                        status_code=409,
+                    )
+                return Message.model_validate_json(receipt["response_json"])
+            ticket = connection.execute(
+                "SELECT * FROM tickets WHERE ticket_id=?", (str(ticket_id),)
+            ).fetchone()
+            if ticket is None:
+                raise not_found()
+            case = connection.execute(
+                "SELECT * FROM cases WHERE case_id=?", (ticket["case_id"],)
+            ).fetchone()
+            current_version = int(case["case_version"])
+            if payload.expected_case_version != current_version:
+                raise DomainError(
+                    "STALE_CASE_VERSION",
+                    "Состояние обращения изменилось",
+                    status_code=409,
+                    current_case_version=current_version,
+                )
+            if ticket["status"] != TicketStatus.NEW.value:
+                raise DomainError(
+                    "INVALID_TRANSITION",
+                    "Ticket не ожидает ответа специалиста",
+                    status_code=409,
+                )
+            seq = int(
+                connection.execute(
+                    "SELECT COALESCE(MAX(seq),0)+1 FROM messages WHERE case_id=?",
+                    (ticket["case_id"],),
+                ).fetchone()[0]
+            )
+            message = Message(
+                message_id=uuid4(),
+                case_id=ticket["case_id"],
+                seq=seq,
+                role="assistant",
+                kind="answer",
+                responder_type="operator",
+                author_id=author_id,
+                answer_origin="operator",
+                content=payload.text,
+                source_ids=[],
+                created_at=now,
+            )
+            connection.execute(
+                """INSERT INTO messages
+                (message_id,case_id,seq,role,kind,responder_type,author_id,answer_origin,
+                 content,source_ids_json,created_at)
+                VALUES (?,?,?,?,?,?,?,?,?,'[]',?)""",
+                (
+                    str(message.message_id),
+                    ticket["case_id"],
+                    seq,
+                    message.role,
+                    message.kind,
+                    message.responder_type,
+                    author_id,
+                    message.answer_origin,
+                    message.content,
+                    now,
+                ),
+            )
+            resolved = payload.next_status == TicketStatus.RESOLVED.value
+            connection.execute(
+                """UPDATE tickets SET status=?,updated_at=?,resolved_by=?
+                WHERE ticket_id=?""",
+                (
+                    payload.next_status,
+                    now,
+                    "operator" if resolved else None,
+                    str(ticket_id),
+                ),
+            )
+            connection.execute(
+                """UPDATE cases SET status=?,case_version=case_version+1,
+                active_request_id=NULL,updated_at=? WHERE case_id=?""",
+                (
+                    CaseStatus.RESOLVED.value if resolved else CaseStatus.HANDED_OFF.value,
+                    now,
+                    ticket["case_id"],
+                ),
+            )
+            connection.execute(
+                "INSERT INTO receipts VALUES (?, 'operator_reply', ?, ?, ?, ?)",
+                (
+                    author_id,
+                    str(payload.request_key),
+                    body_hash,
+                    message.model_dump_json(),
+                    now,
+                ),
+            )
+            return message
+
+    def mark_processing(self, request_id: UUID, progress: str) -> bool:
         now = utc_now()
         with self.transaction(immediate=True) as connection:
             row = connection.execute(
@@ -432,14 +911,14 @@ class Database:
                 (str(request_id),),
             ).fetchone()
             if row is None:
-                return
+                return False
             timings = json.loads(row["timings_json"])
             timings["queue"] = round(
                 (now - datetime.fromisoformat(row["created_at"])).total_seconds()
                 * 1000,
                 3,
             )
-            connection.execute(
+            updated = connection.execute(
                 """UPDATE requests SET status=?,progress=?,timings_json=?
                 WHERE request_id=? AND status IN (?,?)""",
                 (
@@ -451,6 +930,7 @@ class Database:
                     RequestStatus.PROCESSING.value,
                 ),
             )
+            return updated.rowcount == 1
 
     def set_candidates(
         self,
@@ -615,6 +1095,18 @@ class Database:
                     request["case_id"],
                 ),
             )
+            if case_status is CaseStatus.CLOSED_POLICY:
+                connection.execute(
+                    """UPDATE tickets SET status=?,updated_at=?
+                    WHERE case_id=? AND status NOT IN (?,?)""",
+                    (
+                        TicketStatus.CLOSED_POLICY.value,
+                        now,
+                        request["case_id"],
+                        TicketStatus.RESOLVED.value,
+                        TicketStatus.CLOSED_POLICY.value,
+                    ),
+                )
             merged_timings = json.loads(request["timings_json"])
             merged_timings.update(timings or {})
             connection.execute(
@@ -758,6 +1250,9 @@ class Database:
             outcome_applied = False
             outcome_reason: str | None = None
             if "solved" in fields:
+                ticket = connection.execute(
+                    "SELECT * FROM tickets WHERE case_id=?", (message["case_id"],)
+                ).fetchone()
                 latest_answer = connection.execute(
                     "SELECT message_id,seq FROM messages WHERE case_id=? AND kind='answer' ORDER BY seq DESC LIMIT 1",
                     (message["case_id"],),
@@ -775,17 +1270,29 @@ class Database:
                     not in (
                         CaseStatus.RESOLVED.value,
                         CaseStatus.CLOSED_POLICY.value,
-                        CaseStatus.HANDED_OFF.value,
                     )
                 )
                 if is_current and payload.solved is not None:
-                    new_status = (
-                        CaseStatus.RESOLVED if payload.solved else CaseStatus.OPEN
+                    new_status = CaseStatus.RESOLVED if payload.solved else (
+                        CaseStatus.HANDED_OFF if ticket is not None else CaseStatus.OPEN
                     )
                     connection.execute(
                         "UPDATE cases SET status=?,case_version=case_version+1,updated_at=? WHERE case_id=?",
                         (new_status.value, now, message["case_id"]),
                     )
+                    if ticket is not None:
+                        connection.execute(
+                            """UPDATE tickets SET status=?,updated_at=?,resolved_by=?
+                            WHERE ticket_id=?""",
+                            (
+                                TicketStatus.RESOLVED.value
+                                if payload.solved
+                                else TicketStatus.NEW.value,
+                                now,
+                                "user" if payload.solved else None,
+                                ticket["ticket_id"],
+                            ),
+                        )
                     outcome_applied = True
                 else:
                     outcome_reason = "ANSWER_NOT_CURRENT"
@@ -945,7 +1452,7 @@ class Database:
             )
             for item in message_rows
         ]
-        ticket = Ticket.model_validate(dict(ticket_row)) if ticket_row else None
+        ticket = self._ticket_from_row(ticket_row) if ticket_row else None
         return CaseView(
             case=case,
             ticket=ticket,

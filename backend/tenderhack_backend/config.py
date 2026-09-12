@@ -18,6 +18,8 @@ class Settings:
     knowledge_dir: Path = Path("var/knowledge")
     hf_home: Path = Path("var/huggingface")
     embedding_device: str = "cuda"
+    operator_reply_key: str | None = None
+    operator_author_id: str = "operator-local"
 
     @classmethod
     def from_env(cls) -> Settings:
@@ -38,4 +40,8 @@ class Settings:
             knowledge_dir=Path(os.getenv("TENDERHACK_KNOWLEDGE_DIR", "var/knowledge")),
             hf_home=Path(os.getenv("TENDERHACK_HF_HOME", "var/huggingface")),
             embedding_device=os.getenv("TENDERHACK_EMBEDDING_DEVICE", "cuda"),
+            operator_reply_key=os.getenv("TENDERHACK_OPERATOR_REPLY_KEY") or None,
+            operator_author_id=(
+                os.getenv("TENDERHACK_OPERATOR_AUTHOR_ID") or "operator-local"
+            ),
         )

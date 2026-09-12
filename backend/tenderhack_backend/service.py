@@ -18,11 +18,15 @@ from tenderhack_contracts import (
     GenerationClarify,
     GenerationEscalate,
     GenerationInput,
+    HandoffInput,
+    Message,
+    OperatorReplyInput,
     QueryContext,
     ReasonCode,
     RequestView,
     RoutingResult,
     Session,
+    Ticket,
 )
 
 from .errors import DomainError
@@ -67,8 +71,18 @@ class BackendService:
         if text is None:
             text = self.database.get_retry_text(session_id, payload.retry_of)
         policy_result = self.policy.check(text)
-        fast = policy_result.profanity or policy_result.explicit_human_request
-        if not fast:
+        if policy_result.profanity:
+            chat_mode = "policy"
+        elif policy_result.explicit_human_request:
+            chat_mode = "handoff"
+        elif payload.case_id is not None and self.database.case_has_ticket(
+            session_id, payload.case_id
+        ):
+            chat_mode = "operator"
+        else:
+            chat_mode = "ai"
+        fast = chat_mode != "ai"
+        if chat_mode == "ai":
             async with self._admission_lock:
                 if self._reserved >= self.queue_capacity:
                     raise DomainError(
@@ -80,7 +94,11 @@ class BackendService:
                 self._reserved += 1
         try:
             accepted, created = self.database.accept_chat(
-                session_id, payload, is_demo=is_demo, supersede_active=fast
+                session_id,
+                payload,
+                is_demo=is_demo,
+                supersede_active=fast,
+                chat_mode=chat_mode,
             )
         except BaseException:
             if not fast:
@@ -108,18 +126,17 @@ class BackendService:
                 route=RoutingResult(reason_codes=[ReasonCode.POLICY_LANGUAGE]),
             )
         elif policy_result.explicit_human_request:
-            self.database.publish_message(
+            existing_route = None
+            if payload.case_id is not None:
+                existing_route = self.database.get_case(
+                    session_id, payload.case_id
+                ).case.route
+            self.database.publish_explicit_handoff(
                 accepted.request_id,
-                case_status=CaseStatus.HANDOFF_OFFERED,
-                role="assistant",
-                kind="notice",
-                responder_type="system",
-                answer_origin="system",
-                content="Передать обращение специалисту?",
-                source_ids=[],
-                route=RoutingResult(reason_codes=[ReasonCode.EXPLICIT_HUMAN_REQUEST]),
+                existing_route or RoutingResult(),
+                ReasonCode.EXPLICIT_HUMAN_REQUEST,
             )
-        else:
+        elif chat_mode == "ai":
             self._queue.append(accepted.request_id)
             self._wake.set()
         return accepted
@@ -139,7 +156,8 @@ class BackendService:
     async def _process(self, request_id: UUID) -> None:
         started = perf_counter()
         context = self.database.get_processing_context(request_id)
-        self.database.mark_processing(request_id, "retrieving")
+        if not self.database.mark_processing(request_id, "retrieving"):
+            return
         try:
             knowledge = await self.knowledge.retrieve(
                 QueryContext(
@@ -347,3 +365,13 @@ class BackendService:
         self, session_id: UUID, payload: FeedbackInput
     ) -> tuple[FeedbackResponse, bool]:
         return self.database.save_feedback_with_status(session_id, payload)
+
+    def confirm_handoff(
+        self, session_id: UUID, case_id: UUID, payload: HandoffInput
+    ) -> tuple[Ticket, bool]:
+        return self.database.confirm_handoff(session_id, case_id, payload)
+
+    def reply_as_operator(
+        self, ticket_id: UUID, payload: OperatorReplyInput, *, author_id: str
+    ) -> Message:
+        return self.database.reply_as_operator(ticket_id, payload, author_id=author_id)

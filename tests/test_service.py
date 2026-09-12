@@ -190,7 +190,8 @@ def test_stale_publication_cancels_request_without_ai_message(tmp_path: Path) ->
     request = service.get_request(session.session_id, accepted.request_id)
     case = service.get_case(session.session_id, accepted.case_id)
     assert request.status is RequestStatus.CANCELLED
-    assert generator.calls == 1
+    # A cancelled request is discarded before retrieval/generation starts.
+    assert generator.calls == 0
     assert [message.role for message in case.messages] == ["user"]
 
 
@@ -542,7 +543,8 @@ def test_policy_message_supersedes_active_request_before_busy_check(
     )
     run(service.process_next())
     case = service.get_case(session.session_id, first.case_id)
-    assert generator.calls == 1
+    # Policy cancellation removes the queued request before model work starts.
+    assert generator.calls == 0
     assert [message.role for message in case.messages] == ["user", "user", "assistant"]
 
 
