@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="tenderhack_process" isExecutable="true" name="TenderHack Support Process">
+    <bpmn:startEvent id="start" name="New Question" outgoing="policy_check">
+      <bpmn:extensionElements>
+        <bpmn:incoming>none</bpmn:incoming>
+      </bpmn:extensionElements>
+    </bpmn:startEvent>
+
+    <!-- Policy/Profanity Check -->
+    <bpmn:task id="policy_check" name="Policy / Profanity Check" incoming="start" outgoing="policy_decision">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>policy.check(text)</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <bpmn:exclusiveGateway id="policy_decision" name="Policy Decision" incoming="policy_check" outgoing="profanity_path,explicit_handoff_path,ai_mode_path">
+      <bpmn:extensionElements>
+        <bpmn:outgoing>none</bpmn:outgoing>
+      </bpmn:extensionElements>
+    </bpmn:exclusiveGateway>
+
+    <!-- Profanity Path -->
+    <bpmn:task id="profanity_path" name="Profanity Detected" incoming="policy_decision" outgoing="case_closed">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>publish_message(closed_policy, notice, system, system, "Обращение завершено: в сообщении обнаружена нецензурная лексика...")</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Case Closed (Policy) -->
+    <bpmn:endEvent id="case_closed" name="Case Closed (Policy)" incoming="profanity_path">
+      <bpmn:extensionElements>
+        <bpmn:outgoing>none</bpmn:outgoing>
+      </bpmn:extensionElements>
+    </bpmn:endEvent>
+
+    <!-- Explicit Human Request Path -->
+    <bpmn:task id="explicit_handoff_path" name="Explicit Human Request" incoming="policy_decision" outgoing="handoff_offered">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>publish_explicit_handoff(request_id, route, ReasonCode.EXPLICIT_HUMAN_REQUEST)</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- AI Mode Path -->
+    <bpmn:task id="ai_mode_path" name="AI Mode (Queue)" incoming="policy_decision" outgoing="retrieval">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>if reserved >= queue_capacity: raise QUEUE_FULL; _queue.append(request_id); _wake.set()</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Retrieval -->
+    <bpmn:task id="retrieval" name="Retrieval" incoming="ai_mode_path" outgoing="evidence_gate">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>knowledge.retrieve(QueryContext(text=question, confirmed_facts=confirmed_facts, recent_user_messages=recent_user_messages, clarification_count=clarification_count, trace_id=trace_id))</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Evidence Gate -->
+    <bpmn:exclusiveGateway id="evidence_gate" name="Evidence Gate" incoming="retrieval" outgoing="answer_allowed,clarify_path,escalate_path,out_of_scope_path">
+      <bpmn:extensionElements>
+        <bpmn:outgoing>none</bpmn:outgoing>
+      </bpmn:extensionElements>
+    </bpmn:exclusiveGateway>
+
+    <!-- Answer Allowed -->
+    <bpmn:task id="answer_allowed" name="Answer Allowed" incoming="evidence_gate" outgoing="publish_answer">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>generator.generate(GenerationInput(question=context["question"], confirmed_facts=confirmed_facts, evidence=selected, allowed_source_ids=sorted(allowed)))</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Publish Answer -->
+    <bpmn:task id="publish_answer" name="Publish Answer" incoming="answer_allowed" outgoing="awaiting_feedback">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>publish_message(request_id, case_status=AWAITING_FEEDBACK, role="assistant", kind="answer", responder_type="ai", answer_origin="rag", content=proposal.summary, source_ids=proposal.source_ids, route=knowledge.route, timings={**adapter_timings, "generation_total": generation_ms, "total": elapsed_ms})</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Awaiting Feedback -->
+    <bpmn:task id="awaiting_feedback" name="Awaiting Feedback" incoming="publish_answer" outgoing="clarify_or_escalate">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>case_status = AWAITING_FEEDBACK</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Clarify Decision Gateway -->
+    <bpmn:exclusiveGateway id="clarify_decision" name="Clarification Decision" incoming="awaiting_feedback" outgoing="clarify_question,handoff_offer_if_max">
+      <bpmn:extensionElements>
+        <bpmn:outgoing>none</bpmn:outgoing>
+      </bpmn:extensionElements>
+    </bpmn:exclusiveGateway>
+
+    <!-- Clarification Question -->
+    <bpmn:task id="clarify_question" name="Clarification Question" incoming="clarify_decision" outgoing="awaiting_feedback">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>if clarification_count >= 1: _offer_handoff(request_id, route, ReasonCode.UNRESOLVED_AFTER_STEPS) else: publish_message(request_id, case_status=AWAITING_CLARIFICATION, role="assistant", kind="clarification", responder_type="system", answer_origin="system", content=question, clarification_increment=True)</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Handoff Offer if Max Clarifications -->
+    <bpmn:task id="handoff_offer_if_max" name="Handoff Offer (Max Clarifications)" incoming="clarify_decision" outgoing="handoff_offered">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>_offer_handoff(request_id, route, ReasonCode.UNRESOLVED_AFTER_STEPS)</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Escalate Path -->
+    <bpmn:task id="escalate_path" name="Escalate (No Evidence/Conflict)" incoming="evidence_gate" outgoing="handoff_offered">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>_offer_handoff(request_id, route, reason_codes)</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Out of Scope Path -->
+    <bpmn:task id="out_of_scope_path" name="Out of Scope" incoming="evidence_gate" outgoing="case_open">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>publish_message(request_id, case_status=OPEN, role="assistant", kind="notice", responder_type="system", answer_origin="system", content="Этот вопрос находится вне границ поддержки Портала поставщиков.")</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Case Open (Out of Scope) -->
+    <bpmn:endEvent id="case_open" name="Case Open (Out of Scope)" incoming="out_of_scope_path">
+      <bpmn:extensionElements>
+        <bpmn:outgoing>none</bpmn:outgoing>
+      </bpmn:extensionElements>
+    </bpmn:endEvent>
+
+    <!-- Handoff Offered -->
+    <bpmn:task id="handoff_offered_task" name="Handoff Offered" incoming="profanity_path,explicit_handoff_path,escalate_path,clarify_decision" outgoing="handoff_confirmation">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>publish_message(request_id, case_status=HANDOFF_OFFERED, role="assistant", kind="notice", responder_type="system", answer_origin="system", content="Недостаточно проверенных материалов. Передать специалисту?")</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Handoff Confirmation Gateway -->
+    <bpmn:exclusiveGateway id="handoff_confirmation" name="Handoff Confirmation" incoming="handoff_offered_task" outgoing="ticket_created,case_remains_open">
+      <bpmn:extensionElements>
+        <bpmn:outgoing>none</bpmn:outgoing>
+      </bpmn:extensionElements>
+    </bpmn:exclusiveGateway>
+
+    <!-- Ticket Created After Confirmation -->
+    <bpmn:task id="ticket_created" name="Ticket Created" incoming="handoff_confirmation" outgoing="waiting_user">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>confirm_handoff(session_id, case_id, payload) -> ticket, case_status=HANDED_OFF</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Case Remains Open (User declines handoff) -->
+    <bpmn:task id="case_remains_open" name="Case Remains Open" incoming="handoff_confirmation" outgoing="awaiting_feedback">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>case_status = OPEN; queue request if applicable</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Waiting for Specialist -->
+    <bpmn:task id="waiting_user" name="Waiting for Specialist" incoming="ticket_created" outgoing="operator_reply">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>case_status = HANDED_OFF; ticket_status = NEW</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Operator Reply -->
+    <bpmn:task id="operator_reply" name="Operator Reply" incoming="waiting_user" outgoing="user_response_decision">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>reply_as_operator(ticket_id, payload, author_id=operator)</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- User Response Decision Gateway -->
+    <bpmn:exclusiveGateway id="user_response_decision" name="User Response Decision" incoming="operator_reply" outgoing="new_question,handoff_continue">
+      <bpmn:extensionElements>
+        <bpmn:outgoing>none</bpmn:outgoing>
+      </bpmn:extensionElements>
+    </bpmn:exclusiveGateway>
+
+    <!-- New Question from User -->
+    <bpmn:task id="new_question" name="New Question from User" incoming="user_response_decision" outgoing="awaiting_feedback">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>publish_message(request_id, case_status=HANDED_OFF, role="user", kind="question", content=text) -> case_status remains HANDED_OFF; ticket=new; AI NOT launched</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Continue Handoff -->
+    <bpmn:task id="handoff_continue" name="Continue Handoff" incoming="user_response_decision" outgoing="operator_reply">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>operator_reply with next_status=waiting_user or resolved</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Resolve Decision Gateway -->
+    <bpmn:exclusiveGateway id="resolve_or_continue" name="Resolve or Continue" incoming="user_response_decision" outgoing="resolve_case,continue_operator">
+      <bpmn:extensionElements>
+        <bpmn:outgoing>none</bpmn:outgoing>
+      </bpmn:extensionElements>
+    </bpmn:exclusiveGateway>
+
+    <!-- Resolve Case -->
+    <bpmn:task id="resolve_case" name="Resolve Case" incoming="resolve_or_continue" outgoing="resolved_end">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>payload.next_status = RESOLVED -> ticket.status=RESOLVED, case.status=RESOLVED, resolved_by=operator</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Resolved End -->
+    <bpmn:endEvent id="resolved_end" name="Resolved" incoming="resolve_case">
+      <bpmn:extensionElements>
+        <bpmn:outgoing>none</bpmn:outgoing>
+      </bpmn:extensionElements>
+    </bpmn:endEvent>
+
+    <!-- Continue Operator -->
+    <bpmn:task id="continue_operator" name="Continue Operator" incoming="resolve_or_continue" outgoing="waiting_user">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>operator_reply continues with new answer or clarification</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Feedback -->
+    <bpmn:task id="feedback" name="Feedback" incoming="any_task" outgoing="awaiting_feedback">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>save_feedback(message_id, useful, solved, specialist_rating, reason_codes, comment)</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Technical Failure / Retry -->
+    <bpmn:task id="technical_failure" name="Technical Failure / Retry" incoming="any_task" outgoing="any_task">
+      <bpmn:taskDefinition>
+        <bpmn:scriptTask>
+          <bpmn:script>invalidate_request(request_id, reason) or retry with retry_of</bpmn:script>
+        </bpmn:scriptTask>
+      </bpmn:taskDefinition>
+    </bpmn:task>
+
+    <!-- Different Correct Endings -->
+    <bpmn:endEvent id="end_closed_policy" name="Closed Policy (different ending)">
+      <bpmn:extensionElements>
+        <bpmn:outgoing>none</bpmn:outgoing>
+      </bpmn:extensionElements>
+    </bpmn:endEvent>
+
+    <bpmn:endEvent id="end_out_of_scope" name="Out of Scope (different ending)">
+      <bpmn:extensionElements>
+        <bpmn:outgoing>none</bpmn:outgoing>
+      </bpmn:extensionElements>
+    </bpmn:endEvent>
+
+    <bpl:errorEventDefinition xmlns:bpl="http://bpmn.io/error" />
+  </bpmn:process>
+
+  <!-- Diagram Definitions -->
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="tenderhack_process" gridType="orthogonal">
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

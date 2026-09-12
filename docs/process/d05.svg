@@ -1,0 +1,222 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style type="text/css">
+      <![CDATA[
+        .start { fill: #fc4c02; color: white; font-family: Arial, sans-serif; font-size: 14px; }
+        .task { fill: #4a90e2; color: white; font-family: Arial, sans-serif; font-size: 13px; }
+        .gateway { fill: #7ed321; color: white; font-family: Arial, sans-serif; font-size: 12px; }
+        .end { fill: #b5b5b5; color: white; font-family: Arial, sans-serif; font-size: 13px; }
+        .transition { stroke: #555555; stroke-width: 2; marker-end: url(#arrow); }
+        .label { font-family: Arial, sans-serif; font-size: 11px; fill: #333333; }
+        .pool { fill: #f5f5f5; stroke: #ccc; stroke-width: 1; }
+      ]]>
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#555555" />
+    </marker>
+  </defs>
+  
+  <!-- Pools/Actors -->
+  <g class="pool" transform="translate(20,20)">
+    <rect width="380" height="760" rx="5" ry="5" />
+  </g>
+  
+  <g class="pool" transform="420,20">
+    <rect width="380" height="760" rx="5" ry="5" />
+  </g>
+  
+  <g class="pool" transform="820,20">
+    <rect width="380" height="760" rx="5" ry="5" />
+  </g>
+  
+  <!-- User Pool -->
+  <text x="200" y="30" class="label">User</text>
+  
+  <!-- AI Support Service Pool -->
+  <text x="600" y="30" class="label">AI support service</text>
+  
+  <!-- Human Specialist Pool -->
+  <text x="1000" y="30" class="label">Human specialist</text>
+  
+  <!-- Start: New Question -->
+  <g transform="60,80">
+    <ellipse cx="190" cy="35" rx="100" ry="30" class="start" />
+    <text text-anchor="middle" x="190" y="50">New Question</text>
+    <text text-anchor="middle" x="190" y="62">User submits question</text>
+  </g>
+  
+  <!-- Policy Check -->
+  <g transform="60,180">
+    <rect x="10" y="140" width="180" height="50" rx="5" ry="5" class="task" />
+    <text text-anchor="middle" x="100" y="158">Policy / Profanity Check</text>
+    <text text-anchor="middle" x="100" y="170">policy.check(text)</text>
+  </g>
+  
+  <!-- Policy Decision Gateway -->
+  <g transform="260,230">
+    <polygon points="260,230 280,210 280,250" class="gateway" />
+    <text text-anchor="middle" x="270" y="232">Decision</text>
+  </g>
+  
+  <!-- Profanity Path -->
+  <g transform="460,180">
+    <rect x="430" y="140" width="180" height="50" rx="5" ry="5" class="task" />
+    <text text-anchor="middle" x="520" y="158">Profanity Detected</text>
+  </g>
+  
+  <!-- Case Closed (Policy) -->
+  <g transform="660,180">
+    <ellipse cx="730" cy="35" rx="100" ry="30" class="end" />
+    <text text-anchor="middle" x="730" y="50">Case Closed (Policy)</text>
+    <text text-anchor="middle" x="730" y="62">CLOSED_POLICY</text>
+  </g>
+  
+  <!-- Explicit Handoff Path -->
+  <g transform="260,280">
+    <rect x="230" y="240" width="180" height="50" rx="5" ry="5" class="task" />
+    <text text-anchor="middle" x="320" y="258">Explicit Human Request</text>
+    <text text-anchor="middle" x="320" y="270">Direct handoff, no retrieval</text>
+  </g>
+  
+  <!-- Handoff Offered -->
+  <g transform="80,340">
+    <polygon points="80,340 100,320 100,360" class="gateway" />
+    <text text-anchor="middle" x="90" y="342">Handoff Offered</text>
+  </g>
+  
+  <!-- Ticket Created -->
+  <g transform="200,340">
+    <rect x="170" y="300" width="180" height="50" rx="5" ry="5" class="task" />
+    <text text-anchor="middle" x="260" y="318">Ticket Created</text>
+    <text text-anchor="middle" x="260" y="330">confirm_handoff()</text>
+  </g>
+  
+  <!-- Waiting for Specialist -->
+  <g transform="380,340">
+    <rect x="350" y="300" width="180" height="50" rx="5" ry="5" class="task" />
+    <text text-anchor="middle" x="410" y="318">Waiting for Specialist</text>
+    <text text-anchor="middle" x="410" y="330">Ticket: NEW</text>
+  </g>
+  
+  <!-- Operator Reply -->
+  <g transform="560,340">
+    <rect x="530" y="300" width="180" height="50" rx="5" ry="5" class="task" />
+    <text text-anchor="middle" x="610" y="318">Operator Reply</text>
+    <text text-anchor="middle" x="610" y="330">answer from specialist</text>
+  </g>
+  
+  <!-- User Response Decision -->
+  <g transform="740,340">
+    <polygon points="740,340 760,320 760,360" class="gateway" />
+    <text text-anchor="middle" x="750" y="342">Decision</text>
+  </g>
+  
+  <!-- New Question from User -->
+  <g transform="920,340">
+    <ellipse cx="990" cy="35" rx="100" ry="30" class="start" />
+    <text text-anchor="middle" x="990" y="50">New Question</text>
+    <text text-anchor="middle" x="990" y="62">User to specialist</text>
+  </g>
+  
+  <!-- Continue Handoff -->
+  <g transform="1100,340">
+    <rect x="1070" y="300" width="120" height="50" rx="5" ry="5" class="task" />
+    <text text-anchor="middle" x="1130" y="318">Continue</text>
+    <text text-anchor="middle" x="1130" y="330">next reply</text>
+  </g>
+  
+  <!-- Resolve Case -->
+  <g transform="80,460">
+    <polygon points="80,460 100,440 100,480" class="gateway" />
+    <text text-anchor="middle" x="90" y="462">Resolve</text>
+  </g>
+  
+  <!-- Resolved End -->
+  <g transform="200,460">
+    <ellipse cx="270" cy="475" rx="100" ry="30" class="end" />
+    <text text-anchor="middle" x="270" y="490">Resolved</text>
+    <text text-anchor="middle" x="270" y="502">resolved_by=operator</text>
+  </g>
+  
+  <!-- Awaiting Feedback -->
+  <g transform="260,280">
+    <rect x="230" y="240" width="180" height="50" rx="5" ry="5" class="task" />
+    <text text-anchor="middle" x="320" y="258">Awaiting Feedback</text>
+    <text text-anchor="middle" x="320" y="270">AI answer published</text>
+  </g>
+  
+  <!-- Clarify Path -->
+  <g transform="460,280">
+    <rect x="430" y="140" width="180" height="50" rx="5" ry="5" class="task" />
+    <text text-anchor="middle" x="520" y="158">Clarification</text>
+    <text text-anchor="middle" x="520" y="170">up to 1 clarification</text>
+  </g>
+  
+  <!-- Out of Scope -->
+  <g transform="80,340">
+    <ellipse cx="150" cy="365" rx="100" ry="30" class="end" />
+    <text text-anchor="middle" x="150" y="380">Out of Scope</text>
+    <text text-anchor="middle" x="150" y="392">still OPEN</text>
+  </g>
+  
+  <!-- Technical Failure / Retry -->
+  <g transform="1060,460">
+    <rect x="1030" y="420" width="160" height="50" rx="5" ry="5" class="task" />
+    <text text-anchor="middle" x="1110" y="438">Retry / Failure</text>
+    <text text-anchor="middle" x="1110" y="450">invalidate/retry</text>
+  </g>
+  
+  <!-- Feedback -->
+  <g transform="1060,280">
+    <rect x="1030" y="240" width="160" height="50" rx="5" ry="5" class="task" />
+    <text text-anchor="middle" x="1110" y="258">Feedback</text>
+    <text text-anchor="middle" x="1110" y="270">specific AI/operator</text>
+  </g>
+  
+  <!-- Connections (arrows) -->
+  <!-- Start -> Policy Check -->
+  <line x1="280" y1="95" x2="100" y2="180" class="transition" />
+  <!-- Policy Check -> Policy Decision -->
+  <line x1="280" y1="190" x2="260" y2="230" class="transition" />
+  <!-- Policy Decision -> Profanity -->
+  <line x1="440" y1="250" x2="460" y2="180" class="transition" />
+  <!-- Policy Decision -> Explicit Handoff -->
+  <line x1="260" y1="310" x2="260" y2="280" class="transition" />
+  <!-- Policy Decision -> AI Mode -->
+  <line x1="260" y1="350" x2="60" y2="280" class="transition" />
+  <!-- Profanity -> Case Closed -->
+  <line x1="640" y1="190" x2="660" y2="180" class="transition" />
+  <!-- Explicit Handoff -> Handoff Offered -->
+  <line x1="410" y1="330" x2="80" y2="340" class="transition" />
+  <!-- Handoff Offered -> Ticket Created -->
+  <line x1="160" y1="390" x2="200" y2="340" class="transition" />
+  <!-- Handoff Offered -> Case Remains Open -->
+  <line x1="160" y1="390" x2="80" y2="390" class="transition" />
+  <!-- Ticket Created -> Waiting Specialist -->
+  <line x1="380" y1="390" x2="380" y2="340" class="transition" />
+  <!-- Waiting Specialist -> Operator Reply -->
+  <line x1="410" y1="390" x2="560" y2="340" class="transition" />
+  <!-- Operator Reply -> User Response Decision -->
+  <line x1 "640" y1="390" x2="740" y2="340" class="transition" />
+  <!-- User Response Decision -> New Question -->
+  <line x1="800" y1="390" x2="920" y2="340" class="transition" />
+  <!-- User Response Decision -> Continue -->
+  <line x1="860" y1="390" x2="1100" y2="340" class="transition" />
+  <!-- Continue -> Operator Reply (loop) -->
+  <line x1="1160" y1="340" x2="560" y2="340" class="transition" />
+  <!-- User Response Decision -> Resolve -->
+  <line x1="920" y1="390" x2="80" y2="460" class="transition" />
+  <!-- Resolve -> Resolved End -->
+  <line x1="200" y1="510" x2="270" y2="475" class="transition" />
+  <!-- Awaiting Feedback -> Clarify -->
+  <line x1="300" y1="330" x2="460" y2="140" class="transition" />
+  <!-- Awaiting Feedback -> Out of Scope -->
+  <line x1="300" y1="330" x2="80" y2="340" class="transition" />
+  <!-- Clarify -> (back to Awaiting Feedback or Handoff) -->
+  <line x1="520" y1="190" x2="80" y2="340" class="transition" />
+  <!-- Out of Scope -> (end) -->
+  <!-- Feedback -->
+  <line x1="1100" y1="330" x2="1060" y2="280" class="transition" />
+  <!-- Technical Failure -->
+  <line x1="1120" y1="510" x2="1060" y2="460" class="transition" />
+</svg>
