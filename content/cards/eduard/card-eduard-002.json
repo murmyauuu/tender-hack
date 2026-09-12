@@ -1,0 +1,50 @@
+{
+  "card_id": "CARD-EDUARD-002",
+  "intent_id": "rdik_0009_customer_data_mismatch",
+  "status": "draft",
+  "title": "Интеграционный контроль РДИК_0009 при электронном исполнении контракта",
+  "utterances": [
+    "Электронный исполнение контракта. Сработал интеграционный контроль РДИК_0009. Что делать?"
+  ],
+  "applicable_roles": [
+    "customer",
+    "supplier"
+  ],
+  "required_facts": [
+    {
+      "key": "rdik_code",
+      "expected_value": "РДИК_0009"
+    }
+  ],
+  "source_ids": [
+    "portal:588150:1"
+  ],
+  "content": {
+    "summary": "РДИК_0009 срабатывает, если сведения о заказчике в электронном исполнении не совпадают со сведениями о заказчике в сводном реестре организаций ЕИС в сфере закупок.",
+    "conditions": [
+      "Электронное исполнение по контракту (сфера закупок ЕИС)",
+      "Сработал интеграционный контроль РДИК_0009"
+    ],
+    "steps": [
+      "Открыть сведения о заказчике в электронном исполнении.",
+      "Сверить их со сведениями о заказчике в контракте в ЕИС.",
+      "Привести сведения о заказчике в электронном исполнении в соответствие со сведениями из контракта в ЕИС."
+    ]
+  },
+  "handoff_required": false,
+  "route": {
+    "topic_id": "TH8",
+    "subtopic_id": "ST75",
+    "support_line": "L2",
+    "recommended_recipient": null,
+    "basis_source_ids": [],
+    "rule_id": "ROUTE.LINE.THEME_DEFAULT",
+    "is_probable_defect": false,
+    "is_ambiguous": false,
+    "reason_codes": []
+  },
+  "author_id": "eduard",
+  "reviewer_id": null,
+  "reviewed_at": null,
+  "snapshot_id": "kb-4918a97f0874d1e8"
+}
