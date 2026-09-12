@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import secrets
+import sqlite3
 from contextlib import asynccontextmanager
 from uuid import UUID, uuid4
 
@@ -96,6 +97,20 @@ def create_app(
         del request
         return error_response(
             DomainError("VALIDATION_ERROR", str(exc), status_code=422)
+        )
+
+    @application.exception_handler(sqlite3.Error)
+    async def handle_storage_error(
+        request: Request, exc: sqlite3.Error
+    ) -> JSONResponse:
+        del request, exc
+        return error_response(
+            DomainError(
+                "STORAGE_UNAVAILABLE",
+                "Хранилище временно недоступно",
+                status_code=503,
+                retryable=True,
+            )
         )
 
     def check_origin(request: Request) -> None:
