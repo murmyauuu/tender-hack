@@ -4,6 +4,8 @@ import type { TenderHackTransport } from './apiTransport';
 export const STORED_CASE_KEY = 'tenderhack.current-case-id';
 export const FOREGROUND_POLL_MS = 800;
 export const BACKGROUND_POLL_MS = 3000;
+export const HUMAN_FOREGROUND_POLL_MS = 1200;
+export const HUMAN_BACKGROUND_POLL_MS = 4000;
 
 export function dedupeMessages(messages: Message[] = []): Message[] {
   const byId = new Map<string, Message>();
