@@ -1,0 +1,43 @@
+{
+  "card_id": "CARD-EGOR-002",
+  "intent_id": "fulfill_contract_execution",
+  "status": "draft",
+  "title": "Исполнение контракта заказитом",
+  "utterances": [
+    "Как исполнить контракт на Портале поставщиков?",
+    "Контракт подписан, что делать дальше?",
+    "Статус контракта не меняется после нажатия «Исполнен»."
+  ],
+  "applicable_roles": ["customer"],
+  "required_facts": [
+    {"key": "role", "expected_value": "customer"},
+    {"key": "contract_status", "expected_value": "signed"}
+  ],
+  "source_ids": ["portal_api:242148:1"],
+  "content": {
+    "summary": "После подписания контракта заказчик может подтвердить его исполнение на Портале поставщиков: открыть контракт и нажать кнопку «Исполнен».",
+    "conditions": [
+      "Контракт имеет статус «Заключен»",
+      "Пользователь работает на Портале поставщиков в роли заказчика"
+    ],
+    "steps": [
+      "Открыть страницу подписанного контракта",
+      "Нажать кнопку «Исполнен» в блоке основной информации",
+      "Подтвердить исполнение контракта в диалоговом окне",
+      "Статус контракта изменится с «Заключен» на «Исполнен»"
+    ]
+  },
+  "handoff_required": false,
+  "route": {
+    "topic_id": "TH8",
+    "subtopic_id": "ST75",
+    "support_line": "L2",
+    "recommended_recipient": null,
+    "basis_source_ids": ["portal_api:242148:1"],
+    "rule_id": "ROUTE.LINE.THEME_DEFAULT"
+  },
+  "author_id": "egor",
+  "reviewer_id": null,
+  "reviewed_at": null,
+  "snapshot_id": "kb-4918a97f0874d1e8"
+}
