@@ -8,6 +8,6 @@
 | | C03 | C | | Embedding build/retrieval smoke | planned | |
 | | A03 | A | | Первый real E2E | planned | |
 | | C07 | C | | Dev retrieval run | planned | |
-| | A05 | A | | Concurrency/offline/restart | planned | |
+| 2026-09-12 22:17–22:32 UTC | A05 | A | `461c1145983490f6440b47b4b3bb936db39b0b4a`+ (task/a05) | Concurrency/restart/outage/retry/offline resilience harness, **no GPU used** — session ran on machine M (MacBook Air M2, no CUDA/Ollama), not machine G; see `docs/coordination/artem/A05-handoff.md` §0 | completed, no GPU slot occupied | `docs/coordination/artem/A05-handoff.md` |
 | | D07 | D | | Sealed final | planned | |
 | | A07/D08 | A/D | | Rehearsal/release | planned | |

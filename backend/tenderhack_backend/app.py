@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import secrets
+import sqlite3
 from contextlib import asynccontextmanager
 from uuid import UUID, uuid4
 
@@ -35,7 +36,12 @@ COOKIE_NAME = "tenderhack_session"
 
 
 def _error_responses(*codes: int) -> dict[int, dict[str, object]]:
-    return {code: {"model": ErrorEnvelope} for code in codes}
+    responses = {code: {"model": ErrorEnvelope} for code in codes}
+    # Python's HTTPStatus reason for 422 differs across supported runtimes.
+    # Keep generated OpenAPI byte-stable against the accepted contract.
+    if 422 in responses:
+        responses[422]["description"] = "Unprocessable Content"
+    return responses
 
 
 def _default_service(settings: Settings) -> BackendService:
@@ -96,6 +102,20 @@ def create_app(
         del request
         return error_response(
             DomainError("VALIDATION_ERROR", str(exc), status_code=422)
+        )
+
+    @application.exception_handler(sqlite3.Error)
+    async def handle_storage_error(
+        request: Request, exc: sqlite3.Error
+    ) -> JSONResponse:
+        del request, exc
+        return error_response(
+            DomainError(
+                "STORAGE_UNAVAILABLE",
+                "Хранилище временно недоступно",
+                status_code=503,
+                retryable=True,
+            )
         )
 
     def check_origin(request: Request) -> None:
