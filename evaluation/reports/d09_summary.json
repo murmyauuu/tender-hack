@@ -1,0 +1,100 @@
+{
+  "report_id": "D09",
+  "base_sha": "83a85d8",
+  "generated": "2026-09-13T00:00:00Z",
+  "blocks": {
+    "dev": {
+      "total_cases": 20,
+      "answerable": 20,
+      "non_answerable": 0,
+      "answerable_percent": 100.0,
+      "non_answerable_percent": 0.0,
+      "auto_answer_count": 12,
+      "handoff_offered_count": 3,
+      "escalate_count": 1,
+      "clarify_count": 2,
+      "error_requests": 2,
+      "timeout_requests": 0,
+      "latency_p50_ms": 2850,
+      "latency_p95_ms": 5400,
+      "latency_n": 16,
+      "n_N": "20/20",
+      " cohorts": {
+        "supplier": {
+          "total": 18,
+          "eligible": 18,
+          "auto_answer": 10,
+          "handoff": 3,
+          "errors": 2
+        },
+        "customer": {
+          "total": 2,
+          "eligible": 2,
+          "auto_answer": 2,
+          "handoff": 0,
+          "errors": 0
+        }
+      }
+    },
+    "historical": {
+      "total_pairs": 30,
+      "reconciled_na_count": 7,
+      "reconciled_critical_errors": 0,
+      "correctness_agreements": 12,
+      "completeness_agreements": 15,
+      "clarity_agreements": 22,
+      "route_agreements": 24,
+      "not_assessable_rate": "7/30",
+      "agreement_rate_correctness": "40%",
+      "agreement_rate_completeness": "50%",
+      "agreement_rate_clarity": "73%",
+      "agreement_rate_route": "80%",
+      "n_N": "7/30 not_assessable"
+    },
+    "live_e2e": {
+      "available": false,
+      "note": "A04 EvaluationExport not available in repo; metrics derived from dev dataset (A03)",
+      "total_requests": 20,
+      "auto_answer": 12,
+      "human_handoff": 3,
+      "resolved": null,
+      "feedback": null,
+      "error_requests": 2
+    },
+    "a05": {
+      "status": "pending",
+      "note": "A05 resilience/offline not yet merged to origin/main"
+    },
+    "b06": {
+      "status": "pending",
+      "note": "B06 final frontend regression not yet merged to origin/main"
+    }
+  },
+  "defects_blockers": [
+    {
+      "id": "A05",
+      "status": "pending",
+      "blocker": true,
+      "owner": null,
+      "release_impact": "A06 readiness"
+    },
+    {
+      "id": "B06",
+      "status": "pending",
+      "blocker": true,
+      "owner": null,
+      "release_impact": "A06 readiness"
+    }
+  ],
+  "limitations": [
+    "A04 EvaluationExport not available; live/E2E metrics derived from dev dataset only",
+    "A05 not merged — resilience/offline blocker",
+    "B06 not merged — frontend regression blocker",
+    "Latency metrics null for cases without timestamps",
+    "Historical 30-pair sample may not be fully representative"
+  ],
+  "readiness": {
+    "a06_ready": false,
+    "reason": "A05 and A04/EvaluationExport not yet accepted in origin/main"
+  }
+}
