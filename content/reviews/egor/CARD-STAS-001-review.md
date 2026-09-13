@@ -5,14 +5,13 @@
 - **Author:** stas
 - **Reviewed card:** `content/cards/stas/card-stas-001.json`
 - **Verdict:** approved
-- **Verdict origin:** автономный verdict reviewer-агента по явной инструкции Егора
-  («сделай ревью полностью самостоятельно, без human approved, именно ты сам»);
-  отдельное human-подтверждение не выполнялось.
-- **Verdict comment (reviewer-agent):** карточку одобряю. Источник найден в frozen
-  C07 snapshot, все факты/условия/шаги прослеживаются до источника, invented facts
-  отсутствуют, route `null` воспроизведён фактическим исполнением
-  `knowledge/kb/routing.py`. Найденные risks — non-blocking observations, правок
-  автору не требуется.
+- **Verdict origin:** human verdict provided explicitly by Egor at 2026-09-13 (UTC+3).
+- **Verdict comment (Egor-human):** supplier-applicability, required facts,
+  conditions и steps принимаются как подтверждённые
+  portal:559615:1. Карточка достаточно fail-closed: применять только для загрузки
+  XML МЧД при подтверждённых required facts; при несовпадении — обычный
+  RAG/уточнение. Пустой routing принимается как воспроизводимый и невыдуманный.
+  handoff_required=false принимается.
 - **Reviewed at:** 2026-09-13 (UTC+3)
 
 ## Профиль карточки
@@ -80,7 +79,6 @@
 
 ## Вывод
 
-Карточка подтверждена независимым review. Reviewer: `egor`. Verdict определён
-автономно reviewer-агентом по явной инструкции владельца; human-approved
-отсутствует. Не менять `status`/`reviewer_id` карточки в этом task: смена
-статуса — шаг владельца после интеграции review.
+Карточка подтверждена независимым review. Reviewer: `egor`. Human-approved
+(Egor) зафиксирован. Не менять `status`/`reviewer_id` карточки в этом task:
+смена статуса — шаг владельца после интеграции review.
