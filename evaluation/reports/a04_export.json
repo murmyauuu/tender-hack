@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0",
+  "export_id": "c3fd09d1-af7c-49dd-b92c-bdcd60ce9041",
+  "created_at": "2026-09-13T01:32:21.619311Z",
+  "as_of": "2026-09-13T01:32:21.619311Z",
+  "app_commit": "c93be1e3af9d2d4fdb119aaeeb2ca11a29d2327f",
+  "kb_snapshot_id": null,
+  "rows": [
+    {
+      "case_id": "e86c357a-7b78-4b9b-ac68-3825745b34fc",
+      "cohort": "demo",
+      "created_at": "2026-09-13T01:32:11.470701Z",
+      "case_status": "resolved",
+      "topic_id": "TH1",
+      "subtopic_id": "ST01",
+      "policy_closed": false,
+      "route": {
+        "topic_id": "TH1",
+        "subtopic_id": "ST01",
+        "support_line": "L2",
+        "recommended_recipient": null,
+        "basis_source_ids": [
+          "portal:42:1"
+        ],
+        "rule_id": null,
+        "is_probable_defect": false,
+        "is_ambiguous": false,
+        "reason_codes": [
+          "NO_EVIDENCE"
+        ]
+      },
+      "ticket": {
+        "ticket_id": "cafba42d-421e-4f46-a062-4765537f68c9",
+        "status": "resolved",
+        "created_at": "2026-09-13T01:32:11.596038Z",
+        "resolved_by": "operator"
+      },
+      "messages": [
+        {
+          "message_id": "d16765b6-c67f-49ad-a8b6-fefd10f8bf6f",
+          "seq": 1,
+          "kind": "question",
+          "responder_type": null,
+          "author_id": null,
+          "answer_origin": null,
+          "text": "Нужна помощь по закупке",
+          "structured_content": null,
+          "source_ids": [],
+          "created_at": "2026-09-13T01:32:11.470701Z"
+        },
+        {
+          "message_id": "643a4742-c3bd-4f2c-8838-7c44ef949dae",
+          "seq": 2,
+          "kind": "notice",
+          "responder_type": "system",
+          "author_id": null,
+          "answer_origin": "system",
+          "text": "Недостаточно проверенных материалов (NO_EVIDENCE). Передать специалисту?",
+          "structured_content": null,
+          "source_ids": [],
+          "created_at": "2026-09-13T01:32:11.551002Z"
+        },
+        {
+          "message_id": "78f837ae-67f2-4a45-944d-3e28ccb830cb",
+          "seq": 3,
+          "kind": "answer",
+          "responder_type": "operator",
+          "author_id": "operator-smoke",
+          "answer_origin": "operator",
+          "text": "Уточните номер закупки.",
+          "structured_content": null,
+          "source_ids": [],
+          "created_at": "2026-09-13T01:32:11.647721Z"
+        },
+        {
+          "message_id": "7cdce2d4-4a0f-4a80-b7e6-20f2d7074a96",
+          "seq": 4,
+          "kind": "question",
+          "responder_type": null,
+          "author_id": null,
+          "answer_origin": null,
+          "text": "Номер закупки 123.",
+          "structured_content": null,
+          "source_ids": [],
+          "created_at": "2026-09-13T01:32:11.697911Z"
+        },
+        {
+          "message_id": "1229aef5-0f4f-4b40-911e-d554c88658af",
+          "seq": 5,
+          "kind": "answer",
+          "responder_type": "operator",
+          "author_id": "operator-smoke",
+          "answer_origin": "operator",
+          "text": "Проблема решена.",
+          "structured_content": null,
+          "source_ids": [],
+          "created_at": "2026-09-13T01:32:11.733446Z"
+        }
+      ],
+      "requests": [
+        {
+          "request_id": "9920a405-6a8f-4265-8f17-50090c124ab3",
+          "user_message_id": "d16765b6-c67f-49ad-a8b6-fefd10f8bf6f",
+          "status": "final",
+          "result_message_ids": [
+            "643a4742-c3bd-4f2c-8838-7c44ef949dae"
+          ],
+          "error_code": null,
+          "timings_ms": {
+            "queue": 33.844,
+            "retrieval": null,
+            "generation_total": null,
+            "time_to_first_source": null,
+            "total": null,
+            "prompt_eval": null,
+            "decode": null
+          }
+        },
+        {
+          "request_id": "1965c2b9-9efe-4b4d-8dfe-aaa56d66ca89",
+          "user_message_id": "7cdce2d4-4a0f-4a80-b7e6-20f2d7074a96",
+          "status": "final",
+          "result_message_ids": [],
+          "error_code": null,
+          "timings_ms": {
+            "queue": null,
+            "retrieval": null,
+            "generation_total": null,
+            "time_to_first_source": null,
+            "total": null,
+            "prompt_eval": null,
+            "decode": null
+          }
+        }
+      ],
+      "feedback": [],
+      "current_resolution": null
+    }
+  ]
+}
