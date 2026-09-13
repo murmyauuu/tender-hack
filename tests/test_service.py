@@ -1,4 +1,6 @@
 import asyncio
+import json
+from datetime import datetime, timezone
 from pathlib import Path
 from uuid import uuid4
 
@@ -17,6 +19,7 @@ from tenderhack_contracts import (
     PolicyResult,
     RequestStatus,
     RoutingResult,
+    ScenarioCard,
     SourceRecord,
 )
 
@@ -79,6 +82,179 @@ def build_service(tmp_path: Path, *, capacity: int = 4):
         queue_capacity=capacity,
     )
     return service, knowledge, generator
+
+
+def reviewed_card() -> ScenarioCard:
+    return ScenarioCard(
+        card_id="CARD-REGRESSION-001",
+        intent_id="replace_bank_details",
+        status="reviewed",
+        title="Замена банковских реквизитов",
+        utterances=["Как заменить банковские реквизиты?"],
+        applicable_roles=["supplier"],
+        required_facts=[
+            {"key": "bank_details_action", "expected_value": "replace_or_add"}
+        ],
+        source_ids=["source-demo"],
+        content={
+            "summary": "Откройте заявку на изменение данных.",
+            "conditions": ["Вы действуете от имени поставщика."],
+            "steps": ["Откройте профиль.", "Отправьте заявку."],
+        },
+        handoff_required=False,
+        route=RoutingResult(support_line="L1", basis_source_ids=["source-demo"]),
+        author_id="author",
+        reviewer_id="reviewer",
+        reviewed_at=datetime(2026, 9, 13, tzinfo=timezone.utc),
+        snapshot_id="mock-a02",
+    )
+
+
+def process_card_request(
+    tmp_path: Path,
+    card: ScenarioCard,
+    *,
+    confirmed_facts: dict[str, object],
+    imported: bool = True,
+):
+    knowledge, generator = answer_dependencies()
+    if imported:
+        knowledge.cards[card.card_id] = card
+    knowledge.result = knowledge.result.model_copy(
+        update={"card_id": card.card_id, "route": card.route}
+    )
+    service = BackendService(
+        Database(tmp_path / "app.sqlite"), FakePolicy(), knowledge, generator
+    )
+    session, _ = service.create_session(None)
+    accepted = run(
+        service.accept_chat(
+            session.session_id,
+            {"request_key": str(uuid4()), "text": card.utterances[0]},
+            is_demo=True,
+        )
+    )
+    with service.database.transaction(immediate=True) as connection:
+        connection.execute(
+            "UPDATE cases SET confirmed_facts_json=? WHERE case_id=?",
+            (json.dumps(confirmed_facts), str(accepted.case_id)),
+        )
+
+    run(service.process_next())
+    case = service.get_case(session.session_id, accepted.case_id)
+    return service, knowledge, generator, accepted, case
+
+
+def test_reviewed_imported_card_does_not_call_generator(tmp_path: Path) -> None:
+    card = reviewed_card()
+    service, knowledge, generator, accepted, case = process_card_request(
+        tmp_path,
+        card,
+        confirmed_facts={
+            "role": "supplier",
+            "bank_details_action": "replace_or_add",
+        },
+    )
+
+    assert generator.calls == 0
+    assert knowledge.retrieve_calls == 1
+    assert case.case.status == "awaiting_feedback"
+    assert case.messages[-1].answer_origin == "card"
+    assert case.messages[-1].source_ids == card.source_ids
+    assert case.messages[-1].content == card.content.summary
+    assert (
+        case.messages[-1].structured_content.conditions == card.content.conditions
+    )
+    assert case.messages[-1].structured_content.steps == card.content.steps
+    request = service.get_request(case.case.session_id, accepted.request_id)
+    assert request.timings_ms["generation_total"] == 0
+
+
+def test_reviewed_card_handoff_required_offers_handoff_without_steps(
+    tmp_path: Path,
+) -> None:
+    card = reviewed_card().model_copy(update={"handoff_required": True})
+    _, _, generator, _, case = process_card_request(
+        tmp_path,
+        card,
+        confirmed_facts={
+            "role": "supplier",
+            "bank_details_action": "replace_or_add",
+        },
+    )
+
+    assert generator.calls == 0
+    assert case.case.status == "handoff_offered"
+    assert case.messages[-1].kind == "notice"
+    assert case.messages[-1].answer_origin == "card"
+    assert case.messages[-1].source_ids == card.source_ids
+    assert case.messages[-1].structured_content.steps == []
+
+
+def test_card_wrong_role_falls_back_to_normal_rag(tmp_path: Path) -> None:
+    card = reviewed_card()
+    _, _, generator, _, case = process_card_request(
+        tmp_path,
+        card,
+        confirmed_facts={
+            "role": "customer",
+            "bank_details_action": "replace_or_add",
+        },
+    )
+
+    assert generator.calls == 1
+    assert case.messages[-1].answer_origin == "rag"
+
+
+def test_card_missing_required_fact_falls_back_to_normal_rag(tmp_path: Path) -> None:
+    card = reviewed_card()
+    _, _, generator, _, case = process_card_request(
+        tmp_path, card, confirmed_facts={"role": "supplier"}
+    )
+
+    assert generator.calls == 1
+    assert case.messages[-1].answer_origin == "rag"
+
+
+def test_card_failed_condition_falls_back_to_normal_rag(tmp_path: Path) -> None:
+    card = reviewed_card()
+    _, _, generator, _, case = process_card_request(
+        tmp_path,
+        card,
+        confirmed_facts={
+            "role": "supplier",
+            "bank_details_action": "delete",
+        },
+    )
+
+    assert generator.calls == 1
+    assert case.messages[-1].answer_origin == "rag"
+
+
+@pytest.mark.parametrize("state", ["unreviewed", "not_imported", "self_reviewed"])
+def test_invalid_or_unimported_card_falls_back_to_normal_rag(
+    tmp_path: Path, state: str
+) -> None:
+    card = reviewed_card()
+    imported = state != "not_imported"
+    if state == "unreviewed":
+        card = card.model_copy(
+            update={"status": "draft", "reviewer_id": None, "reviewed_at": None}
+        )
+    elif state == "self_reviewed":
+        card = card.model_copy(update={"reviewer_id": card.author_id})
+    _, _, generator, _, case = process_card_request(
+        tmp_path,
+        card,
+        confirmed_facts={
+            "role": "supplier",
+            "bank_details_action": "replace_or_add",
+        },
+        imported=imported,
+    )
+
+    assert generator.calls == 1
+    assert case.messages[-1].answer_origin == "rag"
 
 
 def test_chat_poll_answer_source_feedback_flow(tmp_path: Path) -> None:
@@ -381,7 +557,18 @@ def test_real_c01_policy_short_circuits_knowledge_and_generation(
 ) -> None:
     from knowledge.policy import build_policy
 
-    knowledge, generator = answer_dependencies()
+    base_knowledge, generator = answer_dependencies()
+
+    class CountingEmbeddingKnowledge(FakeKnowledge):
+        def __init__(self):
+            super().__init__(base_knowledge.result)
+            self.embedding_calls = 0
+
+        async def retrieve(self, query):
+            self.embedding_calls += 1
+            return await super().retrieve(query)
+
+    knowledge = CountingEmbeddingKnowledge()
     service = BackendService(
         Database(tmp_path / "app.sqlite"), build_policy(), knowledge, generator
     )
@@ -396,6 +583,7 @@ def test_real_c01_policy_short_circuits_knowledge_and_generation(
     case = service.get_case(session.session_id, accepted.case_id)
     assert case.case.status == "closed_policy"
     assert "POLICY_LANGUAGE" in case.case.route.reason_codes
+    assert knowledge.embedding_calls == 0
     assert knowledge.retrieve_calls == 0
     assert generator.calls == 0
 
