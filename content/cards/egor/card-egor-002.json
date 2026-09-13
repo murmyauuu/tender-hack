@@ -13,7 +13,7 @@
     {"key": "role", "expected_value": "customer"},
     {"key": "contract_status", "expected_value": "signed"}
   ],
-  "source_ids": ["portal_api:242148:1"],
+  "source_ids": ["portal:242148:1"],
   "content": {
     "summary": "После подписания контракта заказчик может подтвердить его исполнение на Портале поставщиков: открыть контракт и нажать кнопку «Исполнен».",
     "conditions": [
@@ -33,7 +33,7 @@
     "subtopic_id": "ST75",
     "support_line": "L2",
     "recommended_recipient": null,
-    "basis_source_ids": ["portal_api:242148:1"],
+    "basis_source_ids": ["portal:242148:1"],
     "rule_id": "ROUTE.LINE.THEME_DEFAULT"
   },
   "author_id": "egor",

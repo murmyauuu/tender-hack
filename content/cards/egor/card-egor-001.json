@@ -13,7 +13,7 @@
     {"key": "role", "expected_value": "supplier"},
     {"key": "es_action", "expected_value": "attach"}
   ],
-  "source_ids": ["portal_api:226860:1"],
+  "source_ids": ["portal:226860:1"],
   "content": {
     "summary": "Для прикрепления электронной подписи к профилю поставщика нужно выполнить系列的 действия в личном кабинете Портала поставщиков: выбрать ЭП, ввести пароль и подтвердить действие.",
     "conditions": [
@@ -25,7 +25,7 @@
       "Нажать на кнопку «Прикрепить ЭП» или «Сменить ЭП»",
       "Выбрать электронную подпись из списка доступных",
       "Ввести пароль от личного кабинета Портал поставщиков",
-      "Подтвердить действие кнопкой «Подписать»"
+      "Подтвердить действие кнопкой «Сохранить»"
     ]
   },
   "handoff_required": false,
@@ -34,7 +34,7 @@
     "subtopic_id": "ST03",
     "support_line": "L2",
     "recommended_recipient": null,
-    "basis_source_ids": ["portal_api:226860:1"],
+    "basis_source_ids": ["portal:226860:1"],
     "rule_id": "ROUTE.LINE.L1_L2_UNCERTAIN_TRIAGE"
   },
   "author_id": "egor",
