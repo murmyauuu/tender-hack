@@ -1,11 +1,18 @@
-# Human review — CARD-STAS-002
+# Review — CARD-STAS-002
 
-- **Task / milestone:** C06 — независимый human review B05 сценариев Стаса
+- **Task / milestone:** C06 — независимый review B05 сценариев Стаса
 - **Reviewer:** egor
 - **Author:** stas
 - **Reviewed card:** `content/cards/stas/card-stas-002.json`
 - **Verdict:** approved
-- **Verdict comment (Egor-human):** подтверждаю; найденные risks — non-blocking observations.
+- **Verdict origin:** автономный verdict reviewer-агента по явной инструкции Егора
+  («сделай ревью полностью самостоятельно, без human approved, именно ты сам»);
+  отдельное human-подтверждение не выполнялось.
+- **Verdict comment (reviewer-agent):** карточку одобряю. Источник найден в frozen
+  C07 snapshot, все факты/условия/шаги прослеживаются до источника, invented facts
+  отсутствуют, route `TH8/ST75/L2` воспроизведён фактическим исполнением
+  `knowledge/kb/routing.py` на всех трёх utterances карточки. Найденные risks —
+  non-blocking observations, правок автору не требуется.
 - **Reviewed at:** 2026-09-13 (UTC+3)
 
 ## Профиль карточки
@@ -46,14 +53,15 @@
   отправка заявки; после обновления — повтор подписания. Пункт-в-пункт
   соответствуют 5 шагам источника.
 - **routing:** `TH8` / `ST75` / `L2`, rule `ROUTE.LINE.THEME_DEFAULT`,
-  `recommended_recipient=null`. Независимо воспроизведено по
-  `knowledge/kb/routing.py`: код «рдик» — уникальный abbreviation/код-токен
-  taxonomy (встречен ровно в `ST75` «Формирование УПД (вопросы по ошибкам
-  РДИК)`) → `subtopic_id=ST75`, `theme_id=TH8` (Электронное исполнение (ЕИС));
-  признаков L3-дефекта нет (упоминание валидационного кода РДИК само по себе
-  не является признаком дефекта); line = L2 (theme default TH8); фразы
-  «обратитесь в…» в главном evidence нет → `recommended_recipient=null`;
-  `basis_source_ids=[]` (текст источника не содержит полного keyword-set ST75).
+  `recommended_recipient=null`. Воспроизведено фактическим исполнением
+  `knowledge/kb/routing.py` на всех трёх utterances карточки: код «рдик» —
+  уникальный abbreviation/код-токен taxonomy (встречен ровно в `ST75»
+  «Формирование УПД (вопросы по ошибкам РДИК)`) → `subtopic_id=ST75`,
+  `theme_id=TH8` (Электронное исполнение (ЕИС)); признаков L3-дефекта нет
+  (упоминание валидационного кода РДИК само по себе не является признаком
+  дефекта); line = L2 (theme default TH8); фразы «обратитесь в…» в главном
+  evidence нет → `recommended_recipient=null`; `basis_source_ids=[]` (текст
+  источника не содержит полного keyword-set ST75).
 - **handoff_required:** `false` — подтверждается.
 
 ## Defects / risks (не блокеры)
@@ -76,6 +84,7 @@
 
 ## Вывод
 
-Карточка подтверждена независимым human review. Reviewer: `egor`. Не менять
-`status`/`reviewer_id` карточки в этом task: смена статуса — шаг C06/C08 для
-владельца после интеграции review.
+Карточка подтверждена независимым review. Reviewer: `egor`. Verdict определён
+автономно reviewer-агентом по явной инструкции владельца; human-approved
+отсутствует. Не менять `status`/`reviewer_id` карточки в этом task: смена
+статуса — шаг владельца после интеграции review.
