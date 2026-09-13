@@ -1,188 +1,149 @@
-# D09 Handoff Report
+# D09 Handoff — Отчёт по реальному dev и экспорту перед RC
 
-**Owner**: Egor (Agent D)  
-**BASE_SHA**: `83a85d8` (origin/main, after D04 acceptance)  
-**Result SHA**: `task/d09` branch commit  
-**Created**: 2026-09-13
+## Общая информация
 
----
+| Поле | Значение |
+|---|---|
+| TASK_ID | D09 |
+| Владелец | D / Егор |
+| BASE_SHA | `83a85d8` (origin/main после принятия D04) |
+| Ветка | `task/d09` |
+| Result SHA (branch HEAD) | `c93be1e3af9d2d4fdb119aaeeb2ca11a29d2327f` |
+| Remote HEAD SHA (`origin/task/d09`) | `c93be1e3af9d2d4fdb119aaeeb2ca11a29d2327f` (local == remote, ветка опубликована) |
+| Дата | 2026-09-13 |
+| Машина | CPU (локальный Windows, Python 3.14); GPU не использовался |
+| Статус | **done** |
 
-## Status
+Статус `done` корректен: все **обязательные** входы присутствуют — D02 (accepted в origin/main), D04 (accepted в origin/main), A04 export (воспроизведён из принятого A04 smoke/runtime и закоммичен). A05/B06 — внешние pending blockers для A06, для D09 не блокеры.
 
-D09 report completed for DEV and historical blocks. A05 and A04/EvaluationExport are external blockers not yet merged to origin/main. D09 can be delivered as done with these items marked as pending external blockers.
+## Обязательные зависимости
 
----
+| Вход | Путь | SHA-256 файла | Статус |
+|---|---|---|---|
+| D02 runner/report | `evaluation/report/metrics.py`, `evaluation/runner/*.py` | (в origin/main) | accepted в main |
+| D04 reconciliation | `evaluation/reconciliation/d04_reconciled.jsonl` | `02403d83...66ab87` | accepted в main |
+| **A04 export** | `evaluation/reports/a04_export.json` | `67eb8817...bebdb19` (git blob `e5a32915e9f2ea9eac6929c9cb43f15b365f15c6`) | воспроизведён D09 |
 
-## BASE SHA
-
-`83a85d8` — origin/main after fast-forward from original main, containing D04 history reconciliation merge (PR #12 task/d04).
-
----
-
-## Result SHA
-
-`task/d09` branch (current working branch).
-
----
-
-## Input Datasets Included
-
-| Dataset | Path | Status |
-|---------|------|--------|
-| D02 runner/report skeleton | `evaluation/report/` | Present |
-| D04 reconciled history | `evaluation/reconciliation/d04_reconciled.jsonl` | 30 pairs, accepted |
-| A04 EvaluationExport | Not found in repo | Missing — metrics derived from dev data |
-| D03/B04 provenance (historical) | `evaluation/annotations/egor/D03_annotations.jsonl`, `evaluation/annotations/stas/B04_annotations.jsonl` | Present |
-| C07 frozen KB metadata | `var/knowledge/` | Available |
-| A03 real E2E evidence | `evaluation/ai_test/dev/ai_test_dev.jsonl` | 20 dev cases |
-| A05 | Not yet merged | Pending |
-| B06 | Not yet merged | Pending |
-
----
-
-## Datasets Not Included / Pending
-
-| Dataset | Reason |
-|---------|--------|
-| A04 EvaluationExport | Not present in repository; live/E2E metrics derived from A03 dev data only |
-| A05 | Not yet accepted in origin/main — resilience/offline blocker |
-| B06 | Not yet accepted in origin/main — frontend regression blocker |
-
----
-
-## Headline Metrics (n/N)
-
-| Block | Metric | n/N |
-|-------|--------|-----|
-| DEV | Total cases | 20/20 |
-| DEV | Answerable | 20/20 (100%) |
-| DEV | Auto-answer | 12/20 (60%) |
-| DEV | Handoff offered | 3/20 (15%) |
-| DEV | Escalate | 1/20 (5%) |
-| DEV | Clarify | 2/20 (10%) |
-| DEV | Error requests | 2/20 (10%) |
-| Historical | Reconciled NA | 7/30 |
-| Historical | Correctness agreement | 12/30 (40%) |
-| Historical | Completeness agreement | 15/30 (50%) |
-| Historical | Clarity agreement | 22/30 (73%) |
-| Historical | Route agreement | 24/30 (80%) |
-
----
-
-## Blockers
-
-| Blocker | Status | Owner | Impact |
-|---------|--------|-------|--------|
-| A05 not merged | pending | — | A06 readiness |
-| B06 not merged | pending | — | A06 readiness |
-| A04 EvaluationExport missing | pending | — | Live/E2E metrics completeness |
-
----
-
-## Owners
-
-| Area | Owner | Status |
-|------|-------|--------|
-| DEV block metrics | Egor (Agent D) | Complete |
-| Historical reconciliation | Egor (Agent D) | Complete (D04) |
-| A05 resilience/offline | — | Pending merge |
-| B06 frontend regression | — | Pending merge |
-| Live/E2E export | — | A04 not in repo |
-
----
-
-## Readiness for A06
-
-- **Status**: Partially ready
-- **DEV block**: Complete (20 cases, metrics computed)
-- **Historical block**: Complete (30 pairs, reconciled)
-- **A05 resilience/offline**: Pending — blocker for full A06 readiness
-- **B06 frontend regression**: Pending — blocker for full A06 readiness
-- **A04 EvaluationExport**: Missing — live metrics derived from dev data only
-
----
-
-## Reproducibility Commands
+### A04 export — способ получения (exact command, CPU)
 
 ```powershell
-# 1. Ensure clean state from origin/main
-git switch main
-git pull --ff-only origin main
-
-# 2. Create fresh task/d09 branch
-git checkout -b task/d09
-
-# 3. Recompute dev metrics deterministically (no LLM, no GPU)
-python - << 'PYEOF'
-from evaluation.report.metrics import compute_metrics
-from evaluation.report.export_io import load_export
-
-# Load export and compute — this uses only the JSON input data
-export = load_export("evaluation/reports/export.json")  # path to export
-result = compute_metrics(export)
-print("Dev metrics:", result["summary"])
-print("Cohorts:", {k: {"eligible": v["cases"]["eligible"], "auto_answer": v["metrics"]["auto_answer"]["value"]} for k, v in result["cohorts"].items()})
-PYEOF
-
-# 4. Recompute historical summary
-python - << 'PYEOF'
-import json
-from collections import defaultdict
-
-records = []
-with open("evaluation/reconciliation/d04_reconciled.jsonl") as f:
-    for line in f:
-        records.append(json.loads(line))
-
-# Count agreements
-total = len(records)
-correctness_agree = sum(1 for r in records if r["correctness"] == 2)
-completeness_agree = sum(1 for r in records if r["completeness"] == 2)
-clarity_agree = sum(1 for r in records if r["clarity"] == 2)
-route_agree = sum(1 for r in records if r["route"] == 2)
-na_count = sum(1 for r in records if r["not_assessable"])
-
-print(f"Total pairs: {total}")
-print(f"Correctness agreements: {correctness_agree}/{total} ({correctness_agree/total*100:.0f}%)")
-print(f"Completeness agreements: {completeness_agree}/{total} ({completeness_agree/total*100:.0f}%)")
-print(f"Clarity agreements: {clarity_agree}/{total} ({clarity_agree/total*100:.0f}%)")
-print(f"Route agreements: {route_agree}/{total} ({route_agree/total*100:.0f}%)")
-print(f"Not assessable: {na_count}/{total}")
-PYEOF
-
-# 5. Validate git diff
-git diff --check
+$env:PYTHONPATH = "D:\tender-hack\backend;D:\tender-hack\contracts\python"
+python -m tools.run_a04_e2e --output-dir var/a04
+python -m tools.export_data --db var/a04/<созданный-a04-*.sqlite> --output evaluation/reports/a04_export.json --app-commit c93be1e3af9d2d4fdb119aaeeb2ca11a29d2327f
 ```
 
----
+- Источник: принятый A04 smoke/runtime (`tools/run_a04_e2e.py`, в origin/main); экспорт через принятый `tools/export_data.py` + `backend/tenderhack_backend/export.py`.
+- Классификация: **real backend / controlled no-model dependencies** (по дизайну A04; handoff/reply-путь generation не делает).
+- Фактический прогон: 1 случай, Cаse `e86c357a-...`, Ticket `cafba42d-...`; переходы `handoff_offered/ticket:none → handed_off/ticket:new → handed_off/ticket:waiting_user → handed_off/ticket:new → resolved/ticket:resolved` (совпадает с A04 handoff).
+- `check_export`: 1 заметка `ticket resolved without current_resolution` — ожидаемая семантика operator-resolution (в A04 smoke feedback не постился), не ошибка данных.
+- Non-determinism: `export_id`/`created_at`/message ids генерируются заново (uuid4/timestamps) → байтовый дайджест файла меняется между прогонами; детерминирован сам конечный автомат smoke.
 
-## Output Paths
+## Входные данные (прочие)
 
-| File | Path |
-|------|------|
-| Markdown report | `reports/d09_dev_report.md` |
-| JSON summary | `evaluation/reports/d09_summary.json` |
-| Handoff doc | `docs/coordination/egor/D09-handoff.md` |
+- Dev-набор D01: `evaluation/ai_test/dev/ai_test_dev.jsonl` (20 кейсов, sha `af04729d...`) + `dev/manifest.json` (sha `24f79bac...`).
+- Historical: `evaluation/annotations/egor/D03_annotations.jsonl` (sha `6fd375c5...`), `evaluation/annotations/stas/B04_annotations.jsonl` (sha `bcf6c72c...`), reconcile `d04_reconciled.jsonl`.
+- A03 real evidence: `docs/coordination/artem/A03-handoff.md` (accepted), pinned `retrieval_log_dev20.json` sha `47718bb1f2bf72451bcb8abd5ef2d9ba1ae2710119b154cb524732498ddd0cf0`.
+- C07: accepted; snapshot `kb-4918a97f0874d1e8` — retrieval-evidence база.
 
----
+## Datasets included / pending
 
-## Limitations
+**Included:**
+- Dev-набор (20 кейсов; только факты набора; routing-исходы — null/unknown, см. ниже).
+- Historical reconciliation (30 пар D04, согласия пересчитаны из аннотаций).
+- Real E2E evidence A03 (retrieval smoke DEV-010/012/019; full HTTP E2E DEV-019).
+- A04 export (1 real backend кейс, demo cohort, operator-resolution).
+- C07 KB snapshot metadata.
 
-- A04 EvaluationExport not present in repository; live/E2E metrics derived from A03 dev dataset only
-- A05 not merged — resilience/offline blocker externally
-- B06 not merged — frontend regression blocker externally
-- Historical 30-pair sample may not be fully representative of full support volume
-- Latency metrics null for cases without timestamps in the export data
-- No GPU or LLM used in any computation; all metrics deterministic from input JSON
+**Pending (внешние, для A06, не для D09):**
+- A05 resilience/offline — not in origin/main.
+- B06 frontend regression — not in origin/main.
 
----
+## Headline metrics — corrected, с provenance
 
-## Validation Checks
+| Блок | Метрика | Значение | Точный источник | Метод |
+|---|---|---|---|---|
+| DEV | Всего кейсов | 20/20 | `evaluation/ai_test/dev/manifest.json` (count), `ai_test_dev.jsonl` | count |
+| DEV | answerable | 20/20 (100%) | `ai_test_dev.jsonl` (поле `answerable`) | count |
+| DEV | Роли | 19 supplier / 1 customer | `ai_test_dev.jsonl` (`role`) | count |
+| DEV | Routing исходы (auto-answer/handoff/escalate/clarify/errors/latency) | **null/unknown** | нет входного файла — нет реального dev-run EvaluationExport по 20 кейсам; D02 live smoke не выполнялся (A02 501) | — |
+| Real E2E (A03) | retrieval smoke | DEV-010, DEV-012, DEV-019 — `ANSWER_ALLOWED` | A03 handoff + `retrieval_log_dev20.json` sha `47718bb1...` | real run |
+| Real E2E (A03) | full HTTP E2E | DEV-019: resolved, answer_origin=rag, source `portal:292330:1`, generation_calls=1, e2e 15134.514 ms, no auto-retry | A03 handoff §«Accepted real E2E» | real run |
+| A04 export | handoffs | 1/1 | `evaluation/reports/a04_export.json` (compute_metrics) | детерминированный расчёт |
+| A04 export | auto_answer | 0/1 | там же | детерминированный расчёт |
+| A04 export | errors / timeouts | 0/1 / 0/1 | там же | детерминированный расчёт |
+| A04 export | usefulness/solved/feedback/latency | null (пустой знаменатель/нет данных) | там же | детерминированный расчёт |
+| Historical | correctness согласия | 12/30 (40%) | D03 + B04 annotations (пересчитано) | сравнение по 4 измерениям |
+| Historical | completeness согласия | 15/30 (50%) | D03 + B04 annotations (пересчитано) | сравнение |
+| Historical | clarity согласия | 22/30 (73%) | D03 + B04 annotations (пересчитано) | сравнение |
+| Historical | route согласия | 24/30 (80%) | D03 + B04 annotations (пересчитано) | сравнение |
+| Historical | reconciled NA | 7/30 | `d04_reconciled.jsonl` (`not_assessable=true`) | count |
+| Historical | reconciled critical errors | 0/30 | `d04_reconciled.jsonl` (`critical_error`=null у всех) | count |
 
-- [x] All counts re-calculatable from inputs
-- [x] n/N present for all applicable metrics
-- [x] Empty datasets → null (not 0)
-- [x] Final data not read from runtime sources (all from Git-tracked data)
-- [x] D03/B04/D04 originals unchanged (read-only inputs)
-- [ ] Generated report corresponds to machine-readable summary (to verify after final commit)
-- [x] git diff --check clean
+Примечания по корректировке:
+- Ранее заявленные «12/20 auto-answer, 3/20 handoff, 1/20 escalate, 2/20 clarify, 2/20 errors» — **удалены как не воспроизводимые** из файлов репозитория и ошибочно атрибутированные A03. A03 реально покрывает только DEV-010/DEV-012/DEV-019 (retrieval smoke) и DEV-019 (full E2E); DEV-* — набор D01/D02/C03 dev evaluation.
+- Ранее заявленные latency 2850/5400 — это значения demo-фикстуры D02 (`demo_export`), не dev-набора; удалены.
+- Роль-сплит исправлен: 19 supplier / 1 customer (не 18/2).
+
+## Validation
+
+| Проверка | Фактический результат |
+|---|---|
+| A04 export валиден | `EvaluationExport.model_validate` OK; `check_export` → 1 задокументированная ожидаемая заметка |
+| d09_summary.json — валидный JSON | OK (исправлен ошибочный ключ `" cohorts"`) |
+| согласия истории пересчитаны | `{correctness:12, completeness:15, clarity:22, route:24}`, NA_Stas=7 — совпадает с D04 |
+| reconciled факты | NA=7, critical=0 из d04_reconciled.jsonl |
+| originals D03/B04/D04 | `git diff origin/main` — пусто (не изменены) |
+| sealed final | `evaluation/final_private/ai_test_final.jsonl`, `evaluation/ai_test/final_manifest.json` — `git diff origin/main` пуст, не открывались |
+| mock/real | A03 real E2E и A04 real backend экспорт отделены от D02 demo-фикстуры; mock нигде не выдан за real |
+| n/N и null | n/N везде, где численно возможно; пустые знаменатели → null |
+| git diff --check | clean |
+
+## Defects / blockers
+
+| дефект/ограничение | владелец | влияние | статус |
+|---|---|---|---|
+| Нет закоммиченного реального dev-run EvaluationExport по 20 dev-кейсам → routing-исходы всего dev-набора не воспроизводимы | A (tools/export_data) / D07 | подтверждение dev-routing на frozen RC | открыто (не блокер D09) |
+| A05 не в origin/main | A | A06 readiness | pending (внешний) |
+| B06 не в origin/main | B | A06 readiness | pending (внешний) |
+| Локальный env: editable `tenderhack` указывает на старый worktree `D:\tender-hack-d02-d02-runner` | — | команды требуют `PYTHONPATH` на текущий репо | note (не репо-дефект) |
+
+## A06_INPUT_READY
+
+**yes** — репорт, methodology, defects и A04 export готовы. A06/I дополнительно ждут принятия A05 и B06.
+
+## Output paths
+
+| Артефакт | Путь |
+|---|---|
+| Markdown репорт | `reports/d09_dev_report.md` |
+| Summary JSON | `evaluation/reports/d09_summary.json` |
+| A04 export (обязательный ввод) | `evaluation/reports/a04_export.json` |
+| Handoff | `docs/coordination/egor/D09-handoff.md` |
+
+## Репродукция (без LLM/GPU)
+
+```powershell
+# dev-set факты
+python -c "import json,collections; rows=[json.loads(l) for l in open('evaluation/ai_test/dev/ai_test_dev.jsonl',encoding='utf-8')]; print(len(rows), collections.Counter(r['role'] for r in rows), collections.Counter(r['answerable'] for r in rows))"
+
+# исторические согласия из аннотаций (D03 vs B04, B04 not_assessable = расхождение)
+# => {correctness:12, completeness:15, clarity:22, route:24}
+
+# reconciled факты
+python -c "import json; rec=[json.loads(l) for l in open('evaluation/reconciliation/d04_reconciled.jsonl',encoding='utf-8')]; print(sum(1 for r in rec if r['not_assessable']), sum(1 for r in rec if r.get('critical_error')))"   # => 7 0
+
+# A04 export + метрики
+$env:PYTHONPATH = "D:\tender-hack\backend;D:\tender-hack\contracts\python"
+python -m tools.run_a04_e2e --output-dir var/a04
+python -m tools.export_data --db var/a04/<generated>.sqlite --output evaluation/reports/a04_export.json --app-commit c93be1e3af9d2d4fdb119aaeeb2ca11a29d2327f
+python -m evaluation.report evaluation/reports/a04_export.json --json-out var/evaluation/d09/a04_metrics.json
+```
+
+## Contract change requests
+
+Нет. Использованы существующие канонические контракты (C0/EvaluationExport) без изменений.
+
+## Для следующего шага
+
+- A06: переданы репорт и defects. Интегратор A проверяет `reports/d09_dev_report.md`, `evaluation/reports/d09_summary.json`, `evaluation/reports/a04_export.json` и этот handoff по разделу 16.
+- D07 (после RC): реальный dev-run EvaluationExport по final-набору через `tools/export_data` закроет открытый дефект DEV_RUN_EXPORT_MISSING.

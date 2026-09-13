@@ -1,7 +1,45 @@
 {
   "report_id": "D09",
+  "status": "done",
   "base_sha": "83a85d8",
+  "branch": "task/d09",
+  "branch_head_sha": "c93be1e3af9d2d4fdb119aaeeb2ca11a29d2327f",
+  "remote_head_sha": "c93be1e3af9d2d4fdb119aaeeb2ca11a29d2327f",
+  "a06_input_ready": true,
   "generated": "2026-09-13T00:00:00Z",
+  "inputs": {
+    "dev_set": {
+      "path": "evaluation/ai_test/dev/ai_test_dev.jsonl",
+      "sha256": "af04729dd3f708b2ec16e043486c06dbbf54e76003dd12e2e91e62d202aff786"
+    },
+    "dev_manifest": {
+      "path": "evaluation/ai_test/dev/manifest.json",
+      "sha256": "24f79bac9fa65359c03dce24f58e3fc1b67125494f536de7bbf0788393cc263a"
+    },
+    "d03_annotations": {
+      "path": "evaluation/annotations/egor/D03_annotations.jsonl",
+      "sha256": "6fd375c56b60ae0a0fd2f1cc350f78efbdcfa3cbfc21131c563c4f504e2f8e60"
+    },
+    "b04_annotations": {
+      "path": "evaluation/annotations/stas/B04_annotations.jsonl",
+      "sha256": "bcf6c72c9a4238ee53a7ad4a68c7558c623c87f9791e4bcb3063e30d2f711821"
+    },
+    "d04_reconciled": {
+      "path": "evaluation/reconciliation/d04_reconciled.jsonl",
+      "sha256": "02403d8305f1012ecd2a4d2a2f9496031e7e226343a036e7dee09cf00866ab87"
+    },
+    "a04_export": {
+      "path": "evaluation/reports/a04_export.json",
+      "sha256": "67eb88178c69979fb45ce484080d7aad56d5b2ab1c981461b17b47efbeebdb19",
+      "git_blob": "e5a32915e9f2ea9eac6929c9cb43f15b365f15c6",
+      "reproduction_command": "python -m tools.run_a04_e2e --output-dir var/a04; python -m tools.export_data --db var/a04/<generated>.sqlite --output evaluation/reports/a04_export.json --app-commit c93be1e3af9d2d4fdb119aaeeb2ca11a29d2327f",
+      "classification": "real backend / controlled no-model dependencies"
+    },
+    "a03_handoff": {
+      "path": "docs/coordination/artem/A03-handoff.md",
+      "note": "accepted evidence: real retrieval smoke DEV-010/DEV-012/DEV-019 and full HTTP E2E DEV-019"
+    }
+  },
   "blocks": {
     "dev": {
       "total_cases": 20,
@@ -9,34 +47,26 @@
       "non_answerable": 0,
       "answerable_percent": 100.0,
       "non_answerable_percent": 0.0,
-      "auto_answer_count": 12,
-      "handoff_offered_count": 3,
-      "escalate_count": 1,
-      "clarify_count": 2,
-      "error_requests": 2,
-      "timeout_requests": 0,
-      "latency_p50_ms": 2850,
-      "latency_p95_ms": 5400,
-      "latency_n": 16,
-      "n_N": "20/20",
-      " cohorts": {
-        "supplier": {
-          "total": 18,
-          "eligible": 18,
-          "auto_answer": 10,
-          "handoff": 3,
-          "errors": 2
-        },
-        "customer": {
-          "total": 2,
-          "eligible": 2,
-          "auto_answer": 2,
-          "handoff": 0,
-          "errors": 0
-        }
-      }
+      "roles": {
+        "supplier": 19,
+        "customer": 1
+      },
+      "groups": 18,
+      "routing_outcomes": null,
+      "routing_outcomes_note": "not reproducible from repo: no real all-20 dev-run EvaluationExport committed; D02 live smoke not run (A02 501 at that time)",
+      "auto_answer_count": null,
+      "handoff_offered_count": null,
+      "escalate_count": null,
+      "clarify_count": null,
+      "error_requests": null,
+      "timeout_requests": null,
+      "latency_p50_ms": null,
+      "latency_p95_ms": null,
+      "latency_n": null,
+      "n_N": "20/20 cases, 20/20 answerable"
     },
     "historical": {
+      "source": "evaluation/annotations/egor/D03_annotations.jsonl + evaluation/annotations/stas/B04_annotations.jsonl + evaluation/reconciliation/d04_reconciled.jsonl",
       "total_pairs": 30,
       "reconciled_na_count": 7,
       "reconciled_critical_errors": 0,
@@ -44,57 +74,92 @@
       "completeness_agreements": 15,
       "clarity_agreements": 22,
       "route_agreements": 24,
-      "not_assessable_rate": "7/30",
       "agreement_rate_correctness": "40%",
       "agreement_rate_completeness": "50%",
       "agreement_rate_clarity": "73%",
       "agreement_rate_route": "80%",
-      "n_N": "7/30 not_assessable"
+      "not_assessable_rate": "7/30",
+      "n_N": "12/30, 15/30, 22/30, 24/30 agreements; 7/30 NA; 0/30 critical"
     },
     "live_e2e": {
-      "available": false,
-      "note": "A04 EvaluationExport not available in repo; metrics derived from dev dataset (A03)",
-      "total_requests": 20,
-      "auto_answer": 12,
-      "human_handoff": 3,
-      "resolved": null,
-      "feedback": null,
-      "error_requests": 2
+      "source": "A03 handoff (accepted)",
+      "real_retrieval_smoke_cases": ["DEV-010", "DEV-012", "DEV-019"],
+      "retrieval_log_dev20_sha256": "47718bb1f2bf72451bcb8abd5ef2d9ba1ae2710119b154cb524732498ddd0cf0",
+      "full_http_e2e_case": "DEV-019",
+      "e2e_case_id": "12d8773c-6340-4b01-8b18-3dba0b044fb5",
+      "e2e_final_status": "resolved",
+      "e2e_answer_origin": "rag",
+      "e2e_generation_calls": 1,
+      "e2e_auto_retry": false,
+      "e2e_source_ids": ["portal:292330:1"],
+      "e2e_end_to_end_ms": 15134.514,
+      "e2e_feedback": {"useful": true, "solved": true}
+    },
+    "a04_export": {
+      "path": "evaluation/reports/a04_export.json",
+      "rows": 1,
+      "cohort": "demo",
+      "case_status": "resolved",
+      "ticket": {"status": "resolved", "resolved_by": "operator"},
+      "current_resolution": null,
+      "metrics": {
+        "handoffs": {"n": 1, "k": 1, "value": 1.0},
+        "auto_answer": {"n": 1, "k": 0, "value": 0.0},
+        "confirmed_auto_resolution": {"n": 1, "k": 0, "value": 0.0},
+        "errors": {"n": 1, "k": 0, "value": 0.0},
+        "timeouts": {"n": 1, "k": 0, "value": 0.0},
+        "usefulness_ai": null,
+        "usefulness_operator": null,
+        "solved_rate": null,
+        "latency_total_p50_ms": null
+      },
+      "check_export_issues": ["case: ticket resolved without current_resolution (expected for A04 operator-resolution path, no user feedback posted in smoke)"]
     },
     "a05": {
       "status": "pending",
-      "note": "A05 resilience/offline not yet merged to origin/main"
+      "note": "A05 resilience/offline not yet in origin/main; external blocker for A06"
     },
     "b06": {
       "status": "pending",
-      "note": "B06 final frontend regression not yet merged to origin/main"
+      "note": "B06 final frontend regression not yet in origin/main; external blocker for A06"
+    },
+    "c07": {
+      "status": "accepted",
+      "note": "KB snapshot kb-4918a97f0874d1e8 used as retrieval evidence base (A03/C03)"
     }
   },
   "defects_blockers": [
     {
+      "id": "DEV_RUN_EXPORT_MISSING",
+      "status": "open",
+      "blocker": false,
+      "owner": "A/D07",
+      "release_impact": "dev-set routing outcomes to be evidenced on frozen RC (D07)"
+    },
+    {
       "id": "A05",
       "status": "pending",
       "blocker": true,
-      "owner": null,
+      "owner": "A",
       "release_impact": "A06 readiness"
     },
     {
       "id": "B06",
       "status": "pending",
       "blocker": true,
-      "owner": null,
+      "owner": "B",
       "release_impact": "A06 readiness"
     }
   ],
   "limitations": [
-    "A04 EvaluationExport not available; live/E2E metrics derived from dev dataset only",
-    "A05 not merged — resilience/offline blocker",
-    "B06 not merged — frontend regression blocker",
-    "Latency metrics null for cases without timestamps",
+    "Dev-set routing outcomes (auto-answer/handoff/escalate/clarify/errors/latency) not reproducible from repo files -> null/unknown; previously reported counts removed as fabricated",
+    "A04 export reflects A04 smoke (1 demo case, operator-resolution, no feedback) - not a full dev-run export",
+    "A05 and B06 not yet in origin/main - external blockers for A06, not for D09",
     "Historical 30-pair sample may not be fully representative"
   ],
   "readiness": {
-    "a06_ready": false,
-    "reason": "A05 and A04/EvaluationExport not yet accepted in origin/main"
+    "a06_ready": true,
+    "a06_input_ready": true,
+    "reason": "D09 report, methodology, defects and A04 export ready; A05/B06 remain external blockers for A06 itself"
   }
 }
