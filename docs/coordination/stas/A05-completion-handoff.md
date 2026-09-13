@@ -11,8 +11,8 @@
 - Original A05 BASE: `461c1145983490f6440b47b4b3bb936db39b0b4a`.
 - Continuation branch: `fix/a05-completion-stas`, created directly from `00cea997...`.
 - Continuation BASE: `00cea997bf395e1b35d8c288a693f1cbcfef8e6f`.
-- Final SHA: pending real-G evidence.
-- Current verdict: mandatory real-G acceptance is pending.
+- Result SHA: commit containing this handoff; report the exact pushed SHA with the handoff.
+- Current verdict: accepted on real machine G.
 
 ## Existing-result audit
 
@@ -210,17 +210,86 @@ git status --short
 
 ## Real-G evidence
 
-Pending return of actual G stdout/JSON. No CPU/control-delay result will be inserted here.
+Acceptance ran on physical machine `DESKTOP-89C093C` with an NVIDIA GeForce RTX 3070 Laptop GPU.
+All generated evidence remains under the ignored local directory `var/a05-g`; no C03 artifact or
+model weight was changed.
 
-## Verification so far
+### Runtime environment and immutable pins
 
-- Full Python suite on Стас's Windows CPU machine after the minimal patches: PASS (all collected
-  tests; workspace `--basetemp` used because the desktop runtime cannot access its encoded system
-  temp directory).
-- `python -m compileall -q backend contracts/python tools knowledge`: PASS.
+- Heavy semantic runtime Python:
+  `A:\AI\retrieval-lab\.venv\Scripts\python.exe` (Python 3.12.5).
+- Runtime libraries: `torch==2.13.0+cu126`, CUDA runtime 12.6,
+  `transformers==5.16.1`; `torch.cuda.is_available()` returned `True` and the device name was
+  `NVIDIA GeForce RTX 3070 Laptop GPU`.
+- The current checkout was exposed to that existing ML environment through `PYTHONPATH`; the
+  project lock and dependencies were not changed. HTTP drivers and final tests used the frozen
+  project `.venv` (Python 3.13.12).
+- A forced-offline encoder smoke loaded the accepted weights locally and produced a finite
+  1024-dimensional embedding. Load/encode timings were 9.683/1.067 seconds. Evidence:
+  `gpu-environment-smoke.stdout.log` and `.stderr.log`.
+- Semantic preflight: `mode=semantic`, snapshot `kb-4918a97f0874d1e8`, embedding revision
+  `97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3`, safetensors SHA-256
+  `0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd`.
+- Accepted C03 artifact SHA-256 values:
+  - `knowledge.sqlite`: `11e1f4b04b0e3c484c1fce1213f9f4ded4add513983600b4f5262c67d21753a6`
+  - `index.npy`: `396e8ee4e5ce4c457292eea2b107058b7941ea0c498434a70f8da6abc9b8de87`
+  - `index_ids.json`: `b328deae1ba6868da115d66e81e19b60b92f6601cf20717cfb7070b14bca110d`
+  - `manifest.json`: `589600e50e02239806d98a43f41ee88e42d20bef5f3aabbb7ece4e844aae9f77`
+- Ollama model `qwen3:8b-q4_K_M` matched digest
+  `a0a5ad8024dd21401f07634d0c71393b9c9d37aa57a6b594e02b86ab72c450b4`.
+  Recovery used the already-present local store `C:\Users\Artem\.ollama\models`; there was no
+  model download.
+
+### Queue, resources, and handoff
+
+- Accepted five-client run: `queue-final-2.json`. Four clients received `202` and completed with
+  real RAG answers; one received retryable `429 QUEUE_FULL`. Accepted request wall times were
+  11.665–43.457 seconds; generation timings were 10.435–10.822 seconds. Under the same heavy load,
+  profanity admission was 41.516 ms and health read was 39.154 ms.
+- Resource evidence: `queue-final-resources.json`, measured against the actual Windows listener
+  child PID rather than the venv launcher. Peak backend working set was 1824.39 MiB, peak total
+  system RAM used was 14.64 GiB, and peak GPU memory used was 7946 MiB. The 127.089-second monitor
+  interval includes an earlier client transport abort plus the accepted immediate rerun on the
+  same healthy backend. Earlier `queue-resources.json` is retained but rejected for backend RSS
+  because it sampled the venv launcher PID.
+- Real handoff evidence: `handoff.json`. The driver observed `generating` after 10.338 seconds;
+  handoff admission took 24.748 ms; the original request became
+  `cancelled/SUPERSEDED_BY_POLICY`; the heavy slot was released at 20.482 seconds after submit;
+  no stale AI message was persisted.
+
+### Outage, recovery, and physical offline run
+
+- Model outage/recovery: `model-recovery.json`. With `127.0.0.1:11434` unreachable, the request
+  failed as retryable `MODEL_UNAVAILABLE` with no RAG answer. After restoring the exact pinned
+  local model/digest, a new retry request reused the original user message and completed `final`
+  with exactly one RAG answer; the original request remained in error and no automatic generation
+  retry occurred inside it.
+- Semantic outage used only `var/a05-g/kb-outage-staging`; the accepted C03 directory was not
+  modified. Without staging `index.npy`, health reported `knowledge=lexical_only` and strict
+  real-semantic processing failed retryably as `SEARCH_UNAVAILABLE`. Restoring the byte-identical
+  `index.npy` (SHA-256
+  `396e8ee4e5ce4c457292eea2b107058b7941ea0c498434a70f8da6abc9b8de87`) and restarting changed
+  health to ready and the real request
+  completed `final` with `answer_origin=rag`. Evidence: `retrieval-outage*` and
+  `retrieval-recovery*`.
+- The participant physically disconnected external internet. At
+  `2026-09-13T12:43:17.1743903Z`, Wi-Fi and Ethernet were recorded disconnected and the GitHub
+  probe failed DNS resolution with curl exit code 6. With `HF_HUB_OFFLINE=1` and
+  `TRANSFORMERS_OFFLINE=1`, offline semantic preflight remained semantic with all accepted hashes
+  and Ollama digest. One real localhost request then completed `final` with a RAG answer in
+  20.688 seconds. Both preflight and E2E stderr logs are empty. The participant confirmed external
+  connectivity remained unavailable after the run and was restored afterward. Evidence:
+  `offline-manual-attestation.json`, `offline-semantic-preflight.json`, `offline-e2e.json`, and
+  `offline-acceptance-summary.json`.
+
+## Final verification
+
+- Full Python suite on G after real acceptance: PASS, 492/492 tests
+  (`uv run pytest -q --basetemp var\pytest-a05-final`).
+- `uv run python -m compileall -q backend contracts/python tools knowledge`: PASS on G.
 - PowerShell parser check for `tools/monitor_a05_resources.ps1`: PASS.
 - Tool CLI/import checks for all new/changed A05 drivers: PASS.
-- `git diff --check`: PASS (line-ending notices only).
+- Final `git diff --check`: PASS (line-ending notice only).
 
 ## Changed A-owned files in the continuation
 
@@ -242,18 +311,17 @@ changed. Артём's historical handoff was not rewritten.
 |---|---|
 | AC11 | PASS from accepted A04/B03 regression evidence; unaffected |
 | AC12 | PASS from A04 and original A05 durable retry evidence |
-| AC13 | PARTIAL pending real-generation G run |
+| AC13 | PASS from real-G generation and observed handoff-during-generation evidence |
 | AC14 | PASS from accepted A04/B03 regression evidence; unaffected |
 | AC15 | PASS from original A05 hard-restart/retry evidence |
-| AC16 | PARTIAL pending real semantic+Ollama concurrency/RAM/VRAM run |
-| AC17 | PARTIAL pending real model and semantic-index recovery runs |
-| AC22 | PARTIAL pending physical-offline real-G run; restart already PASS |
+| AC16 | PASS from real-G semantic+Ollama five-client and RAM/VRAM evidence |
+| AC17 | PASS from real model and strict semantic-index outage/recovery evidence |
+| AC22 | PASS from physical-offline real-G run and original A05 restart evidence |
 
 ## Blocker
 
-Mandatory real-G output has not yet been returned to this continuation session. Until it is,
-completion cannot be claimed.
+None.
 
-`A05_ACCEPTED=no`
+`A05_ACCEPTED=yes`
 
-`BLOCKER=real G acceptance unavailable`
+`BLOCKER=none`
