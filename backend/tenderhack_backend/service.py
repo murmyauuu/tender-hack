@@ -25,6 +25,7 @@ from tenderhack_contracts import (
     ReasonCode,
     RequestView,
     RoutingResult,
+    ScenarioCard,
     Session,
     Ticket,
 )
@@ -32,6 +33,47 @@ from tenderhack_contracts import (
 from .errors import DomainError
 from .storage import Database
 from .verifier import InvalidGeneration, verify_proposal
+
+
+def _fact_equal(actual: object, expected: object) -> bool:
+    if isinstance(actual, str) and isinstance(expected, str):
+        return actual.strip().casefold() == expected.strip().casefold()
+    return actual == expected
+
+
+def _card_is_usable(
+    card: ScenarioCard,
+    *,
+    card_id: str,
+    snapshot_id: str | None,
+    confirmed_facts: dict[str, object],
+) -> bool:
+    """Defensively validate a card returned by the imported-card runtime port."""
+
+    if (
+        card.card_id != card_id
+        or card.status != "reviewed"
+        or not card.reviewer_id
+        or card.reviewer_id.casefold() == card.author_id.casefold()
+        or card.reviewed_at is None
+        or card.snapshot_id is None
+        or card.snapshot_id != snapshot_id
+        or not card.source_ids
+    ):
+        return False
+    if card.applicable_roles:
+        role = confirmed_facts.get("role")
+        if role is None or not any(
+            _fact_equal(role, allowed) for allowed in card.applicable_roles
+        ):
+            return False
+    # ScenarioCard.content.conditions are presentation text. Every executable
+    # reviewed condition must be represented by required_facts at import time.
+    return all(
+        fact.key in confirmed_facts
+        and _fact_equal(confirmed_facts[fact.key], fact.expected_value)
+        for fact in card.required_facts
+    )
 
 
 class BackendService:
@@ -229,6 +271,52 @@ class BackendService:
                 route=knowledge.route,
             )
             return
+
+        if knowledge.card_id is not None:
+            try:
+                card = await self.knowledge.get_card(knowledge.card_id)
+            except Exception:  # noqa: BLE001 - imported-card adapter boundary
+                self.database.fail_request(
+                    request_id, "SEARCH_UNAVAILABLE", retryable=True
+                )
+                return
+            if card is not None and _card_is_usable(
+                card,
+                card_id=knowledge.card_id,
+                snapshot_id=knowledge.snapshot_id,
+                confirmed_facts=context["confirmed_facts"],
+            ):
+                elapsed_ms = round((perf_counter() - started) * 1000, 3)
+                handoff = card.handoff_required
+                summary = card.content.summary
+                if handoff:
+                    summary = (
+                        f"{summary}\n\nЭтот сценарий требует передачи "
+                        "специалисту. Передать обращение?"
+                    )
+                self.database.publish_message(
+                    request_id,
+                    case_status=(
+                        CaseStatus.HANDOFF_OFFERED
+                        if handoff
+                        else CaseStatus.AWAITING_FEEDBACK
+                    ),
+                    role="assistant",
+                    kind="notice" if handoff else "answer",
+                    responder_type="system",
+                    answer_origin="card",
+                    content=summary,
+                    structured_content={
+                        "summary": card.content.summary,
+                        "conditions": card.content.conditions,
+                        # A handoff-only card must not expose steps as a resolution.
+                        "steps": [] if handoff else card.content.steps,
+                    },
+                    source_ids=card.source_ids,
+                    route=card.route,
+                    timings={"generation_total": 0, "total": elapsed_ms},
+                )
+                return
 
         evidence_by_id = {item.evidence_id: item for item in knowledge.candidates}
         selected = [
